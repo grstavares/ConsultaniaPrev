@@ -1,0 +1,3 @@
+[submodule "Legacy/aws-eb-glassfish-dockerfiles"]
+	path = Legacy/aws-eb-glassfish-dockerfiles
+	url = https://github.com/aws/aws-eb-glassfish-dockerfiles.git
