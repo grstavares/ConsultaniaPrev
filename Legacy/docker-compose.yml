@@ -1,0 +1,23 @@
+version: '2'
+services:
+  db:
+    image: library/postgres:10.5-alpine
+    volumes:
+      - ./db/pgdata:/pgdata
+      - ./db/sample-setup.sql:/docker-entrypoint-initdb.d/sample-setup.sql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - PGDATA=/pgdata
+
+  appserver:
+    image: airhacks/glassfish-ping
+    ports:
+      - 8080:8080
+      - 8081:8081
+    environment:
+      - DB_URL=0.0.0.0
+    links:
+      - db

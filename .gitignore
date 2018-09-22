@@ -66,3 +66,10 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+
+#Secrets
+*.pem
+
+#Binary Dependencies
+glassfish-5.0.zip
