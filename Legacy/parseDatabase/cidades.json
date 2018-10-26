@@ -1,0 +1,191 @@
+[
+    {
+      "estado": "GO",
+      "nome": "Adelandia",
+      "codigo": 4,
+      "codigomunicipioibge": 5420,
+      "codigoibge": 5200159
+    },
+    {
+      "estado": "GO",
+      "nome": "Agua Fria de Goias",
+      "codigo": 5,
+      "codigomunicipioibge": 5463,
+      "codigoibge": 5200175
+    },
+    {
+      "estado": "GO",
+      "nome": "Agua Limpa",
+      "codigo": 6,
+      "codigomunicipioibge": 5513,
+      "codigoibge": 5200209
+    },
+    {
+      "estado": "GO",
+      "nome": "Vianopolis",
+      "codigo": 40,
+      "codigomunicipioibge": 5543,
+      "codigoibge": 5222005
+    },
+    {
+      "estado": "GO",
+      "nome": "Bonfinopolis",
+      "codigo": 41,
+      "codigomunicipioibge": 5437,
+      "codigoibge": 5203559
+    },
+    {
+      "estado": "GO",
+      "nome": "Pires do Rio",
+      "codigo": 42,
+      "codigomunicipioibge": 5538,
+      "codigoibge": 5217401
+    },
+    {
+      "estado": "GO",
+      "nome": "Silvania",
+      "codigo": 43,
+      "codigomunicipioibge": 5541,
+      "codigoibge": 5220603
+    },
+    {
+      "estado": "GO",
+      "nome": "Luziania",
+      "codigo": 44,
+      "codigomunicipioibge": 5472,
+      "codigoibge": 5212501
+    },
+    {
+      "estado": "GO",
+      "nome": "Joviania",
+      "codigo": 45,
+      "codigomunicipioibge": 5523,
+      "codigoibge": 5212105
+    },
+    {
+      "estado": "BA",
+      "nome": "Angical",
+      "codigo": 46,
+      "codigomunicipioibge": 1833,
+      "codigoibge": 2901403
+    },
+    {
+      "estado": "GO",
+      "nome": "Orizona",
+      "codigo": 47,
+      "codigomunicipioibge": 5536,
+      "codigoibge": 5215306
+    },
+    {
+      "estado": "GO",
+      "nome": "Ipameri",
+      "codigo": 48,
+      "codigomunicipioibge": 5551,
+      "codigoibge": 5210109
+    },
+    {
+      "estado": "GO",
+      "nome": "Caldas Novas",
+      "codigo": 49,
+      "codigomunicipioibge": 5518,
+      "codigoibge": 5204508
+    },
+    {
+      "estado": "CE",
+      "nome": "Nova Russas",
+      "codigo": 50,
+      "codigomunicipioibge": 989,
+      "codigoibge": 2309300
+    },
+    {
+      "estado": "GO",
+      "nome": "Anapolis",
+      "codigo": 51,
+      "codigomunicipioibge": 5390,
+      "codigoibge": 5201108
+    },
+    {
+      "estado": "GO",
+      "nome": "Pontalina",
+      "codigo": 52,
+      "codigomunicipioibge": 5529,
+      "codigoibge": 5217708
+    },
+    {
+      "estado": "BA",
+      "nome": "Cocos",
+      "codigo": 53,
+      "codigomunicipioibge": 1842,
+      "codigoibge": 2908101
+    },
+    {
+      "estado": "GO",
+      "nome": "Piracanjuba",
+      "codigo": 54,
+      "codigomunicipioibge": 5528,
+      "codigoibge": 5217104
+    },
+    {
+      "estado": "GO",
+      "nome": "Inhumas",
+      "codigo": 55,
+      "codigomunicipioibge": 5397,
+      "codigoibge": 5210000
+    },
+    {
+      "estado": "GO",
+      "nome": "Sao Luis de Montes Belos",
+      "codigo": 56,
+      "codigomunicipioibge": 5431,
+      "codigoibge": 5220108
+    },
+    {
+      "estado": "GO",
+      "nome": "Goiania",
+      "codigo": 57,
+      "codigomunicipioibge": 5440,
+      "codigoibge": 5208707
+    },
+    {
+      "estado": "MG",
+      "nome": "Dores do Indaia",
+      "codigo": 58,
+      "codigomunicipioibge": 2511,
+      "codigoibge": 3123205
+    },
+    {
+      "estado": "MG",
+      "nome": "Quartel Geral",
+      "codigo": 59,
+      "codigomunicipioibge": 2519,
+      "codigoibge": 3153707
+    },
+    {
+      "estado": "GO",
+      "nome": "Santa Helena de Goias",
+      "codigo": 60,
+      "codigomunicipioibge": 5496,
+      "codigoibge": 5219308
+    },
+    {
+      "estado": "DF",
+      "nome": "Brasilia",
+      "codigo": 62,
+      "codigomunicipioibge": 5564,
+      "codigoibge": 5300108
+    },
+    {
+      "estado": "GO",
+      "nome": "Ouro Verde de Goias",
+      "codigo": 63,
+      "codigomunicipioibge": 5405,
+      "codigoibge": 5215405
+    },
+    {
+      "estado": "MA",
+      "nome": "Imperatriz",
+      "codigo": 64,
+      "codigomunicipioibge": 552,
+      "codigoibge": 2105302
+    }
+  ]

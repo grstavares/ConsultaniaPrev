@@ -1,0 +1,44 @@
+[
+  {
+    "id": "a099aaa7-a7ec-46f2-8230-44ff3d814d1a",
+    "cnpj": "06.354.418/0001-83",
+    "nome": "Inst. Prev. Serv. Públ. Mun. Orizona",
+    "alias": "Orizona Prev",
+    "cnae": {
+      "code": "8430-2/00",
+      "description": "Seguridade Social Obrigatória"
+    },
+    "natureza": {
+      "code": "112.0",
+      "description": "Autarquia Municipal"
+    },
+    "enderecos": [
+      {
+        "cep": "75280-000",
+        "cidade": {
+          "codigoIbge": 5215306,
+          "uf": "GO",
+          "nome": "Orizona"
+        },
+        "bairro": "Centro",
+        "complemento": "Casa 01",
+        "numero": "22",
+        "logradouro": "Rua Joviâno Vaz da Costa"
+      }
+    ],
+    "contatos": [
+      {
+        "tipo": "email",
+        "contato": "vilmapjoliveira@gmail.com.br"
+      },
+      {
+        "tipo": "telefone",
+        "contato": "(64)3474-1198"
+      },
+      {
+        "tipo": "fax",
+        "contato": "(64)3474-1198"
+      }
+    ]
+  }
+]
