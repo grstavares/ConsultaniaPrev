@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters: 
+  AppName: 
+    Type: String
+    Default: AppName
+    Description: The Name of the App to be Created
+  
+  Stage: 
+    Type: String
+    Default: Dev
+    Description: The Stage of the Stack being Created
+
+  TemplatesBucket: 
+    Type: String
+    Description: Bucket Name for the inner Stack Templates
+
+Resources:
+
+  GlobalResources:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        Fn::Join: 
+          - ''
+          - - 'https://s3.amazonaws.com/'
+            - Ref: TemplatesBucket
+            - '/globalresources.yml'
+
+      Parameters:
+        AppName:
+          Ref: AppName
+        Stage:
+          Ref: Stage
+        TemplatesBucket:
+          Ref: TemplatesBucket
+      TimeoutInMinutes: 60
+
+Outputs:
+  UserPoolId:
+    Value:
+      Fn::GetAtt:
+        - GlobalResources
+        - Outputs.UserPoolId
+  IdentityPoolId:
+    Value:
+      Fn::GetAtt:
+        - GlobalResources
+        - Outputs.IdentityPoolId

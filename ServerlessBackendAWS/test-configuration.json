@@ -1,0 +1,20 @@
+{
+    "Parameters" : {
+      "AppName" : "BetaApp",
+      "Stage":"SmockTest"
+    },
+    "Tags" : {
+      "Customer" : "ConsultaniaPrev",
+      "Product" : "App"
+    },
+    "StackPolicy" : {
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "NotAction" : "Update:Delete",
+          "Principal": "*",
+          "Resource" : "*"
+        }
+      ]
+    }
+  }
