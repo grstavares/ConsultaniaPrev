@@ -1,23 +1,18 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
-Parameters: 
+Parameters:
   AppName: 
     Type: String
     Default: AppName
     Description: The Name of the App to be Created
   
-  Stage: 
-    Type: String
-    Default: Dev
-    Description: The Stage of the Stack being Created
-
   TemplatesBucket: 
     Type: String
     Description: Bucket Name for the inner Stack Templates
 
 Resources:
 
-  GlobalResources:
+  AuthenticationPool:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL:
@@ -25,25 +20,38 @@ Resources:
           - ''
           - - 'https://s3.amazonaws.com/'
             - Ref: TemplatesBucket
-            - '/globalresources.yml'
+            - "/authentication.yml"
 
       Parameters:
         AppName:
           Ref: AppName
-        Stage:
-          Ref: Stage
         TemplatesBucket:
           Ref: TemplatesBucket
+      TimeoutInMinutes: 60
+
+  EmpresaService:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        Fn::Join: 
+          - ''
+          - - 'https://s3.amazonaws.com/'
+            - Ref: TemplatesBucket
+            - "/empresa-service.json"
+
+      Parameters:
+        AppName:
+          Ref: AppName
       TimeoutInMinutes: 60
 
 Outputs:
   UserPoolId:
     Value:
       Fn::GetAtt:
-        - GlobalResources
+        - AuthenticationPool
         - Outputs.UserPoolId
   IdentityPoolId:
     Value:
       Fn::GetAtt:
-        - GlobalResources
+        - AuthenticationPool
         - Outputs.IdentityPoolId

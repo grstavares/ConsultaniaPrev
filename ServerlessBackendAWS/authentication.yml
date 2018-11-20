@@ -6,11 +6,6 @@ Parameters:
     Default: AppName
     Description: The Name of the App to be Created
 
-  Stage: 
-    Type: String
-    Default: Dev
-    Description: The Stage of the Stack being Created
-
 
 Resources:
 
@@ -21,7 +16,6 @@ Resources:
         Fn::Join: 
           - ''
           - - Ref: AppName
-            - Ref: Stage
             - "UserPoolSNSRole"
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -48,7 +42,6 @@ Resources:
         Fn::Join: 
           - '-'
           - - Ref: AppName
-            - Ref: Stage
             - "UserPool"
       SmsConfiguration:
         ExternalId:
@@ -81,7 +74,6 @@ Resources:
         Fn::Join: 
           - '-'
           - - Ref: AppName
-            - Ref: Stage
             - "Client"
       GenerateSecret: false
       UserPoolId:
@@ -94,7 +86,6 @@ Resources:
         Fn::Join: 
           - ''
           - - Ref: AppName
-            - Ref: Stage
             - "IdentityPool"
       AllowUnauthenticatedIdentities: true
       CognitoIdentityProviders:
@@ -112,7 +103,6 @@ Resources:
         Fn::Join: 
           - ''
           - - Ref: AppName
-            - Ref: Stage
             - "UnAuthorizedRole"
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -140,7 +130,6 @@ Resources:
         Fn::Join: 
           - ''
           - - Ref: AppName
-            - Ref: Stage
             - "AuthorizedRole"
       AssumeRolePolicyDocument:
         Version: '2012-10-17'

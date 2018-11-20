@@ -1,0 +1,37 @@
+version: 0.1
+
+environment_variables:
+  plaintext:
+    TEMPLATE_BUCKET:
+      grstavares-code
+    CHILD_TEMPLATES: |
+      empresa-service.json
+      authentication.yml
+    TEMPLATE_FILES: |
+      empresa-service.json
+      authentication.yml
+      masterstack.yml
+    CONFIG_FILES: |
+      config-test.json
+      config-test.json
+
+phases:
+  install:
+    commands:
+      npm install jsonlint -g
+  pre_build:
+    commands:
+      - echo "Packaging CFN templates"
+      - |
+        for cfn_template in $TEMPLATE_FILES; do
+          echo "Packaging CloudFormation template file $cfn_template"
+          aws cloudformation package --template-file file://$cfn_template --s3-bucket $TEMPLATE_BUCKET --output-template-file ./packaged/$cfn_template
+        done
+  build:
+    commands:
+      - echo "Builded"
+
+artifacts:
+  files:
+    - masterstack.yml
+    - config-*.json

@@ -1,0 +1,15 @@
+{
+    "Parameters" : {
+      "TemplatesBucket":"TEMPLATE_PATH_PLACEHOLDER"
+    },
+    "StackPolicy" : {
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "NotAction" : "Update:Delete",
+          "Principal": "*",
+          "Resource" : "*"
+        }
+      ]
+    }
+  }

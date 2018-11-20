@@ -1,11 +1,6 @@
 {
     "Parameters" : {
-      "AppName" : "BetaApp",
-      "Stage":"SmockTest"
-    },
-    "Tags" : {
-      "Customer" : "ConsultaniaPrev",
-      "Product" : "App"
+      "TemplatesBucket":"TEMPLATE_PATH_PLACEHOLDER"
     },
     "StackPolicy" : {
       "Statement" : [
