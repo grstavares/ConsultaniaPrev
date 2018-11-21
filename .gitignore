@@ -72,6 +72,8 @@ fastlane/test_output
 #Secrets
 *.pem
 .DS_Store
+*secrets*.*
+*.*secrets*
 
 #Binary Dependencies
 glassfish-5.0.zip
