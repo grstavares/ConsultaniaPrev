@@ -1,0 +1,13 @@
+{
+    "id": "asdcvr1234567",
+    "name":"Instituto Previdenciário",
+    "segurados": [
+        {"id": "12345", "name": "Gustavo Tavares", "birthDate":"15-11-1977"},
+        {"id": "12346", "name": "Simone Tavares", "birthDate":"15-01-1978"},
+        {"id": "12347", "name": "João Pedro Melo Tavares", "birthDate":"04-05-2014"}
+    ],
+    "acl": [
+        {"order":"100", "principal":"user/myId", "resource": ["*"], "action": ["*"], "effect":"ALLOW" },
+        {"order":"999", "principal":"*", "resource": ["*"], "action": ["*"], "effect":"DENY" }
+    ]
+}
