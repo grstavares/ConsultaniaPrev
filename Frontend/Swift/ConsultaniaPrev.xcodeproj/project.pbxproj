@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A12BD28C21B2E9F30073153F /* Theming.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12BD28621B2E9F30073153F /* Theming.swift */; };
+		A12BD28D21B2E9F30073153F /* AppThemeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12BD28721B2E9F30073153F /* AppThemeProvider.swift */; };
+		A12BD28E21B2E9F30073153F /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12BD28821B2E9F30073153F /* AppTheme.swift */; };
+		A12BD28F21B2E9F30073153F /* SubscribableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12BD28A21B2E9F30073153F /* SubscribableValue.swift */; };
+		A12BD29021B2E9F30073153F /* Weak.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12BD28B21B2E9F30073153F /* Weak.swift */; };
+		A12BD29821B2EA7B0073153F /* UIViewMakeShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12BD29621B2EA7B0073153F /* UIViewMakeShadow.swift */; };
+		A12BD29921B2EA7B0073153F /* UIViewMakeShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12BD29621B2EA7B0073153F /* UIViewMakeShadow.swift */; };
+		A12BD29A21B2EA7B0073153F /* CounterLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12BD29721B2EA7B0073153F /* CounterLabel.swift */; };
+		A12BD29B21B2EA7B0073153F /* CounterLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12BD29721B2EA7B0073153F /* CounterLabel.swift */; };
 		A13895FD20A22D8E0042ED36 /* NavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13895FB20A22D8E0042ED36 /* NavigationVC.swift */; };
 		A13F5DBF20A37A9D006077F1 /* ResultadoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13F5DBD20A37A9D006077F1 /* ResultadoCell.swift */; };
 		A13F5DC020A37A9D006077F1 /* ResultadoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A13F5DBE20A37A9D006077F1 /* ResultadoCell.xib */; };
@@ -16,18 +25,14 @@
 		A1550B7D20AB7A2200A351A5 /* JuntaMedicaVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FE0AD220A4B8E00030D7A7 /* JuntaMedicaVC.swift */; };
 		A1550B7E20AB7A2200A351A5 /* PericiaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FE0ADA20A4C0110030D7A7 /* PericiaCell.swift */; };
 		A1550B7F20AB7A2200A351A5 /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15284EA20A48BA9000ED045 /* ProfileVC.swift */; };
-		A1550B8020AB7A2200A351A5 /* AppThemeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009720A2217D00FB3B1D /* AppThemeProvider.swift */; };
 		A1550B8120AB7A2200A351A5 /* StartVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3008C20A21C8200FB3B1D /* StartVC.swift */; };
-		A1550B8220AB7A2200A351A5 /* Theming.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009620A2217D00FB3B1D /* Theming.swift */; };
 		A1550B8320AB7A2200A351A5 /* AppNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1550B7920AB749C00A351A5 /* AppNotifications.swift */; };
 		A1550B8420AB7A2200A351A5 /* Beneficiario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3C84020A283C200DC8EF7 /* Beneficiario.swift */; };
-		A1550B8520AB7A2200A351A5 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009820A2217D00FB3B1D /* AppTheme.swift */; };
 		A1550B8620AB7A2200A351A5 /* CounterLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FE0AC820A4ABED0030D7A7 /* CounterLabel.swift */; };
 		A1550B8720AB7A2200A351A5 /* AgendamentoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FE0ADE20A4C5750030D7A7 /* AgendamentoVC.swift */; };
 		A1550B8820AB7A2200A351A5 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3008920A21BE500FB3B1D /* AppCoordinator.swift */; };
 		A1550B8920AB7A2200A351A5 /* PericiaVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FE0AD020A4B8C50030D7A7 /* PericiaVC.swift */; };
 		A1550B8A20AB7A2200A351A5 /* AppDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3C84420A286C400DC8EF7 /* AppDataProvider.swift */; };
-		A1550B8B20AB7A2200A351A5 /* Weak.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009B20A2217D00FB3B1D /* Weak.swift */; };
 		A1550B8C20AB7A2200A351A5 /* AppMockDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3C84620A2871F00DC8EF7 /* AppMockDataProvider.swift */; };
 		A1550B8D20AB7A2200A351A5 /* NavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13895FB20A22D8E0042ED36 /* NavigationVC.swift */; };
 		A1550B8E20AB7A2200A351A5 /* AppOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009220A21E1600FB3B1D /* AppOptions.swift */; };
@@ -41,7 +46,6 @@
 		A1550B9620AB7A2200A351A5 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FE0AD620A4BDBA0030D7A7 /* MockData.swift */; };
 		A1550B9720AB7A2200A351A5 /* Resultado.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3C84220A2841400DC8EF7 /* Resultado.swift */; };
 		A1550B9820AB7A2200A351A5 /* UIViewMakeShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E4E93A20A2527800D04C82 /* UIViewMakeShadow.swift */; };
-		A1550B9920AB7A2200A351A5 /* SubscribableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009A20A2217D00FB3B1D /* SubscribableValue.swift */; };
 		A1550B9A20AB7A2200A351A5 /* ResultadoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13F5DBD20A37A9D006077F1 /* ResultadoCell.swift */; };
 		A1550B9D20AB7A2200A351A5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1E4E93420A23D1D00D04C82 /* LaunchScreen.storyboard */; };
 		A1550B9E20AB7A2200A351A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1E3005C20A215BD00FB3B1D /* Assets.xcassets */; };
@@ -60,11 +64,6 @@
 		A1E3008E20A21C8200FB3B1D /* StartVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3008C20A21C8200FB3B1D /* StartVC.swift */; };
 		A1E3009120A21D3800FB3B1D /* UIViewControllerLoadFromNib.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009020A21D3800FB3B1D /* UIViewControllerLoadFromNib.swift */; };
 		A1E3009320A21E1600FB3B1D /* AppOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009220A21E1600FB3B1D /* AppOptions.swift */; };
-		A1E3009C20A2217E00FB3B1D /* Theming.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009620A2217D00FB3B1D /* Theming.swift */; };
-		A1E3009D20A2217E00FB3B1D /* AppThemeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009720A2217D00FB3B1D /* AppThemeProvider.swift */; };
-		A1E3009E20A2217E00FB3B1D /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009820A2217D00FB3B1D /* AppTheme.swift */; };
-		A1E3009F20A2217E00FB3B1D /* SubscribableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009A20A2217D00FB3B1D /* SubscribableValue.swift */; };
-		A1E300A020A2217E00FB3B1D /* Weak.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3009B20A2217D00FB3B1D /* Weak.swift */; };
 		A1E3C83C20A2561400DC8EF7 /* Resultados.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1E3C83B20A2561400DC8EF7 /* Resultados.storyboard */; };
 		A1E3C83E20A25FC200DC8EF7 /* ResultadosVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3C83D20A25FC200DC8EF7 /* ResultadosVC.swift */; };
 		A1E3C84120A283C200DC8EF7 /* Beneficiario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3C84020A283C200DC8EF7 /* Beneficiario.swift */; };
@@ -74,11 +73,9 @@
 		A1E4E93320A23B7A00D04C82 /* Start.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1E4E93220A23B7A00D04C82 /* Start.storyboard */; };
 		A1E4E93520A23D1D00D04C82 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1E4E93420A23D1D00D04C82 /* LaunchScreen.storyboard */; };
 		A1E4E93920A2427B00D04C82 /* AppFunctionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1E4E93720A2427B00D04C82 /* AppFunctionCell.xib */; };
-		A1E4E93B20A2527800D04C82 /* UIViewMakeShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E4E93A20A2527800D04C82 /* UIViewMakeShadow.swift */; };
 		A1FE0AC320A4A2700030D7A7 /* Aposentadoria.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1FE0AC220A4A2700030D7A7 /* Aposentadoria.storyboard */; };
 		A1FE0AC520A4A28B0030D7A7 /* ApPorIdadeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FE0AC420A4A28B0030D7A7 /* ApPorIdadeVC.swift */; };
 		A1FE0AC720A4A29F0030D7A7 /* ApPorContribuicaoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FE0AC620A4A29F0030D7A7 /* ApPorContribuicaoVC.swift */; };
-		A1FE0AC920A4ABED0030D7A7 /* CounterLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FE0AC820A4ABED0030D7A7 /* CounterLabel.swift */; };
 		A1FE0ACF20A4B77F0030D7A7 /* Pericia.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1FE0ACE20A4B77F0030D7A7 /* Pericia.storyboard */; };
 		A1FE0AD120A4B8C50030D7A7 /* PericiaVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FE0AD020A4B8C50030D7A7 /* PericiaVC.swift */; };
 		A1FE0AD320A4B8E00030D7A7 /* JuntaMedicaVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FE0AD220A4B8E00030D7A7 /* JuntaMedicaVC.swift */; };
@@ -107,6 +104,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A12BD28621B2E9F30073153F /* Theming.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theming.swift; sourceTree = "<group>"; };
+		A12BD28721B2E9F30073153F /* AppThemeProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppThemeProvider.swift; sourceTree = "<group>"; };
+		A12BD28821B2E9F30073153F /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		A12BD28A21B2E9F30073153F /* SubscribableValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscribableValue.swift; sourceTree = "<group>"; };
+		A12BD28B21B2E9F30073153F /* Weak.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Weak.swift; sourceTree = "<group>"; };
+		A12BD29621B2EA7B0073153F /* UIViewMakeShadow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIViewMakeShadow.swift; path = ../../../../../../Commons/Swift/UIKitExtensions/UIViewMakeShadow.swift; sourceTree = "<group>"; };
+		A12BD29721B2EA7B0073153F /* CounterLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CounterLabel.swift; path = ../../../../../../Commons/Swift/UIKitExtensions/CounterLabel.swift; sourceTree = "<group>"; };
 		A13895FB20A22D8E0042ED36 /* NavigationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationVC.swift; sourceTree = "<group>"; };
 		A13F5DBD20A37A9D006077F1 /* ResultadoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultadoCell.swift; sourceTree = "<group>"; };
 		A13F5DBE20A37A9D006077F1 /* ResultadoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResultadoCell.xib; sourceTree = "<group>"; };
@@ -114,7 +118,6 @@
 		A15284EA20A48BA9000ED045 /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
 		A1550B7920AB749C00A351A5 /* AppNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNotifications.swift; sourceTree = "<group>"; };
 		A1550BA920AB7A2200A351A5 /* SenaPrev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SenaPrev.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1550BAA20AB7A2700A351A5 /* ConsultaniaPrev copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ConsultaniaPrev copy-Info.plist"; path = "/Users/gustavares/Development/ConsultaniaPrev/Frontend/Swift/ConsultaniaPrev copy-Info.plist"; sourceTree = "<absolute>"; };
 		A1E3005220A215BB00FB3B1D /* ConsultaniaPrev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConsultaniaPrev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1E3005520A215BB00FB3B1D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A1E3005C20A215BD00FB3B1D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -129,11 +132,6 @@
 		A1E3008C20A21C8200FB3B1D /* StartVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartVC.swift; sourceTree = "<group>"; };
 		A1E3009020A21D3800FB3B1D /* UIViewControllerLoadFromNib.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerLoadFromNib.swift; sourceTree = "<group>"; };
 		A1E3009220A21E1600FB3B1D /* AppOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOptions.swift; sourceTree = "<group>"; };
-		A1E3009620A2217D00FB3B1D /* Theming.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theming.swift; sourceTree = "<group>"; };
-		A1E3009720A2217D00FB3B1D /* AppThemeProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppThemeProvider.swift; sourceTree = "<group>"; };
-		A1E3009820A2217D00FB3B1D /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
-		A1E3009A20A2217D00FB3B1D /* SubscribableValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscribableValue.swift; sourceTree = "<group>"; };
-		A1E3009B20A2217D00FB3B1D /* Weak.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Weak.swift; sourceTree = "<group>"; };
 		A1E3C83B20A2561400DC8EF7 /* Resultados.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Resultados.storyboard; sourceTree = "<group>"; };
 		A1E3C83D20A25FC200DC8EF7 /* ResultadosVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultadosVC.swift; sourceTree = "<group>"; };
 		A1E3C84020A283C200DC8EF7 /* Beneficiario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beneficiario.swift; sourceTree = "<group>"; };
@@ -190,15 +188,52 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A12BD28421B2E9F30073153F /* AppTheme */ = {
+			isa = PBXGroup;
+			children = (
+				A12BD28521B2E9F30073153F /* Theming */,
+				A12BD28921B2E9F30073153F /* Helpers */,
+			);
+			name = AppTheme;
+			path = ../../../../Commons/Swift/AppTheme;
+			sourceTree = "<group>";
+		};
+		A12BD28521B2E9F30073153F /* Theming */ = {
+			isa = PBXGroup;
+			children = (
+				A12BD28621B2E9F30073153F /* Theming.swift */,
+				A12BD28721B2E9F30073153F /* AppThemeProvider.swift */,
+				A12BD28821B2E9F30073153F /* AppTheme.swift */,
+			);
+			path = Theming;
+			sourceTree = "<group>";
+		};
+		A12BD28921B2E9F30073153F /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				A12BD28A21B2E9F30073153F /* SubscribableValue.swift */,
+				A12BD28B21B2E9F30073153F /* Weak.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		A12BD29521B2EA630073153F /* CustomControls */ = {
+			isa = PBXGroup;
+			children = (
+				A12BD29721B2EA7B0073153F /* CounterLabel.swift */,
+				A12BD29621B2EA7B0073153F /* UIViewMakeShadow.swift */,
+			);
+			path = CustomControls;
+			sourceTree = "<group>";
+		};
 		A1E3004920A215BB00FB3B1D = {
 			isa = PBXGroup;
 			children = (
-				A1E3009420A2217D00FB3B1D /* AppTheme */,
+				A12BD28421B2E9F30073153F /* AppTheme */,
 				A1E3005420A215BB00FB3B1D /* ConsultaniaPrev */,
 				A1E3006920A215BD00FB3B1D /* ConsultaniaPrevTests */,
 				A1E3007420A215BD00FB3B1D /* ConsultaniaPrevUITests */,
 				A1E3005320A215BB00FB3B1D /* Products */,
-				A1550BAA20AB7A2700A351A5 /* ConsultaniaPrev copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -216,8 +251,8 @@
 		A1E3005420A215BB00FB3B1D /* ConsultaniaPrev */ = {
 			isa = PBXGroup;
 			children = (
+				A12BD29521B2EA630073153F /* CustomControls */,
 				A1E3008620A21A1600FB3B1D /* Extensions */,
-				A1FE0ACA20A4AF8E0030D7A7 /* CustomControls */,
 				A1E3008520A219E300FB3B1D /* Resources */,
 				A1E3008420A219D900FB3B1D /* Application */,
 				A1E3C83F20A2839500DC8EF7 /* Model */,
@@ -293,35 +328,6 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		A1E3009420A2217D00FB3B1D /* AppTheme */ = {
-			isa = PBXGroup;
-			children = (
-				A1E3009520A2217D00FB3B1D /* Theming */,
-				A1E3009920A2217D00FB3B1D /* Helpers */,
-			);
-			name = AppTheme;
-			path = ../../../Swift/Commom/AppTheme;
-			sourceTree = "<group>";
-		};
-		A1E3009520A2217D00FB3B1D /* Theming */ = {
-			isa = PBXGroup;
-			children = (
-				A1E3009620A2217D00FB3B1D /* Theming.swift */,
-				A1E3009720A2217D00FB3B1D /* AppThemeProvider.swift */,
-				A1E3009820A2217D00FB3B1D /* AppTheme.swift */,
-			);
-			path = Theming;
-			sourceTree = "<group>";
-		};
-		A1E3009920A2217D00FB3B1D /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				A1E3009A20A2217D00FB3B1D /* SubscribableValue.swift */,
-				A1E3009B20A2217D00FB3B1D /* Weak.swift */,
-			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
 		A1E3C83A20A255FA00DC8EF7 /* Resultados */ = {
 			isa = PBXGroup;
 			children = (
@@ -352,13 +358,6 @@
 				A1FE0AC620A4A29F0030D7A7 /* ApPorContribuicaoVC.swift */,
 			);
 			path = Aposentadoria;
-			sourceTree = "<group>";
-		};
-		A1FE0ACA20A4AF8E0030D7A7 /* CustomControls */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = CustomControls;
 			sourceTree = "<group>";
 		};
 		A1FE0ACD20A4B7140030D7A7 /* Pericia */ = {
@@ -548,18 +547,15 @@
 				A1550B7D20AB7A2200A351A5 /* JuntaMedicaVC.swift in Sources */,
 				A1550B7E20AB7A2200A351A5 /* PericiaCell.swift in Sources */,
 				A1550B7F20AB7A2200A351A5 /* ProfileVC.swift in Sources */,
-				A1550B8020AB7A2200A351A5 /* AppThemeProvider.swift in Sources */,
 				A1550B8120AB7A2200A351A5 /* StartVC.swift in Sources */,
-				A1550B8220AB7A2200A351A5 /* Theming.swift in Sources */,
 				A1550B8320AB7A2200A351A5 /* AppNotifications.swift in Sources */,
 				A1550B8420AB7A2200A351A5 /* Beneficiario.swift in Sources */,
-				A1550B8520AB7A2200A351A5 /* AppTheme.swift in Sources */,
 				A1550B8620AB7A2200A351A5 /* CounterLabel.swift in Sources */,
 				A1550B8720AB7A2200A351A5 /* AgendamentoVC.swift in Sources */,
 				A1550B8820AB7A2200A351A5 /* AppCoordinator.swift in Sources */,
 				A1550B8920AB7A2200A351A5 /* PericiaVC.swift in Sources */,
+				A12BD29921B2EA7B0073153F /* UIViewMakeShadow.swift in Sources */,
 				A1550B8A20AB7A2200A351A5 /* AppDataProvider.swift in Sources */,
-				A1550B8B20AB7A2200A351A5 /* Weak.swift in Sources */,
 				A1550B8C20AB7A2200A351A5 /* AppMockDataProvider.swift in Sources */,
 				A1550B8D20AB7A2200A351A5 /* NavigationVC.swift in Sources */,
 				A1550B8E20AB7A2200A351A5 /* AppOptions.swift in Sources */,
@@ -568,12 +564,12 @@
 				A1550B9120AB7A2200A351A5 /* ApPorContribuicaoVC.swift in Sources */,
 				A1550B9220AB7A2200A351A5 /* ResultadosVC.swift in Sources */,
 				A1550B9320AB7A2200A351A5 /* ComissaoVC.swift in Sources */,
+				A12BD29B21B2EA7B0073153F /* CounterLabel.swift in Sources */,
 				A1550B9420AB7A2200A351A5 /* UIViewControllerLoadFromNib.swift in Sources */,
 				A1550B9520AB7A2200A351A5 /* ApPorIdadeVC.swift in Sources */,
 				A1550B9620AB7A2200A351A5 /* MockData.swift in Sources */,
 				A1550B9720AB7A2200A351A5 /* Resultado.swift in Sources */,
 				A1550B9820AB7A2200A351A5 /* UIViewMakeShadow.swift in Sources */,
-				A1550B9920AB7A2200A351A5 /* SubscribableValue.swift in Sources */,
 				A1550B9A20AB7A2200A351A5 /* ResultadoCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -582,36 +578,36 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A12BD28C21B2E9F30073153F /* Theming.swift in Sources */,
 				A1FE0AD320A4B8E00030D7A7 /* JuntaMedicaVC.swift in Sources */,
 				A1FE0ADC20A4C0110030D7A7 /* PericiaCell.swift in Sources */,
 				A15284EB20A48BA9000ED045 /* ProfileVC.swift in Sources */,
-				A1E3009D20A2217E00FB3B1D /* AppThemeProvider.swift in Sources */,
 				A1E3008E20A21C8200FB3B1D /* StartVC.swift in Sources */,
-				A1E3009C20A2217E00FB3B1D /* Theming.swift in Sources */,
 				A1550B7A20AB749C00A351A5 /* AppNotifications.swift in Sources */,
+				A12BD28D21B2E9F30073153F /* AppThemeProvider.swift in Sources */,
 				A1E3C84120A283C200DC8EF7 /* Beneficiario.swift in Sources */,
-				A1E3009E20A2217E00FB3B1D /* AppTheme.swift in Sources */,
-				A1FE0AC920A4ABED0030D7A7 /* CounterLabel.swift in Sources */,
 				A1FE0ADF20A4C5750030D7A7 /* AgendamentoVC.swift in Sources */,
 				A1E3008A20A21BE500FB3B1D /* AppCoordinator.swift in Sources */,
 				A1FE0AD120A4B8C50030D7A7 /* PericiaVC.swift in Sources */,
 				A1E3C84520A286C400DC8EF7 /* AppDataProvider.swift in Sources */,
-				A1E300A020A2217E00FB3B1D /* Weak.swift in Sources */,
+				A12BD29A21B2EA7B0073153F /* CounterLabel.swift in Sources */,
 				A1E3C84720A2871F00DC8EF7 /* AppMockDataProvider.swift in Sources */,
+				A12BD28F21B2E9F30073153F /* SubscribableValue.swift in Sources */,
 				A13895FD20A22D8E0042ED36 /* NavigationVC.swift in Sources */,
 				A1E3009320A21E1600FB3B1D /* AppOptions.swift in Sources */,
+				A12BD29021B2E9F30073153F /* Weak.swift in Sources */,
 				A1E3005620A215BB00FB3B1D /* AppDelegate.swift in Sources */,
 				A1FE0AD520A4BCD50030D7A7 /* PericiaMedica.swift in Sources */,
 				A1FE0AC720A4A29F0030D7A7 /* ApPorContribuicaoVC.swift in Sources */,
 				A1E3C83E20A25FC200DC8EF7 /* ResultadosVC.swift in Sources */,
 				A15284E920A48010000ED045 /* ComissaoVC.swift in Sources */,
+				A12BD28E21B2E9F30073153F /* AppTheme.swift in Sources */,
 				A1E3009120A21D3800FB3B1D /* UIViewControllerLoadFromNib.swift in Sources */,
 				A1FE0AC520A4A28B0030D7A7 /* ApPorIdadeVC.swift in Sources */,
 				A1FE0AD720A4BDBA0030D7A7 /* MockData.swift in Sources */,
 				A1E3C84320A2841400DC8EF7 /* Resultado.swift in Sources */,
-				A1E4E93B20A2527800D04C82 /* UIViewMakeShadow.swift in Sources */,
-				A1E3009F20A2217E00FB3B1D /* SubscribableValue.swift in Sources */,
 				A13F5DBF20A37A9D006077F1 /* ResultadoCell.swift in Sources */,
+				A12BD29821B2EA7B0073153F /* UIViewMakeShadow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
