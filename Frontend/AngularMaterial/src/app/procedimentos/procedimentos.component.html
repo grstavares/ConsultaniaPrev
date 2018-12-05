@@ -1,3 +1,47 @@
-<p>
-  procedimentos works!
-</p>
+<h1 class="mat-h1">Procedimentos</h1>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+  <ng-container matColumnDef="displayId">
+    <th mat-header-cell *matHeaderCellDef> No. </th>
+    <td mat-cell *matCellDef="let element"> {{ element.displayId }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="tipo">
+    <th mat-header-cell *matHeaderCellDef> Tipo </th>
+    <td mat-cell *matCellDef="let element"> {{ element.tipo.nome }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="interessado">
+    <th mat-header-cell *matHeaderCellDef> Interessado </th>
+    <td mat-cell *matCellDef="let element"> {{ element.interessadoNome }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="dataCriacao">
+    <th mat-header-cell *matHeaderCellDef> Data de Criação </th>
+    <td mat-cell *matCellDef="let element"> {{ element.dataCriacao }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="dataModificacao">
+    <th mat-header-cell *matHeaderCellDef> Última Atualização </th>
+    <td mat-cell *matCellDef="let element"> {{ maxAtualizacao(element) }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef> Status </th>
+    <td mat-cell *matCellDef="let element"> {{ element.status.nome }} </td>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef> id </th>
+    <td mat-cell *matCellDef="let element"> {{ element.id }} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+</table>

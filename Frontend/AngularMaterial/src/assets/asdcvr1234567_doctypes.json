@@ -1,0 +1,14 @@
+{
+    "documentos": [
+        {"codigo":"LEGISL_LOCAL", "nome":"Legislação Local"},
+        {"codigo":"ATO_ADMINISTRATIVO", "nome":"Ato Administrativo"},
+        {"codigo":"ATA_REUNIAO", "nome":"Ata de Reunião"}
+    ],
+    "procedimentos": [
+        {"codigo":"EMITIR_CERTIDAO", "nome":"Emitir Certidão"},
+        {"codigo":"AGENDAR_PERICIA", "nome":"Agendar Perícia"},
+        {"codigo":"AGENDAR_RECADASTRAMENTO", "nome":"Agendar Recadastramento"},
+        {"codigo":"AVERBAR_TEMPO", "nome":"Averbar Tempo de Aposentadoria"},
+        {"codigo":"AUTORIZAR_DESCONTO", "nome":"Autorizar Desconto em Folha"}
+    ]
+}

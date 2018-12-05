@@ -1,0 +1,5 @@
+[
+    {"id": "message234", "data": "02-12-2018", "origemId": "user657", "origemName": "Gustavo", "destinoId": "user13456", "destinoName": "Carlos Henrique", "titulo": "Planejamento", "conteudo": "Vamos conversar sobre o cronograma de pagamentos", "status": "RECEIVED", "anexos": [], "thread": null},
+    {"id": "message4574", "data": "02-12-2018", "origemId": "user13456", "origemName": "Carlos Henrique", "destinoId": "user657", "destinoName": "Gustavo", "titulo": "Planejamento", "conteudo": "Ok vou conversar com o Cleyton", "status": "NEW", "anexos": []},
+    {"id": "message554", "data": "02-12-2018", "origemId": "user66547", "origemName": "Cleyton", "destinoId": "user13456", "destinoName": "Carlos Henrique", "titulo": "Planejamento", "conteudo": "Ok , vamos pagar", "status": "NEW", "anexos": [], "thread": "message4574"}
+]

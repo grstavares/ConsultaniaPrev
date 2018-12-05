@@ -1,16 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { InstitutoService } from '../shared/instituto.service';
-import { SeguradoItemList } from '../model';
+import { InstitutoService, ItemListaPessoa } from '../shared';
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: SeguradoItemList[] = [];
+const ELEMENT_DATA: ItemListaPessoa[] = [];
 
 @Component({selector: 'app-segurados', templateUrl: './segurados.component.html', styleUrls: ['./segurados.component.scss'] })
 export class SeguradosComponent implements OnInit {
@@ -26,8 +18,8 @@ export class SeguradosComponent implements OnInit {
 
   }
 
-  getConfig(url) {
-    return this.http.get(url);
+  onItemClicked(row) {
+    console.log(row);
   }
 
 }

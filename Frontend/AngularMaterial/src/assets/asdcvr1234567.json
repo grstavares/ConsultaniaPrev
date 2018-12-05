@@ -7,14 +7,9 @@
         {"id": "12347", "name": "João Pedro Melo Tavares", "birthDate":"04-05-2014"}
     ],
     "funcionarios": [
-        {"id": "98765", "name": "Carlos Henrique Siqueira Gomes", "birthDate":"15-11-1977"},
+        {"id": "98765", "name": "Carlos Henrique", "birthDate":"15-11-1977"},
         {"id": "87659", "name": "Cleyton Bittencourt", "birthDate":"15-01-1978"},
         {"id": "76598", "name": "Luiz Altino", "birthDate":"04-05-2014"}
-    ],
-    "documentos": [
-        {"codigo":"LEGISL_LOCAL", "nome":"Legislação Local"},
-        {"codigo":"ATO_ADMINISTRATIVO", "nome":"Ato Administrativo"},
-        {"codigo":"ATA_REUNIAO", "nome":"Ata de Reunião"}
     ],
     "grupos": [
         {"id":"ggtreed", "nome": "Administradores", "membros": ["98765", "87659"]},
