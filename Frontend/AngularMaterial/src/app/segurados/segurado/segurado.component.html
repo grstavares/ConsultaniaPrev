@@ -1,0 +1,83 @@
+<h1 class="mat-h1">Segurados</h1>
+
+<div class="mat-elevation-z8">
+
+
+  <mat-tab-group>
+
+    <mat-tab label="Dados Cadastrais">
+
+      <form class="dados-cadastrais">
+
+        <mat-form-field class="telainteira">
+          <input matInput placeholder="Nome Completo">
+        </mat-form-field>
+
+        <mat-form-field class="emcolunas">
+            <input matInput [matDatepicker]="pickerNascimento" placeholder="Data de Nascimento">
+            <mat-datepicker-toggle matSuffix [for]="pickerNascimento"></mat-datepicker-toggle>
+            <mat-datepicker #pickerNascimento startView="year"></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="emcolunas">
+            <input matInput placeholder="Local de Nascimento">
+        </mat-form-field>
+  
+        <mat-form-field class="telainteira">
+            <input matInput placeholder="Nome do Pai">
+        </mat-form-field>
+  
+        <mat-form-field class="telainteira">
+            <input matInput placeholder="Nome da Mãe">
+        </mat-form-field>
+  
+        <div style="display: inline-block;">
+            <h2 class="mat-h2">Documentos</h2>
+            <button mat-mini-fab color="primary"> <mat-icon>add</mat-icon> </button>
+        </div>
+
+        <table mat-table [dataSource]="dataSourceDocumentos">
+          
+            <ng-container matColumnDef="position">
+              <th mat-header-cell *matHeaderCellDef> No. </th>
+              <td mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </td>
+            </ng-container>
+          
+            <ng-container matColumnDef="tipo">
+              <th mat-header-cell *matHeaderCellDef> Tipo </th>
+              <td mat-cell *matCellDef="let element"> {{element.tipo}} </td>
+            </ng-container>
+          
+            <ng-container matColumnDef="numero">
+              <th mat-header-cell *matHeaderCellDef> Número </th>
+              <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
+            </ng-container>
+          
+            <ng-container matColumnDef="validade">
+                <th mat-header-cell *matHeaderCellDef> Validade </th>
+                <td mat-cell *matCellDef="let element"> {{element.expiracao}} </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="acoes">
+              <th mat-header-cell *matHeaderCellDef> Ações </th>
+              <td mat-cell *matCellDef="let element; let i = index"> <mat-icon (click)="showDocumento(i)">pageview</mat-icon>&nbsp;<mat-icon  (click)="editDocumento(i)">edit</mat-icon> </td>
+            </ng-container>
+          
+            <tr mat-header-row *matHeaderRowDef="tableDocumentosColunas"></tr>
+            <tr mat-row *matRowDef="let row; columns: tableDocumentosColunas;"></tr>
+          </table>
+
+      </form>
+
+    </mat-tab>
+
+    <mat-tab label="Recolhimentos"> Content 2 </mat-tab>
+    <mat-tab label="Recebimentos"> Content 3 </mat-tab>
+    <mat-tab label="Ocorrências"> Content 3 </mat-tab>
+  </mat-tab-group>
+
+</div>
+<p>
+  segurado works!
+  {{ userId }}
+</p>

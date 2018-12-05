@@ -24,6 +24,12 @@
     </ng-container>
   
     <!-- Symbol Column -->
+    
+    <ng-container matColumnDef="link">
+      <th mat-header-cell *matHeaderCellDef> Ações </th>
+      <td mat-cell *matCellDef="let element" [routerLink]="['segurado', element.id]"> <mat-icon>account_circle</mat-icon>&nbsp;<mat-icon>announcement</mat-icon> </td>
+    </ng-container>
+
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef> id </th>
       <td mat-cell *matCellDef="let element"> {{element.id}} </td>

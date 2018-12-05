@@ -1,0 +1,20 @@
+{
+    "id": "12345",
+    "nome": "Gustavo Tavares",
+    "sexo": "M",
+    "nomePai": "José Roberto Tavares",
+    "nomeMae": "Luzenilda de Fátima Silva Tavares",
+    "dataNascimento": "15-11-1977",
+    "localNascimento": "Goiânia",
+    "dataAdesao": "01-06-2016",
+    "documentos": [
+        {"tipo":"PASSAPORTE", "numero":"12345", "emissao":"01-11-2018", "expiracao":"01-112028", "emissor":"DPF/BR"},
+        {"tipo":"CPF", "numero":"825.990.665-05", "emissao":"01-11-2018", "expiracao":"01-112028", "emissor":"MF/BR"},
+        {"tipo":"REG PROFISSIONAL", "numero":"5465", "emissao":"01-11-2018", "expiracao":"01-112028", "emissor":"CRA/GO"}
+    ],
+    "enderecos": [],
+    "contatos": [
+        {"tipo":"CELULAR", "contato":"+556198567634", "modo":"TELEFONE"},
+        {"tipo":"RESIDENCIAL", "contato":"+556198567634", "modo":"TELEFONE"}
+    ]
+}

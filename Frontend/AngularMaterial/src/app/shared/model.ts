@@ -1,6 +1,32 @@
 export interface TipoObjeto {
     codigo: string;
-    nome: string;
+    descricao: string;
+}
+
+export interface Endereco {
+    tipo?: string;
+    logradouro: string;
+    numero: string;
+    complemento: string;
+    localidade: string;
+    uf: string;
+    cep: string;
+}
+
+export interface Contato {
+    tipo?: string;
+    modo: 'EMAIL' | 'TELEFONE' | 'FAX' | 'RECADO';
+    contato: string;
+    notas?: string;
+}
+
+export interface RegistroPessoal {
+    tipo: string;
+    numero: string;
+    detalhes?: string;
+    emissao?: Date;
+    expiracao?: Date;
+    emissor?: string;
 }
 
 export interface PoliticaAcesso {
