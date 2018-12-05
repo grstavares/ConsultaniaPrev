@@ -78,4 +78,4 @@ fastlane/test_output
 #Binary Dependencies
 glassfish-5.0.zip
 .DS_Store
-.DS_Store
+Frontend/AngularMaterial/src/app/auth/config.ts
