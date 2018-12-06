@@ -83,6 +83,8 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
 
   }
 
+  addDocument() { console.log('adding'); }
+
   removeDocument(index: number) {
 
     const selected = this.segurado.documentos[index];
@@ -147,6 +149,8 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
 
   }
 
+  addContato() { console.log('adding'); }
+
   removeContato(index: number) {
 
     const selected = this.segurado.contatos[index];
@@ -208,6 +212,8 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
     return description;
 
   }
+
+  addEndereco() { console.log('adding'); }
 
   removeEndereco(index: number) {
 

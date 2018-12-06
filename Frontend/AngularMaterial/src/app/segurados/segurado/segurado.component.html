@@ -30,10 +30,11 @@
           <input matInput placeholder="Nome da Mãe" formControlName="nomeMae">
         </mat-form-field>
 
-        <div style="display: inline-block;">
-          <h2 class="mat-h2">Documentos</h2>
+        <div class="titulo-tabela">
+          <h2 class="mat-h2" >Documentos</h2>
+          <div class="loader">Loading...</div>
           <button mat-mini-fab color="primary">
-            <mat-icon>add</mat-icon>
+            <mat-icon (click)="addDocument()">add</mat-icon>
           </button>
         </div>
 
@@ -79,10 +80,10 @@
 
       <div class="dados-cadastrais">
 
-        <div style="display: inline-block;">
-          <h2 class="mat-h2">Contatos</h2>
+        <div class="titulo-tabela">
+          <h2 class="mat-h2" fxLayoutAlign="start start">Contatos</h2>
           <button mat-mini-fab color="primary">
-            <mat-icon>add</mat-icon>
+            <mat-icon fxLayoutAlign="end end" (click)="addContato()">add</mat-icon>
           </button>
         </div>
 
@@ -120,10 +121,10 @@
           <tr mat-row *matRowDef="let row; columns: tableContatosColunas;"></tr>
         </table>
 
-        <div style="display: inline-block;">
-          <h2 class="mat-h2">Endereços</h2>
+        <div class="titulo-tabela">
+          <h2 class="mat-h2" fxLayoutAlign="start start">Endereços</h2>
           <button mat-mini-fab color="primary">
-            <mat-icon>add</mat-icon>
+            <mat-icon fxLayoutAlign="end end" (click)="addEndereco()">add</mat-icon>
           </button>
         </div>
 
