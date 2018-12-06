@@ -1,0 +1,52 @@
+<h2 mat-dialog-title> Endereço </h2>
+
+<mat-dialog-content>
+
+  <form [formGroup]="form">
+
+    <div class="form-container">
+
+      <mat-form-field>
+        <mat-select placeholder="Select" placeholder="Tipo de Endereço" formControlName="tipo">
+          <mat-option *ngFor="let type of docTypes" value="{{ type.codigo }}">{{ type.descricao }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Nome do Logradouro" formControlName="logradouro">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Número" formControlName="numero">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Complemento" formControlName="complemento">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Nome da Localidade" formControlName="localidade">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="UF" formControlName="uf">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="CEP" formControlName="cep">
+      </mat-form-field>
+
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+
+  <div class="action-container">
+    <button class="mat-raised-button" (click)="close()">Fechar</button>
+    <button class="mat-raised-button mat-primary" [disabled]="!form.valid" (click)="save()" [disabled]="!isEditable">Salvar</button>
+  </div>
+
+</mat-dialog-actions>

@@ -8,11 +8,14 @@
     "localNascimento": "Goiânia",
     "dataAdesao": "01-06-2016",
     "documentos": [
-        {"tipo":"PASSAPORTE", "numero":"12345", "emissao":"01-11-2018", "expiracao":"01-112028", "emissor":"DPF/BR"},
-        {"tipo":"CPF", "numero":"825.990.665-05", "emissao":"01-11-2018", "expiracao":"01-112028", "emissor":"MF/BR"},
-        {"tipo":"REG PROFISSIONAL", "numero":"5465", "emissao":"01-11-2018", "expiracao":"01-112028", "emissor":"CRA/GO"}
+        {"tipo":"PASSAPORTE", "numero":"12345", "emissor":"DPF/BR"},
+        {"tipo":"REG_FISCAL", "numero":"825.990.665-05", "emissor":"MF/BR"},
+        {"tipo":"REG_PROFISSIONAL", "numero":"5465", "emissor":"CRA/GO"}
     ],
-    "enderecos": [],
+    "enderecos": [
+        {"tipo":"RESIDENCIAL", "logradouro":"Quadra 105", "numero":"9/10", "complemento":"APT 1003-B", "localidade":"Brasília", "uf":"DF", "cep":"71.915-250"},
+        {"tipo":"RESIDENCIAL", "logradouro":"Rua 7", "numero":"922", "complemento":"APT 802", "localidade":"Goiânia", "uf":"GO", "cep":"74.110-090"}
+    ],
     "contatos": [
         {"tipo":"CELULAR", "contato":"+556198567634", "modo":"TELEFONE"},
         {"tipo":"RESIDENCIAL", "contato":"+556198567634", "modo":"TELEFONE"}

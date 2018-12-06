@@ -1,25 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { InstitutoService, ItemListaPessoa } from '../../shared';
-
-const ELEMENT_DATA: ItemListaPessoa[] = [];
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({selector: 'app-segurados', templateUrl: './segurados.component.html', styleUrls: ['./segurados.component.scss'] })
 export class SeguradosComponent implements OnInit {
 
   displayedColumns: string[] = ['position', 'name', 'birthDate', 'link'];
-  dataSource = ELEMENT_DATA;
+  dataSource = new MatTableDataSource<ItemListaPessoa>();
 
-  constructor(private http: HttpClient, private institutoService: InstitutoService) { }
+  constructor(private institutoService: InstitutoService) { }
 
   ngOnInit() {
 
-    this.institutoService.instituto.subscribe(value => this.dataSource = value.segurados);
+    this.institutoService.instituto.subscribe(value => this.dataSource = new MatTableDataSource<ItemListaPessoa>(value.segurados));
 
-  }
-
-  onItemClicked(row) {
-    console.log(row);
   }
 
 }

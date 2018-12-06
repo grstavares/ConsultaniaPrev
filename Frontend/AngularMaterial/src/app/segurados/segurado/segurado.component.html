@@ -2,82 +2,266 @@
 
 <div class="mat-elevation-z8">
 
-
   <mat-tab-group>
 
     <mat-tab label="Dados Cadastrais">
 
-      <form class="dados-cadastrais">
+      <form class="dados-cadastrais" [formGroup]="form">
 
         <mat-form-field class="telainteira">
-          <input matInput placeholder="Nome Completo">
-        </mat-form-field>
-
-        <mat-form-field class="emcolunas">
-            <input matInput [matDatepicker]="pickerNascimento" placeholder="Data de Nascimento">
-            <mat-datepicker-toggle matSuffix [for]="pickerNascimento"></mat-datepicker-toggle>
-            <mat-datepicker #pickerNascimento startView="year"></mat-datepicker>
+          <input matInput placeholder="Nome Completo" formControlName="nome">
         </mat-form-field>
 
         <mat-form-field class="emcolunas">
-            <input matInput placeholder="Local de Nascimento">
+          <input matInput [matDatepicker]="pickerNascimento" placeholder="Data de Nascimento" formControlName="dataNascimento">
+          <mat-datepicker-toggle matSuffix [for]="pickerNascimento"></mat-datepicker-toggle>
+          <mat-datepicker #pickerNascimento startView="year"></mat-datepicker>
         </mat-form-field>
-  
+
+        <mat-form-field class="emcolunas">
+          <input matInput placeholder="Local de Nascimento" formControlName="localNascimento">
+        </mat-form-field>
+
         <mat-form-field class="telainteira">
-            <input matInput placeholder="Nome do Pai">
+          <input matInput placeholder="Nome do Pai" formControlName="nomePai">
         </mat-form-field>
-  
+
         <mat-form-field class="telainteira">
-            <input matInput placeholder="Nome da Mãe">
+          <input matInput placeholder="Nome da Mãe" formControlName="nomeMae">
         </mat-form-field>
-  
+
         <div style="display: inline-block;">
-            <h2 class="mat-h2">Documentos</h2>
-            <button mat-mini-fab color="primary"> <mat-icon>add</mat-icon> </button>
+          <h2 class="mat-h2">Documentos</h2>
+          <button mat-mini-fab color="primary">
+            <mat-icon>add</mat-icon>
+          </button>
         </div>
 
         <table mat-table [dataSource]="dataSourceDocumentos">
-          
-            <ng-container matColumnDef="position">
-              <th mat-header-cell *matHeaderCellDef> No. </th>
-              <td mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </td>
-            </ng-container>
-          
-            <ng-container matColumnDef="tipo">
-              <th mat-header-cell *matHeaderCellDef> Tipo </th>
-              <td mat-cell *matCellDef="let element"> {{element.tipo}} </td>
-            </ng-container>
-          
-            <ng-container matColumnDef="numero">
-              <th mat-header-cell *matHeaderCellDef> Número </th>
-              <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
-            </ng-container>
-          
-            <ng-container matColumnDef="validade">
-                <th mat-header-cell *matHeaderCellDef> Validade </th>
-                <td mat-cell *matCellDef="let element"> {{element.expiracao}} </td>
-            </ng-container>
-            
-            <ng-container matColumnDef="acoes">
-              <th mat-header-cell *matHeaderCellDef> Ações </th>
-              <td mat-cell *matCellDef="let element; let i = index"> <mat-icon (click)="showDocumento(i)">pageview</mat-icon>&nbsp;<mat-icon  (click)="editDocumento(i)">edit</mat-icon> </td>
-            </ng-container>
-          
-            <tr mat-header-row *matHeaderRowDef="tableDocumentosColunas"></tr>
-            <tr mat-row *matRowDef="let row; columns: tableDocumentosColunas;"></tr>
-          </table>
+
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef> No. </th>
+            <td mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="tipo">
+            <th mat-header-cell *matHeaderCellDef> Tipo </th>
+            <td mat-cell *matCellDef="let element"> {{element.tipo}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="numero">
+            <th mat-header-cell *matHeaderCellDef> Número </th>
+            <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="validade">
+            <th mat-header-cell *matHeaderCellDef> Validade </th>
+            <td mat-cell *matCellDef="let element"> {{element.expiracao | date: 'dd/MM/yyyy' }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acoes">
+            <th mat-header-cell *matHeaderCellDef> Ações </th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              <mat-icon (click)="openDocumentDialog(i, false)">pageview</mat-icon>&nbsp;<mat-icon (click)="openDocumentDialog(i, true)">edit</mat-icon>&nbsp;<mat-icon
+                (click)="removeDocument(i)">delete</mat-icon>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="tableDocumentosColunas"></tr>
+          <tr mat-row *matRowDef="let row; columns: tableDocumentosColunas;"></tr>
+        </table>
 
       </form>
 
     </mat-tab>
 
-    <mat-tab label="Recolhimentos"> Content 2 </mat-tab>
-    <mat-tab label="Recebimentos"> Content 3 </mat-tab>
-    <mat-tab label="Ocorrências"> Content 3 </mat-tab>
+    <mat-tab label="Contatos e Endereços">
+
+      <div class="dados-cadastrais">
+
+        <div style="display: inline-block;">
+          <h2 class="mat-h2">Contatos</h2>
+          <button mat-mini-fab color="primary">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+
+        <table mat-table [dataSource]="dataSourceContatos">
+
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef> No. </th>
+            <td mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="tipo">
+            <th mat-header-cell *matHeaderCellDef> Tipo </th>
+            <td mat-cell *matCellDef="let element"> {{element.tipo}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="modo">
+            <th mat-header-cell *matHeaderCellDef> Meio </th>
+            <td mat-cell *matCellDef="let element"> {{element.modo}} </td>
+          </ng-container>
+          
+          <ng-container matColumnDef="contato">
+            <th mat-header-cell *matHeaderCellDef> Contato </th>
+            <td mat-cell *matCellDef="let element"> {{ describeContato(element) }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acoes">
+            <th mat-header-cell *matHeaderCellDef> Ações </th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              <mat-icon (click)="openContatoDialog(i, false)">pageview</mat-icon>&nbsp;<mat-icon (click)="openContatoDialog(i, true)">edit</mat-icon>&nbsp;<mat-icon
+                (click)="removeContato(i)">delete</mat-icon>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="tableContatosColunas"></tr>
+          <tr mat-row *matRowDef="let row; columns: tableContatosColunas;"></tr>
+        </table>
+
+        <div style="display: inline-block;">
+          <h2 class="mat-h2">Endereços</h2>
+          <button mat-mini-fab color="primary">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+
+        <table mat-table [dataSource]="dataSourceEnderecos">
+
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef> No. </th>
+            <td mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="tipo">
+            <th mat-header-cell *matHeaderCellDef> Tipo </th>
+            <td mat-cell *matCellDef="let element"> {{element.tipo}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="endereco">
+            <th mat-header-cell *matHeaderCellDef> Endereço </th>
+            <td mat-cell *matCellDef="let element"> {{ describeEndereco(element) }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acoes">
+            <th mat-header-cell *matHeaderCellDef> Ações </th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              <mat-icon (click)="openEnderecoDialog(i, false)">pageview</mat-icon>&nbsp;<mat-icon (click)="openEnderecoDialog(i, true)">edit</mat-icon>&nbsp;<mat-icon
+                (click)="removeEndereco(i)">delete</mat-icon>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="tableEnderecosColunas"></tr>
+          <tr mat-row *matRowDef="let row; columns: tableEnderecosColunas;"></tr>
+        </table>
+
+      </div>
+
+    </mat-tab>
+
+    <mat-tab label="Contribuições">
+
+      <div class="dados-cadastrais">
+
+        <div style="display: inline-block;">
+          <h2 class="mat-h2">Relação de Contribuições</h2>
+        </div>
+
+        <table mat-table [dataSource]="dataSourceDocumentos">
+
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef> No. </th>
+            <td mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="tipo">
+            <th mat-header-cell *matHeaderCellDef> Tipo </th>
+            <td mat-cell *matCellDef="let element"> {{element.tipo}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="numero">
+            <th mat-header-cell *matHeaderCellDef> Número </th>
+            <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="validade">
+            <th mat-header-cell *matHeaderCellDef> Validade </th>
+            <td mat-cell *matCellDef="let element"> {{element.expiracao | date: 'dd/MM/yyyy' }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acoes">
+            <th mat-header-cell *matHeaderCellDef> Ações </th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              <mat-icon (click)="openDocumentDialog(i, false)">pageview</mat-icon>&nbsp;<mat-icon (click)="openDocumentDialog(i, true)">edit</mat-icon>&nbsp;<mat-icon
+                (click)="removeDocument(i)">delete</mat-icon>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="tableDocumentosColunas"></tr>
+          <tr mat-row *matRowDef="let row; columns: tableDocumentosColunas;"></tr>
+        </table>
+
+      </div>
+
+    </mat-tab>
+
+    <mat-tab label="Recebimentos">
+
+      <div class="dados-cadastrais">
+
+        <div style="display: inline-block;">
+          <h2 class="mat-h2">Relação de Recebimentos </h2>
+        </div>
+
+        <table mat-table [dataSource]="dataSourceDocumentos">
+
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef> No. </th>
+            <td mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="tipo">
+            <th mat-header-cell *matHeaderCellDef> Tipo </th>
+            <td mat-cell *matCellDef="let element"> {{element.tipo}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="numero">
+            <th mat-header-cell *matHeaderCellDef> Número </th>
+            <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="validade">
+            <th mat-header-cell *matHeaderCellDef> Validade </th>
+            <td mat-cell *matCellDef="let element"> {{element.expiracao | date: 'dd/MM/yyyy' }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acoes">
+            <th mat-header-cell *matHeaderCellDef> Ações </th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              <mat-icon (click)="openDocumentDialog(i, false)">pageview</mat-icon>&nbsp;<mat-icon (click)="openDocumentDialog(i, true)">edit</mat-icon>&nbsp;<mat-icon
+                (click)="removeDocument(i)">delete</mat-icon>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="tableDocumentosColunas"></tr>
+          <tr mat-row *matRowDef="let row; columns: tableDocumentosColunas;"></tr>
+        </table>
+
+      </div>
+
+    </mat-tab>
+
+    <mat-tab label="Histórico">
+      <div class="dados-cadastrais">
+
+      </div>
+    </mat-tab>
+
   </mat-tab-group>
 
+  <div class="action-container">
+      <button class="mat-raised-button mat-primary" (click)="save()" [disabled]="!form.dirty">Salvar</button>
+  </div>
+
 </div>
-<p>
-  segurado works!
-  {{ userId }}
-</p>

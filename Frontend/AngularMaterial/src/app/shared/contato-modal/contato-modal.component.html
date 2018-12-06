@@ -1,0 +1,42 @@
+<h2 mat-dialog-title> Contato </h2>
+
+<mat-dialog-content>
+
+  <form [formGroup]="form">
+
+    <div class="form-container">
+
+      <mat-form-field>
+        <mat-select placeholder="Select" placeholder="Tipo de Contato" formControlName="tipo">
+          <mat-option *ngFor="let type of docTypes" value="{{ type.codigo }}">{{ type.descricao }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select placeholder="Select" placeholder="Meio de Contato" formControlName="modo">
+          <mat-option *ngFor="let type of enabledModos" value="{{ type }}">{{ type }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Número / Endereço" formControlName="contato">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Notas Complementares" formControlName="notas">
+      </mat-form-field>
+
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+
+  <div class="action-container">
+    <button class="mat-raised-button" (click)="close()">Fechar</button>
+    <button class="mat-raised-button mat-primary" [disabled]="!form.valid" (click)="save()" [disabled]="!isEditable">Salvar</button>
+  </div>
+
+</mat-dialog-actions>

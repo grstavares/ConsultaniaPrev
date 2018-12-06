@@ -1,14 +1,53 @@
 <h2 mat-dialog-title> Documento Pessoal </h2>
 
 <mat-dialog-content>
-  
-    <mat-form-field  [formGroup]="form">
-        <input matInput placeholder="Course Description" formControlName="tipo">
-    </mat-form-field>
- 
+    
+    <form [formGroup]="form">
+
+        <div class="form-container">
+
+            <mat-form-field>
+                <mat-select placeholder="Tipo do Documento" formControlName="tipo">
+                    <mat-option *ngFor="let type of docTypes" value="{{ type.codigo }}">{{ type.descricao }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        
+            <mat-form-field>
+                    <input matInput placeholder="Número do Documento" formControlName="numero">
+            </mat-form-field>
+            
+            <mat-form-field>
+                <input matInput [matDatepicker]="pickerEmissao" placeholder="Data de Emissão" formControlName="emissao">
+                <mat-error *ngIf="form.get('emissao').hasError('invalidDate')">Data inválida!</mat-error>
+                <mat-datepicker-toggle matSuffix [for]="pickerEmissao"></mat-datepicker-toggle>
+                <mat-datepicker #pickerEmissao startView="year"></mat-datepicker>
+            </mat-form-field>
+            
+            <mat-form-field>
+                <input matInput [matDatepicker]="pickerExpiracao" placeholder="Data de Expiração" formControlName="expiracao">
+                <mat-datepicker-toggle matSuffix [for]="pickerExpiracao"></mat-datepicker-toggle>
+                <mat-datepicker #pickerExpiracao startView="year"></mat-datepicker>
+            </mat-form-field>
+            
+            <mat-form-field>
+                    <input matInput placeholder="Órgão Emissor" formControlName="emissor">
+            </mat-form-field>
+    
+            <mat-form-field>
+                    <input matInput placeholder="Outras Infomações" formControlName="detalhes">
+            </mat-form-field>
+
+        </div>
+
+    </form>
+
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button class="mat-raised-button"(click)="close()">Close</button>
-    <button class="mat-raised-button mat-primary"(click)="save()">Save</button>
+    
+    <div class="action-container">
+        <button class="mat-raised-button"(click)="close()">Fechar</button>
+        <button class="mat-raised-button mat-primary" [disabled]="!form.valid" (click)="save()" [disabled]="!isEditable">Salvar</button>
+    </div>
+
 </mat-dialog-actions>

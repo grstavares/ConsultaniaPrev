@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -28,11 +29,11 @@ const myDateFormatter = {
   imports: [
     CommonModule,
     MatSidenavModule, MatToolbarModule,
-    MatDialogModule,
+    MatDialogModule, MatSnackBarModule,
     MatListModule,
     MatTableModule,
     MatTabsModule,
-    MatFormFieldModule, MatInputModule, MatSelectModule, MatRadioModule, MatCheckboxModule, 
+    MatFormFieldModule, MatInputModule, MatSelectModule, MatRadioModule, MatCheckboxModule,
     MatDatepickerModule, MatNativeDateModule,
     MatGridListModule,
     MatCardModule,
@@ -41,11 +42,11 @@ const myDateFormatter = {
     MatButtonModule],
   exports: [
     MatSidenavModule, MatToolbarModule,
-    MatDialogModule,
+    MatDialogModule, MatSnackBarModule,
     MatListModule,
     MatTableModule,
     MatTabsModule,
-    MatFormFieldModule, MatInputModule, MatSelectModule, MatRadioModule, MatCheckboxModule, 
+    MatFormFieldModule, MatInputModule, MatSelectModule, MatRadioModule, MatCheckboxModule,
     MatDatepickerModule, MatNativeDateModule,
     MatGridListModule,
     MatCardModule,

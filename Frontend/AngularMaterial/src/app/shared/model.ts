@@ -15,7 +15,7 @@ export interface Endereco {
 
 export interface Contato {
     tipo?: string;
-    modo: 'EMAIL' | 'TELEFONE' | 'FAX' | 'RECADO';
+    modo: 'EMAIL' | 'TELEFONE' | 'FAX' | 'RECADO' | '';
     contato: string;
     notas?: string;
 }
