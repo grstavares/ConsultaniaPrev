@@ -13,12 +13,12 @@ export class AppComponent implements OnInit {
   isLoading = true;
   title = 'AngularMaterial';
   sideMenu: MenuItem[] = [
-    {title: 'Início', path: 'dashboard', icon: ''},
-    {title: 'Segurados', path: 'segurados', icon: ''},
-    {title: 'Mensagens', path: 'mensagens', icon: ''},
-    {title: 'Procedimentos', path: 'procedimentos', icon: ''},
-    {title: 'Ouvidoria', path: 'ouvidoria', icon: ''},
-    {title: 'Documentos', path: 'documentos', icon: ''}
+    {title: 'Início', path: 'dashboard', icon: 'dashboard'},
+    {title: 'Segurados', path: 'segurados', icon: 'people'},
+    {title: 'Mensagens', path: 'mensagens', icon: 'email'},
+    {title: 'Procedimentos', path: 'procedimentos', icon: 'assignment_turned_in'},
+    {title: 'Ouvidoria', path: 'ouvidoria', icon: 'offline_bolt'},
+    {title: 'Documentos', path: 'documentos', icon: 'description'}
   ];
 
   constructor(private institutoService: InstitutoService) { }

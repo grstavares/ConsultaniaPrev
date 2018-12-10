@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from '../material.module';
+
 import { SharedModule } from '../shared/shared.module';
 import { CanDeactivateGuard } from '../shared';
 
@@ -17,7 +19,7 @@ const routes: Routes = [
   ];
 
 const moduleDeclarations = [SeguradosComponent, SeguradoComponent];
-const moduleImports = [CommonModule, MaterialModule, FormsModule, ReactiveFormsModule, RouterModule.forChild(routes), SharedModule];
+const moduleImports = [CommonModule, FlexLayoutModule, MaterialModule, FormsModule, ReactiveFormsModule, RouterModule.forChild(routes), SharedModule];
 const moduleExports = [RouterModule];
 
 @NgModule({declarations: moduleDeclarations, imports: moduleImports, exports: moduleExports })

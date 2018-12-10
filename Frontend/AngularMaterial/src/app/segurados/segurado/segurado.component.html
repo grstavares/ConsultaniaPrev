@@ -6,86 +6,115 @@
 
     <mat-tab label="Dados Cadastrais">
 
-      <form class="dados-cadastrais" [formGroup]="form">
+      <div class="container">
 
-        <mat-form-field class="telainteira">
-          <input matInput placeholder="Nome Completo" formControlName="nome">
-        </mat-form-field>
+        <form [formGroup]="form">
 
-        <mat-form-field class="emcolunas">
-          <input matInput [matDatepicker]="pickerNascimento" placeholder="Data de Nascimento" formControlName="dataNascimento">
-          <mat-datepicker-toggle matSuffix [for]="pickerNascimento"></mat-datepicker-toggle>
-          <mat-datepicker #pickerNascimento startView="year"></mat-datepicker>
-        </mat-form-field>
+          <div fxLayout="row" fxLayoutGap="20px">
+            <mat-form-field fxFlex="85%">
+              <input matInput placeholder="Nome Completo" formControlName="nome">
+            </mat-form-field>
+            <mat-form-field fxFlex="15%">
+                <mat-select placeholder="Sexo" formControlName="sexo">
+                    <mat-option value="M">M</mat-option>
+                    <mat-option value="F">F</mat-option>
+                </mat-select>
+              </mat-form-field>
+          </div>
 
-        <mat-form-field class="emcolunas">
-          <input matInput placeholder="Local de Nascimento" formControlName="localNascimento">
-        </mat-form-field>
+          <div fxLayout="row" fxLayoutGap="20px">
 
-        <mat-form-field class="telainteira">
-          <input matInput placeholder="Nome do Pai" formControlName="nomePai">
-        </mat-form-field>
+            <mat-form-field fxFlex>
+              <input matInput [matDatepicker]="pickerNascimento" placeholder="Data de Nascimento" formControlName="dataNascimento">
+              <mat-datepicker-toggle matSuffix [for]="pickerNascimento"></mat-datepicker-toggle>
+              <mat-datepicker #pickerNascimento startView="year"></mat-datepicker>
+            </mat-form-field>
 
-        <mat-form-field class="telainteira">
-          <input matInput placeholder="Nome da Mãe" formControlName="nomeMae">
-        </mat-form-field>
+            <mat-form-field fxFlex>
+              <input matInput placeholder="Local de Nascimento" formControlName="localNascimento">
+            </mat-form-field>
 
-        <div class="titulo-tabela">
-          <h2 class="mat-h2" >Documentos</h2>
-          <div class="loader">Loading...</div>
-          <button mat-mini-fab color="primary">
-            <mat-icon (click)="addDocument()">add</mat-icon>
-          </button>
-        </div>
+          </div>
 
-        <table mat-table [dataSource]="dataSourceDocumentos">
+          <div fxLayout="row" fxLayoutGap="20px">
+            <mat-form-field fxFlex>
+              <input matInput placeholder="Nome do Pai" formControlName="nomePai">
+            </mat-form-field>
+          </div>
 
-          <ng-container matColumnDef="position">
-            <th mat-header-cell *matHeaderCellDef> No. </th>
-            <td mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </td>
-          </ng-container>
+          <div fxLayout="row" fxLayoutGap="20px">
+            <mat-form-field fxFlex>
+              <input matInput placeholder="Nome da Mãe" formControlName="nomeMae">
+            </mat-form-field>
+          </div>
 
-          <ng-container matColumnDef="tipo">
-            <th mat-header-cell *matHeaderCellDef> Tipo </th>
-            <td mat-cell *matCellDef="let element"> {{element.tipo}} </td>
-          </ng-container>
+          <div fxLayout="row" fxLayoutGap="20px">
 
-          <ng-container matColumnDef="numero">
-            <th mat-header-cell *matHeaderCellDef> Número </th>
-            <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
-          </ng-container>
+            <h2 class="mat-h2" fxFlex>Documentos</h2>
+            <div fxFlex fxLayoutAlign="end end">
+              <button mat-mini-fab color="primary">
+                <mat-icon (click)="addDocument()">add</mat-icon>
+              </button>
+            </div>
 
-          <ng-container matColumnDef="validade">
-            <th mat-header-cell *matHeaderCellDef> Validade </th>
-            <td mat-cell *matCellDef="let element"> {{element.expiracao | date: 'dd/MM/yyyy' }} </td>
-          </ng-container>
+          </div>
 
-          <ng-container matColumnDef="acoes">
-            <th mat-header-cell *matHeaderCellDef> Ações </th>
-            <td mat-cell *matCellDef="let element; let i = index">
-              <mat-icon (click)="openDocumentDialog(i, false)">pageview</mat-icon>&nbsp;<mat-icon (click)="openDocumentDialog(i, true)">edit</mat-icon>&nbsp;<mat-icon
-                (click)="removeDocument(i)">delete</mat-icon>
-            </td>
-          </ng-container>
+          <table mat-table [dataSource]="dataSourceDocumentos">
 
-          <tr mat-header-row *matHeaderRowDef="tableDocumentosColunas"></tr>
-          <tr mat-row *matRowDef="let row; columns: tableDocumentosColunas;"></tr>
-        </table>
+            <ng-container matColumnDef="position">
+              <th mat-header-cell *matHeaderCellDef> No. </th>
+              <td mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </td>
+            </ng-container>
 
-      </form>
+            <ng-container matColumnDef="tipo">
+              <th mat-header-cell *matHeaderCellDef> Tipo </th>
+              <td mat-cell *matCellDef="let element"> {{ config.describeTypeRegistroPessoal(element.tipo) }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="numero">
+              <th mat-header-cell *matHeaderCellDef> Número </th>
+              <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="validade">
+              <th mat-header-cell *matHeaderCellDef> Validade </th>
+              <td mat-cell *matCellDef="let element"> {{element.expiracao | date: 'dd/MM/yyyy' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="acoes">
+              <th mat-header-cell *matHeaderCellDef> Ações </th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                <mat-icon (click)="openDocumentDialog(i, false)" class="row-action">pageview</mat-icon>&nbsp;
+                <mat-icon (click)="openDocumentDialog(i, true)" class="row-action">edit</mat-icon>&nbsp;
+                <mat-icon (click)="removeDocument(i)" class="row-action">delete</mat-icon>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="tableDocumentosColunas"></tr>
+            <tr mat-row *matRowDef="let row; columns: tableDocumentosColunas;"></tr>
+          </table>
+
+        </form>
+
+      </div>
 
     </mat-tab>
 
     <mat-tab label="Contatos e Endereços">
 
-      <div class="dados-cadastrais">
+      <div class="container">
 
-        <div class="titulo-tabela">
-          <h2 class="mat-h2" fxLayoutAlign="start start">Contatos</h2>
-          <button mat-mini-fab color="primary">
-            <mat-icon fxLayoutAlign="end end" (click)="addContato()">add</mat-icon>
-          </button>
-        </div>
+          <div fxLayout="row" fxLayoutGap="20px">
+
+              <h2 class="mat-h2" fxFlex>Contatos</h2>
+              <div fxFlex fxLayoutAlign="end end">
+                <button mat-mini-fab color="primary">
+                  <mat-icon (click)="addContato()">add</mat-icon>
+                </button>
+              </div>
+  
+            </div>
+
 
         <table mat-table [dataSource]="dataSourceContatos">
 
@@ -96,14 +125,14 @@
 
           <ng-container matColumnDef="tipo">
             <th mat-header-cell *matHeaderCellDef> Tipo </th>
-            <td mat-cell *matCellDef="let element"> {{element.tipo}} </td>
+            <td mat-cell *matCellDef="let element"> {{ config.describeTypeContato(element.tipo) }} </td>
           </ng-container>
 
           <ng-container matColumnDef="modo">
             <th mat-header-cell *matHeaderCellDef> Meio </th>
             <td mat-cell *matCellDef="let element"> {{element.modo}} </td>
           </ng-container>
-          
+
           <ng-container matColumnDef="contato">
             <th mat-header-cell *matHeaderCellDef> Contato </th>
             <td mat-cell *matCellDef="let element"> {{ describeContato(element) }} </td>
@@ -121,12 +150,17 @@
           <tr mat-row *matRowDef="let row; columns: tableContatosColunas;"></tr>
         </table>
 
-        <div class="titulo-tabela">
-          <h2 class="mat-h2" fxLayoutAlign="start start">Endereços</h2>
-          <button mat-mini-fab color="primary">
-            <mat-icon fxLayoutAlign="end end" (click)="addEndereco()">add</mat-icon>
-          </button>
-        </div>
+
+        <div fxLayout="row" fxLayoutGap="20px">
+
+            <h2 class="mat-h2" fxFlex>Endereços</h2>
+            <div fxFlex fxLayoutAlign="end end">
+              <button mat-mini-fab color="primary">
+                <mat-icon (click)="addEndereco()">add</mat-icon>
+              </button>
+            </div>
+
+          </div>
 
         <table mat-table [dataSource]="dataSourceEnderecos">
 
@@ -137,7 +171,7 @@
 
           <ng-container matColumnDef="tipo">
             <th mat-header-cell *matHeaderCellDef> Tipo </th>
-            <td mat-cell *matCellDef="let element"> {{element.tipo}} </td>
+            <td mat-cell *matCellDef="let element"> {{ config.describeTypeEndereco(element.tipo) }} </td>
           </ng-container>
 
           <ng-container matColumnDef="endereco">
@@ -163,9 +197,9 @@
 
     <mat-tab label="Contribuições">
 
-      <div class="dados-cadastrais">
+      <div class="container">
 
-        <div style="display: inline-block;">
+        <div fxLayout="row" fxLayoutGap="20px">
           <h2 class="mat-h2">Relação de Contribuições</h2>
         </div>
 
@@ -209,9 +243,9 @@
 
     <mat-tab label="Recebimentos">
 
-      <div class="dados-cadastrais">
+      <div class="container">
 
-        <div style="display: inline-block;">
+        <div fxLayout="row" fxLayoutGap="20px">
           <h2 class="mat-h2">Relação de Recebimentos </h2>
         </div>
 
@@ -254,15 +288,15 @@
     </mat-tab>
 
     <mat-tab label="Histórico">
-      <div class="dados-cadastrais">
+      <div class="container">
 
       </div>
     </mat-tab>
 
   </mat-tab-group>
 
-  <div class="action-container">
-      <button class="mat-raised-button mat-primary" (click)="save()" [disabled]="!form.dirty">Salvar</button>
+  <div class="container-actions">
+    <button class="mat-raised-button mat-primary" (click)="save()" [disabled]="!form.dirty">Salvar</button>
   </div>
 
 </div>

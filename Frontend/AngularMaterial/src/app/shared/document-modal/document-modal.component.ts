@@ -10,6 +10,7 @@ import * as moment from 'moment';
 export class DocumentModalComponent implements OnInit {
 
     form: FormGroup;
+    isNewRegistry: boolean;
     isEditable: boolean;
     documento: RegistroPessoal;
     docTypes: TipoObjeto[];
@@ -25,6 +26,7 @@ export class DocumentModalComponent implements OnInit {
     constructor(config: ConfigService, private dialogRef: MatDialogRef<DocumentModalComponent>, @Inject(MAT_DIALOG_DATA) data: ModalData<RegistroPessoal>) {
 
         this.docTypes = config.enabledTypesRegistroPessoal();
+        this.isNewRegistry = data.foradding;
         this.isEditable = data.editEnabled;
         this.documento = data.payload;
 
@@ -73,6 +75,7 @@ export class DocumentModalComponent implements OnInit {
                 expiracao: dtExpiracao,
                 emissor: this.form.value.emissor
             },
+            foradding: this.isNewRegistry,
             updated: true,
         };
 
@@ -81,7 +84,7 @@ export class DocumentModalComponent implements OnInit {
     }
 
     close() {
-        const result: ModalData<RegistroPessoal> = {editEnabled: this.isEditable, payload: this.documento, updated: false };
+        const result: ModalData<RegistroPessoal> = {editEnabled: this.isEditable, payload: this.documento, foradding: this.isNewRegistry, updated: false };
         this.dialogRef.close(result);
     }
 

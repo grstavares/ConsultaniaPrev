@@ -7,6 +7,7 @@ export interface Dictionary<T> {
 export interface ModalData<T> {
     editEnabled: boolean;
     payload: T;
+    foradding?: boolean;
     updated?: boolean;
 }
 

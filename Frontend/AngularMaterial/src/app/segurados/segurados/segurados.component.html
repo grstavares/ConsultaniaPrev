@@ -27,7 +27,7 @@
     
     <ng-container matColumnDef="link">
       <th mat-header-cell *matHeaderCellDef> Ações </th>
-      <td mat-cell *matCellDef="let element" [routerLink]="['segurado', element.id]"> <mat-icon>account_circle</mat-icon>&nbsp;<mat-icon>announcement</mat-icon> </td>
+      <td mat-cell *matCellDef="let element" [routerLink]="['segurado', element.id]"> <mat-icon class="row-action">account_circle</mat-icon>&nbsp;<mat-icon class="row-action">delete</mat-icon> </td>
     </ng-container>
 
     <ng-container matColumnDef="id">

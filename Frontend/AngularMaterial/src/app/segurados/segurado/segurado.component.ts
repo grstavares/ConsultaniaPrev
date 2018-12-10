@@ -10,7 +10,7 @@ import * as moment from 'moment';
 import { Segurado } from '../model';
 import { SeguradosService } from '../service';
 import { DocumentModalComponent } from 'src/app/shared/document-modal/document-modal.component';
-import { RegistroPessoal, Endereco, Contato, ModalData, UiService, EnderecoModalComponent, ContatoModalComponent, CanDeactivateGuard } from 'src/app/shared';
+import { RegistroPessoal, Endereco, Contato, ModalData, UiService, EnderecoModalComponent, ContatoModalComponent, CanDeactivateGuard, ConfigService } from 'src/app/shared';
 import { ConfirmModalComponent } from 'src/app/shared/confirm-modal/confirm-modal.component';
 
 @Component({ selector: 'app-segurado', templateUrl: './segurado.component.html', styleUrls: ['./segurado.component.scss'] })
@@ -29,7 +29,7 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
   userId: string;
   segurado: Segurado;
 
-  constructor(route: ActivatedRoute, private location: Location, private service: SeguradosService, private uiService: UiService, private dialog: MatDialog) {
+  constructor(route: ActivatedRoute, private location: Location, private service: SeguradosService, private uiService: UiService, private config: ConfigService, private dialog: MatDialog) {
 
     route.paramMap.subscribe(params => {
 
@@ -83,7 +83,36 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
 
   }
 
-  addDocument() { console.log('adding'); }
+  describeDocumentType(type: string): string {
+    return '';
+  }
+
+  addDocument() {
+
+    const data: ModalData<RegistroPessoal> = { editEnabled: true, payload: null, foradding: true };
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = data;
+    dialogConfig.width = '40%';
+
+    const dialogRef = this.dialog.open(DocumentModalComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe((returned: ModalData<RegistroPessoal>) => {
+
+      if (returned && returned.updated) {
+
+        this.segurado.documentos.push({ ...returned.payload });
+        this.form.markAsDirty();
+        this.dataSourceDocumentos = new MatTableDataSource<RegistroPessoal>(this.segurado.documentos);
+
+      }
+
+    });
+
+  }
 
   removeDocument(index: number) {
 
@@ -101,6 +130,7 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
 
       if (confirmed) {
         this.segurado.documentos.splice(index, 1);
+        this.form.markAsDirty();
         this.dataSourceDocumentos = new MatTableDataSource<RegistroPessoal>(this.segurado.documentos);
       }
 
@@ -127,6 +157,7 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
       if (returned && returned.updated) {
 
         this.segurado.documentos[index] = { ...returned.payload };
+        this.form.markAsDirty();
         this.dataSourceDocumentos = new MatTableDataSource<RegistroPessoal>(this.segurado.documentos);
 
       }
@@ -149,7 +180,32 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
 
   }
 
-  addContato() { console.log('adding'); }
+  addContato() {
+
+    const data: ModalData<Contato> = { editEnabled: true, payload: null, foradding: true };
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = data;
+    dialogConfig.width = '40%';
+
+    const dialogRef = this.dialog.open(ContatoModalComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe((returned: ModalData<Contato>) => {
+
+      if (returned && returned.updated) {
+
+        this.segurado.contatos.push({ ...returned.payload });
+        this.form.markAsDirty();
+        this.dataSourceContatos = new MatTableDataSource<Contato>(this.segurado.contatos);
+
+      }
+
+    });
+
+   }
 
   removeContato(index: number) {
 
@@ -167,6 +223,7 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
 
       if (confirmed) {
         this.segurado.contatos.splice(index, 1);
+        this.form.markAsDirty();
         this.dataSourceContatos = new MatTableDataSource<Contato>(this.segurado.contatos);
       }
 
@@ -193,6 +250,7 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
       if (returned && returned.updated) {
 
         this.segurado.contatos[index] = { ...returned.payload };
+        this.form.markAsDirty();
         this.dataSourceContatos = new MatTableDataSource<Contato>(this.segurado.contatos);
 
       }
@@ -213,7 +271,32 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
 
   }
 
-  addEndereco() { console.log('adding'); }
+  addEndereco() {
+
+    const data: ModalData<Endereco> = { editEnabled: true, payload: null, foradding: true };
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = data;
+    dialogConfig.width = '40%';
+
+    const dialogRef = this.dialog.open(EnderecoModalComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe((returned: ModalData<Endereco>) => {
+
+      if (returned && returned.updated) {
+
+        this.segurado.enderecos.push({ ...returned.payload });
+        this.form.markAsDirty();
+        this.dataSourceEnderecos = new MatTableDataSource<Endereco>(this.segurado.enderecos);
+
+      }
+
+    });
+
+  }
 
   removeEndereco(index: number) {
 
@@ -231,6 +314,7 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
 
       if (confirmed) {
         this.segurado.enderecos.splice(index, 1);
+        this.form.markAsDirty();
         this.dataSourceEnderecos = new MatTableDataSource<Endereco>(this.segurado.enderecos);
       }
 
@@ -257,6 +341,7 @@ export class SeguradoComponent implements OnInit, CanDeactivateGuard {
       if (returned && returned.updated) {
 
         this.segurado.enderecos[index] = { ...returned.payload };
+        this.form.markAsDirty();
         this.dataSourceEnderecos = new MatTableDataSource<Endereco>(this.segurado.enderecos);
 
       }
