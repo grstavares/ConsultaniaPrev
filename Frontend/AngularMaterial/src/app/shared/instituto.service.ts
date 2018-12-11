@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Instituto, TipoObjeto } from './model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { UiService } from './ui.service';
 
 interface Configuration {
   documentos: TipoObjeto[];
@@ -19,7 +20,7 @@ export class InstitutoService {
   public enabledDocumentos: Observable<TipoObjeto[]>;
   public enabledProcedimentos: Observable<TipoObjeto[]>;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private uiService: UiService) {
 
     this.instituto = this.http.get<Instituto>(this.apiUrl);
 

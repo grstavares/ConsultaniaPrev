@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AppRoutingModule } from './app-routing.module';
 import { MaterialModule } from './material.module';
@@ -27,7 +28,7 @@ import { OuvidoriaComponent } from './ouvidoria/ouvidoria.component';
     OuvidoriaComponent
   ],
   imports: [
-    BrowserModule, BrowserAnimationsModule,
+    BrowserModule, BrowserAnimationsModule, FlexLayoutModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

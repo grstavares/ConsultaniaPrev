@@ -3,6 +3,7 @@ export * from './ui.service';
 export * from './config.service';
 export * from './model';
 export * from './types';
+export * from './uuid';
 
 export * from './can-deactivate.guard';
 

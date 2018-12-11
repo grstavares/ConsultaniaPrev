@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { InstitutoService } from './shared/instituto.service';
+import { UiService } from './shared';
 
 interface MenuItem {
   title: string;
@@ -21,11 +22,12 @@ export class AppComponent implements OnInit {
     {title: 'Documentos', path: 'documentos', icon: 'description'}
   ];
 
-  constructor(private institutoService: InstitutoService) { }
+  constructor(private institutoService: InstitutoService, private uiService: UiService) { }
 
   ngOnInit(): void {
 
     this.institutoService.instituto.subscribe(value => this.title = value.name);
+    this.uiService.isLoading.asObservable().subscribe(value => this.isLoading = value );
 
   }
 
