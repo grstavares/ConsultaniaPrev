@@ -1,0 +1,26 @@
+{
+  "name": "empresa-service",
+  "version": "1.0.0",
+  "description": "Empresa Microservice in TypeScript for ConsultaniaPrev Solution",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -r ts-node/register tests/**/*.spec.ts"
+  },
+  "author": "Gustavo Tavares",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.15",
+    "@types/aws-sdk": "^2.7.0",
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.12",
+    "aws-sdk": "^2.374.0",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
+  },
+  "dependencies": {
+    "jsonschema": "^1.2.4"
+  }
+}
