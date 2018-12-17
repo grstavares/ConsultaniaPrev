@@ -1,5 +1,7 @@
-{
-    "body": "eyJ0ZXN0IjoiYm9keSJ9",
+import { APIGatewayProxyEvent } from 'aws-lambda';
+
+export const mockEvent: APIGatewayProxyEvent = {
+    "body": "{\"id\":\"eyJ0ZXN0IjoiYm9keSJ9\", \"name\":\"Gustavo Tavares\", \"birthDate\":\"15-11-1977\", \"addresses\": [ { \"cep\": \"71915-250\", \"city\":\"Brasília\" }, { \"cep\": \"74110-090\", \"city\":\"Goiânia\" }], \"parametros\": { \"senha\": \"aquela\", \"tela\": \"principal\" } }",
     "resource": "/{proxy+}",
     "path": "/path/to/resource",
     "httpMethod": "POST",
@@ -33,14 +35,17 @@
       "X-Forwarded-Port": "443",
       "X-Forwarded-Proto": "https"
     },
+    "multiValueHeaders": { },
+    "multiValueQueryStringParameters": null,
     "requestContext": {
       "accountId": "123456789012",
       "resourceId": "123456",
       "stage": "prod",
       "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef",
-      "requestTime": "09/Apr/2015:12:34:56 +0000",
       "requestTimeEpoch": 1428582896000,
       "identity": {
+        "apiKey": null,
+        "apiKeyId": null,
         "cognitoIdentityPoolId": null,
         "accountId": null,
         "cognitoIdentityId": null,
@@ -57,6 +62,5 @@
       "resourcePath": "/{proxy+}",
       "httpMethod": "POST",
       "apiId": "1234567890",
-      "protocol": "HTTP/1.1"
     }
   }

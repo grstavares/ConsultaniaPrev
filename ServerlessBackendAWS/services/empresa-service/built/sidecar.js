@@ -1,92 +1,96 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const aws_sdk_1 = require("aws-sdk");
-const jsonschema_1 = require("jsonschema");
-const schema_1 = require("./schema");
-var SidecarErrors;
-(function (SidecarErrors) {
-    SidecarErrors[SidecarErrors["userNotAuthorized"] = 0] = "userNotAuthorized";
-    SidecarErrors[SidecarErrors["invalidObjectBody"] = 1] = "invalidObjectBody";
-    SidecarErrors[SidecarErrors["resourceNotAvailable"] = 2] = "resourceNotAvailable";
-    SidecarErrors[SidecarErrors["dependencyError"] = 3] = "dependencyError";
-    SidecarErrors[SidecarErrors["configurationNotAvailable"] = 4] = "configurationNotAvailable";
-})(SidecarErrors || (SidecarErrors = {}));
+const utilities_1 = require("./utilities");
+var SidecarError;
+(function (SidecarError) {
+    SidecarError[SidecarError["userNotAuthorized"] = 0] = "userNotAuthorized";
+    SidecarError[SidecarError["invalidObjectBody"] = 1] = "invalidObjectBody";
+    SidecarError[SidecarError["resourceNotAvailable"] = 2] = "resourceNotAvailable";
+    SidecarError[SidecarError["dependencyError"] = 3] = "dependencyError";
+    SidecarError[SidecarError["dependencyErrorSns"] = 4] = "dependencyErrorSns";
+    SidecarError[SidecarError["configurationNotAvailable"] = 5] = "configurationNotAvailable";
+    SidecarError[SidecarError["invalidConfiguration"] = 6] = "invalidConfiguration";
+    SidecarError[SidecarError["undefined"] = 7] = "undefined";
+})(SidecarError || (SidecarError = {}));
 class Sidecar {
-    constructor() {
+    constructor(dependencyResolver, lambdaContext) {
+        this.dependencyResolver = dependencyResolver;
+        this.lambdaContext = lambdaContext;
         this.trail = [];
     }
-    validateRights(event) {
-        const trace = new OperationBuilder().withAction('validateRights');
+    userIsAuthorizedToPerformOperation(event) {
+        const trace = new OperationBuilder().withAction('userIsAuthorizedToPerformOperation');
         return new Promise((resolve, reject) => {
             if (this.matchPermissions()) {
                 this.trail.push(trace.build());
                 resolve(true);
             }
             else {
-                const error = { error: SidecarErrors.userNotAuthorized };
+                const error = { error: SidecarError.userNotAuthorized };
                 this.trail.push(trace.withError(error).build());
-                reject(error);
-            }
-        });
-    }
-    parseAPIGatewayEvent(event) {
-        const trace = new OperationBuilder().withAction('parseAPIGatewayEvent').withPayload(event.body);
-        return new Promise((resolve, reject) => {
-            const validator = new jsonschema_1.Validator();
-            const payload = event.body;
-            if (validator.validate(payload, schema_1.instituto)) {
-                this.trail.push(trace.build());
-                resolve(true);
-            }
-            else {
-                const error = { error: SidecarErrors.userNotAuthorized };
-                this.trail.push(trace.withError(error).build());
-                reject(error);
+                const response = utilities_1.ResponseBuilder.forbidden('Auth Failed!', this.lambdaContext.awsRequestId);
+                reject(response);
             }
         });
     }
     persistOnLake(bucketName, eventId, event) {
+        const parameters = { bucketName: bucketName, eventId: eventId };
+        const trace = new OperationBuilder().withAction('persistOnLake').withPayload(event.body).withParameters(parameters);
         return new Promise((resolve, reject) => {
+            this.trail.push(trace.build());
             resolve(true);
         });
     }
     persistInTable(tableName, key, object) {
+        const parameters = { tableName: tableName, key: key };
+        const trace = new OperationBuilder().withAction('persistInTable').withPayload(object).withParameters(parameters);
         return new Promise((resolve, reject) => {
+            this.trail.push(trace.build());
             resolve(true);
         });
     }
     publishEvent(businessEvent, event) {
-        const trace = new OperationBuilder().withAction('publishEvent').withParameters(businessEvent);
+        const trace = new OperationBuilder().withAction('publishEvent');
         return new Promise((resolve, reject) => {
-            if (!businessEvent.topicArn) {
-                reject("[Error] No Topic ARN specified");
-            }
-            const region = this.validateTopicArn(businessEvent.topicArn);
-            if (region) {
-                reject("[Error] Invalid Topic ARN");
-            }
-            const sns = new aws_sdk_1.SNS({ region: region });
-            const snsEvent = { Message: JSON.stringify(businessEvent.body), TopicArn: businessEvent.topicArn };
-            sns.publish(snsEvent, (err, data) => { err ? reject(err) : resolve(data.MessageId); });
+            this.trail.push(trace.build());
+            resolve(true);
         });
     }
-    publishMetric(metricName) {
+    publishMetric(metricValue) {
         return new Promise((resolve, reject) => {
-            resolve(metricName);
+            resolve(true);
         });
     }
     createResponse(event) {
+        const result = { statusCode: 200, body: JSON.stringify(event) };
+        return result;
+    }
+    createErrorResponse(error) {
+        const result = { statusCode: 200, body: JSON.stringify(error) };
+        return result;
+    }
+    publishError(error, payload) {
         return new Promise((resolve, reject) => {
-            resolve({ statusCode: 200, message: 'worked' });
+            resolve(error);
         });
     }
+    sendResponse(response, callback) {
+        this.publishOperationTrail();
+        callback(null, response);
+    }
     matchPermissions() { return true; }
-    validateTopicArn(topicArn) {
-        let splitedTopicArn = topicArn.split(":");
-        if (splitedTopicArn.length < 7) {
-            return undefined;
-        }
-        return splitedTopicArn[3];
+    createMetricFromError(error) {
+        const metric = {
+            metricArn: '',
+            value: { value: 1 }
+        };
+        return metric;
+    }
+    publishOperationTrail() {
+    }
+    publishErrorInContingence(message) {
+        console.error('Publishing Error in Contigence!');
+        console.error(message);
     }
 }
 exports.Sidecar = Sidecar;

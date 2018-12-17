@@ -1,21 +1,25 @@
-import { SNS, Response } from 'aws-sdk';
-import { APIGatewayProxyEvent } from 'aws-lambda';
-import { BusinessEvent, InfrastructureMetric } from './types.d';
-import { Validator } from 'jsonschema';
+import { SNS } from 'aws-sdk';
+import { Context, APIGatewayProxyEvent, Callback, APIGatewayProxyResult } from 'aws-lambda';
+import { BusinessEvent, InfrastructureMetric, ProxyResolver, ProxySnsMessage } from './types.d';
+import { ResponseBuilder } from './utilities';
 import { instituto } from './schema';
 
-enum SidecarErrors {
+enum SidecarError {
     userNotAuthorized,
     invalidObjectBody,
     resourceNotAvailable,
     dependencyError,
+    dependencyErrorSns,
     configurationNotAvailable,
-
+    invalidConfiguration,
+    undefined
 }
 
 export class Sidecar {
 
     trail: SidecarOperation[] = []
+
+    constructor(private dependencyResolver: ProxyResolver, private lambdaContext: Context) { }
 
     /**
      * @param event APIGatewayProxyEvent
@@ -25,9 +29,9 @@ export class Sidecar {
      * This verification is related to application specific code that can not
      * be verified by AWS Security Services.
      */
-    validateRights(event: APIGatewayProxyEvent): Promise<boolean> {
+    userIsAuthorizedToPerformOperation(event: APIGatewayProxyEvent): Promise<boolean> {
         
-        const trace = new OperationBuilder().withAction('validateRights');
+        const trace = new OperationBuilder().withAction('userIsAuthorizedToPerformOperation');
 
         return new Promise((resolve: Function, reject: Function) => {
 
@@ -38,42 +42,43 @@ export class Sidecar {
 
             } else {
 
-                const error = { error: SidecarErrors.userNotAuthorized }
+                const error = { error: SidecarError.userNotAuthorized }
                 this.trail.push(trace.withError(error).build())
-                reject(error);
+                const response = ResponseBuilder.forbidden('Auth Failed!', this.lambdaContext.awsRequestId)
+                reject(response);
 
             }
 
         });
     }
 
-    /**
-     * @param event APIGatewayProxyEvent
-     * @return Promise<boolean>
-     * @description
-     * Verify Event Object!
-     * This verification is provided to sanitize values received in Event Object
-     * to minimize chances of Event Injection or Event mal processing.
-     */
-    parseAPIGatewayEvent(event: APIGatewayProxyEvent): Promise<boolean> {
+    // /**
+    //  * @param event APIGatewayProxyEvent
+    //  * @return Promise<boolean>
+    //  * @description
+    //  * Verify Event Object!
+    //  * This verification is provided to sanitize values received in Event Object
+    //  * to minimize chances of Event Injection or Event mal processing.
+    //  */
+    // parseAPIGatewayEvent(event: APIGatewayProxyEvent): Promise<boolean> {
 
-        const trace = new OperationBuilder().withAction('parseAPIGatewayEvent').withPayload(event.body);
+    //     const trace = new OperationBuilder().withAction('parseAPIGatewayEvent').withPayload(event.body);
 
-        return new Promise((resolve: Function, reject: Function) => {
+    //     return new Promise((resolve: Function, reject: Function) => {
 
-            const validator = new Validator();
-            const payload = event.body
-            if (validator.validate(payload, instituto)) {
-                this.trail.push(trace.build());
-                resolve(true);
-            } else {
-                const error = { error: SidecarErrors.userNotAuthorized }
-                this.trail.push(trace.withError(error).build())
-                reject(error);
-            }
+    //         // const validator = new Validator();
+    //         // const payload = event.body
+    //         // if (validator.validate(payload, instituto)) {
+    //             this.trail.push(trace.build());
+    //             resolve(true);
+    //         // } else {
+    //         //     const error = { error: SidecarError.userNotAuthorized }
+    //         //     this.trail.push(trace.withError(error).build())
+    //         //     reject(error);
+    //         // }
 
-        });
-    }
+    //     });
+    // }
 
     /**
      * @param bucketName string
@@ -86,11 +91,16 @@ export class Sidecar {
      */
     persistOnLake(bucketName: string, eventId: string, event: APIGatewayProxyEvent): Promise<boolean> {
 
+        const parameters = {bucketName: bucketName, eventId: eventId};
+        const trace = new OperationBuilder().withAction('persistOnLake').withPayload(event.body).withParameters(parameters);
+
         return new Promise((resolve: Function, reject: Function) => {
 
+            this.trail.push(trace.build());
             resolve(true);
 
         });
+
     }
 
     /**
@@ -104,8 +114,12 @@ export class Sidecar {
      */
     persistInTable(tableName: string, key: string, object: string): Promise<boolean> {
 
+        const parameters = {tableName: tableName, key: key};
+        const trace = new OperationBuilder().withAction('persistInTable').withPayload(object).withParameters(parameters);
+
         return new Promise((resolve: Function, reject: Function) => {
 
+            this.trail.push(trace.build());
             resolve(true);
 
         });
@@ -119,36 +133,61 @@ export class Sidecar {
      * @description
      * Publish Event in SNS Topic
      */
-    publishEvent(businessEvent: BusinessEvent, event: APIGatewayProxyEvent): Promise<string> {
+    publishEvent(businessEvent: BusinessEvent, event: APIGatewayProxyEvent): Promise<boolean> {
 
-        const trace = new OperationBuilder().withAction('publishEvent').withParameters(businessEvent);
+        const trace = new OperationBuilder().withAction('publishEvent')
 
         return new Promise((resolve: Function, reject: Function) => {
 
-            if (!businessEvent.topicArn) { reject("[Error] No Topic ARN specified"); }
-            
-            const region: string|undefined = this.validateTopicArn(businessEvent.topicArn);
-            if (region) { reject("[Error] Invalid Topic ARN"); }
+            this.trail.push(trace.build());
+            resolve(true);
 
-            const sns = new SNS({region: region});
-            const snsEvent: SNS.PublishInput = { Message: JSON.stringify(businessEvent.body), TopicArn: businessEvent.topicArn };
-            sns.publish(snsEvent, (err: AWS.AWSError, data: AWS.SNS.PublishResponse) => { err ? reject(err) : resolve(data.MessageId); });
+            // if (!businessEvent.topicArn) {
+                
+            //     const metric = this.createMetricFromError(SidecarError.configurationNotAvailable);
+            //     this.publishMetric(metric)
+            //     .then(reject(SidecarError.configurationNotAvailable))
+            //     .catch(reject(SidecarError.configurationNotAvailable))
+            //     return
+
+            // }
+            
+            // const sns = this.dependencyResolver.topic('unecessary parameter');
+            // const msg: ProxySnsMessage = { Message: JSON.stringify(businessEvent.body), TopicArn: businessEvent.topicArn };
+            // sns.publish(msg).then(messageId => {
+
+            //     const tracePayload:Object = Object.assign({ messageId: messageId }, businessEvent);
+            //     const stringfyPayload = JSON.stringify(tracePayload);
+            //     this.trail.push(trace.withPayload(stringfyPayload).build());
+            //     resolve(true);
+
+            // }).catch(publishError => {
+
+            //     const stringfyPayload = JSON.stringify(businessEvent);
+            //     this.trail.push(trace.withPayload(stringfyPayload).withError(publishError).build());
+
+            //     const metric = this.createMetricFromError(SidecarError.dependencyErrorSns);
+            //     this.publishMetric(metric);
+
+            //     reject(SidecarError.dependencyErrorSns);
+
+            // })
 
         });
 
     }
 
     /**
-     * @param metricName InfrastructureMetric
+     * @param metricValue InfrastructureMetric
      * @returns Promise<any>
      * @description
      * Publish Metric Value
      */
-    publishMetric(metricName: InfrastructureMetric): Promise<any> { 
+    publishMetric(metricValue: InfrastructureMetric): Promise<boolean> { 
 
         return new Promise((resolve: Function, reject: Function) => {
 
-            resolve(metricName);
+            resolve(true);
 
         });
 
@@ -156,17 +195,56 @@ export class Sidecar {
 
     /**
      * @param event APIGatewayProxyEvent
-     * @returns Promise<any>
+     * @returns APIGatewayProxyResult
      * @description
      * Create Response Object based on event received
      */
-    createResponse(event: APIGatewayProxyEvent): Promise<any> {
+    createResponse(event: APIGatewayProxyEvent): APIGatewayProxyResult {
+        
+        const result = {statusCode: 200, body: JSON.stringify(event)}
+        return result;
+    
+    }
+
+    /**
+     * @param error SidecarError
+     * @returns APIGatewayProxyResult
+     * @description
+     * Create Response Object based on throwed error
+     */
+    createErrorResponse(error: SidecarError): APIGatewayProxyResult {
+        
+        const result = {statusCode: 200, body: JSON.stringify(error)}
+        return result;
+    
+    }
+
+    /**
+     * @param event APIGatewayProxyEvent
+     * @returns Promise<boolean>
+     * @description
+     * Publish Error in Configured Metric/LogGroup/LogStream/LogConcentrator
+     */
+    publishError(error: SidecarError, payload: string): Promise<SidecarError> {
         
         return new Promise((resolve: Function, reject: Function) => {
 
-            resolve( {statusCode: 200, message: 'worked'} );
+            resolve(error);
 
         });
+    }
+
+    /**
+     * @param event APIGatewayProxyEvent
+     * @returns Promise<boolean>
+     * @description
+     * Publish Error in Configured Metric/LogGroup/LogStream/LogConcentrator
+     */
+    sendResponse(response: APIGatewayProxyResult, callback: Callback): void {
+        
+        this.publishOperationTrail()
+        callback(null, response);
+        
     }
 
     /**
@@ -178,16 +256,43 @@ export class Sidecar {
     private matchPermissions(): boolean {return true;}
 
     /**
-     * @param {string} topicArn
-     * @return {string|undefined} if valid then return region
+     * @param error SidecarError
+     * @return InfrastructureMetric
      * @description
-     * Check wheaterh specified TopicARN is valid or not
-     * https://docs.aws.amazon.com/ja_jp/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-sns
+     * Create a Metric Object based on Error
      */
-    private validateTopicArn(topicArn: string): string | undefined {
-        let splitedTopicArn: string[] = topicArn.split(":");
-        if (splitedTopicArn.length < 7) { return undefined; }
-        return splitedTopicArn[3];
+    private createMetricFromError(error: SidecarError): InfrastructureMetric {
+
+        const metric: InfrastructureMetric = {
+            metricArn: '',
+            value: { value: 1 }
+        }
+
+        return metric;
+
+    }
+
+    /**
+     * @param message Error message
+     * @return void
+     * @description
+     * Publish Error messages in situations where the defined loggroup, logstream and
+     * error metric could not be instantiated.
+     */
+    private publishOperationTrail(): void {
+        //console.log(this.trail);
+    }
+
+    /**
+     * @param message Error message
+     * @return void
+     * @description
+     * Publish Error messages in situations where the defined loggroup, logstream and
+     * error metric could not be instantiated.
+     */
+    private publishErrorInContingence(message: string): void {
+        console.error('Publishing Error in Contigence!')
+        console.error(message);
     }
 
 }
