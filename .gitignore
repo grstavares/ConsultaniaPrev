@@ -5,6 +5,7 @@ node_modules/
 
 ## Build generated
 build/
+dist/
 DerivedData/
 
 ## Various settings
@@ -79,3 +80,6 @@ fastlane/test_output
 glassfish-5.0.zip
 .DS_Store
 Frontend/AngularMaterial/src/app/auth/config.ts
+
+#Lambda Test Reports
+testreports/
