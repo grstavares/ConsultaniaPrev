@@ -5,6 +5,7 @@ import { AWSProxyResolver } from './aws-proxy';
 import { Sidecar } from './sidecar';
 import { Validators } from './validators';
 import { Instituto } from './schema';
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
 
 enum AllowedOperation {
     GetInstituto,
@@ -38,8 +39,8 @@ function getObjectId(event: APIGatewayProxyEvent): string {
 
     } else if (operation === AllowedOperation.DeleteInstituto || operation === AllowedOperation.UpdateInstituto || operation === AllowedOperation.GetInstituto) {
         
-        const object = JSON.parse(event.body)
-        const objectId = object.get('id');
+        const objectPath = event.path.split('/')
+        const objectId = objectPath[objectPath.length-1];
         return objectId;
 
     } else { return null;}
@@ -63,11 +64,10 @@ function getDependencyResolver(context: Context): Promise<ProxyResolver> {
     return new Promise((resolve: Function, reject: Function) => {
 
         if (resolver === null || resolver === undefined) {
-            resolve(resolver);
-        } else { 
             const error = ErrorHelper.newError(HandlerError.DependencyResolverNotAvailable, '', context );
             reject(error)
-        }
+            
+        } else { resolve(resolver); }
 
     })
 
@@ -92,7 +92,7 @@ export function handler (event: APIGatewayProxyEvent, context: Context, callback
     }
 
     const objectId = getObjectId(event);
-    if (operation === null || operation === undefined) {
+    if (objectId === null || objectId === undefined) {
 
         const error = HandlerError.ObjectIdNotAvailable;
         const traceId = context.awsRequestId;
@@ -110,40 +110,31 @@ export function handler (event: APIGatewayProxyEvent, context: Context, callback
         const sidecar = new Sidecar(resolver, context);
 
         const isValidAPIGatewayEvent = Validators.isValidAPIGatewayEvent(event);
+
         if (!isValidAPIGatewayEvent) {
             const error: ServiceError = { code: HandlerError.InvalidEventBody, httpStatusCode: HttpStatusCode.badRequest }
             const response = sidecar.createErrorResponse(error);
-            sidecar.publishError(error, JSON.stringify(event));
-            sidecar.sendResponse(response, callback);
-            return new Promise((resolve: Function, reject: Function) => {reject(error) });
+            return sidecar.publishError(error, JSON.stringify(event))
+            .then(serviceError => sidecar.sendResponse(response, callback));
         }
+
+        const businessEvent = { default: `${operation}:${objectId}`, operation: operation, objectId: objectId }
+        const successEvent: BusinessEvent = {
+            topicArn: topicArn,
+            body: { TopicArn: topicArn, MessageStructure: 'json', Message : JSON.stringify(businessEvent) }
+        };
 
         if (operation === AllowedOperation.GetInstituto) {
 
             return sidecar.getInTable(tableName, objectId)
-            .then(object => sidecar.createResponse(event, operation.toString(), object))
+            .then(object => sidecar.createResponse(event, object, objectId))
+            .then(response => sidecar.sendResponse(response, callback))
             .catch(sidecarError => {
                 const response = sidecar.createErrorResponse(sidecarError);
                 sidecar.sendResponse(response, callback);
             });
 
-        } else {
-
-            const isValidEventBody = Validators.isValidObject(Instituto.schema, event.body)
-            if (!isValidEventBody) {
-                const error: ServiceError = { code: HandlerError.InvalidEventBody, httpStatusCode: HttpStatusCode.badRequest }
-                const response = sidecar.createErrorResponse(error);
-                sidecar.publishError(error, JSON.stringify(event.body));
-                sidecar.sendResponse(response, callback);
-                return new Promise((resolve: Function, reject: Function) => {reject(error) });
-
-            }
-
-            const businessEvent = { default: `${operation}:${objectId}`, operation: operation, objectId: objectId }
-            const successEvent: BusinessEvent = {
-                topicArn: topicArn,
-                body: { TopicArn: topicArn, MessageStructure: 'json', Message : JSON.stringify(businessEvent) }
-            };
+        } else if (operation == AllowedOperation.DeleteInstituto) {
 
             return sidecar.userIsAuthorizedToPerformOperation(event)
             .then(userIsAuthorized => Promise.all([
@@ -151,7 +142,26 @@ export function handler (event: APIGatewayProxyEvent, context: Context, callback
                 sidecar.persistOnLake(lakeName, objectId, event)
             ]))
             .then(persisted => sidecar.publishEvent(topicArn, successEvent, event))
-            .then(eventPublished => sidecar.createResponse(event, operation.toString(), event.body))
+            .then(eventPublished => sidecar.createResponse(event, event.body, objectId))
+            .then(response => sidecar.sendResponse(response, callback))
+            .catch(sidecarError => {
+                const response = sidecar.createErrorResponse(sidecarError);
+                sidecar.sendResponse(response, callback);
+            })
+
+        } else {
+
+            var updatedId = Object.assign({}, JSON.parse(event.body));
+            updatedId = Object.assign(updatedId, {id: objectId})
+
+            return Validators.isValidObject(Instituto, updatedId)
+            .then(objectIsValid => sidecar.userIsAuthorizedToPerformOperation(event))
+            .then(userIsAuthorized => Promise.all([
+                sidecar.persistInTable(tableName, objectId, event),
+                sidecar.persistOnLake(lakeName, objectId, event)
+            ]))
+            .then(persisted => sidecar.publishEvent(topicArn, successEvent, event))
+            .then(eventPublished => sidecar.createResponse(event, event.body, objectId))
             .then(response => sidecar.sendResponse(response, callback))
             .catch(sidecarError => {
                 const response = sidecar.createErrorResponse(sidecarError);
@@ -182,12 +192,16 @@ export function handler (event: APIGatewayProxyEvent, context: Context, callback
  * error metric could not be instantiated.
  */
 function publishErrorInContingence(message: string, payload: APIGatewayProxyEvent, context: Context): void {
-    
-    // if (isLambda) {
-        console.error('Publishing Error in Contigence!')
+
+    if (!isLambda) {
+
+        if (!existsSync('./testreports')) {mkdirSync('./testreports')}
+        const filename = new Date().getTime() + '.txt'
+        writeFileSync('./testreports/console_' + filename, `Publishing Error in Contigence! -> ${message}`, 'utf-8');
+
+    } else {
+        console.error(`Publishing Error in Contigence! -> ${message}`)
         console.error(message);
-        // console.error(payload);
-        // console.error(context);
-    // }
+    }
 
 }

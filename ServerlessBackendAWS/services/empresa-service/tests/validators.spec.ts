@@ -1,40 +1,11 @@
-import { Validators } from '../src/validators';
+import { Validators, ObjectSchema, ValueType } from '../src/validators';
 import { expect, should, } from 'chai';
 import 'mocha';
 
-const validSchema = {
-    "definitions": {},
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://example.com/root.json",
-    "type": "object",
-    "title": "The Root Schema",
-    "required": [
-      "id",
-      "name"
-    ],
-    "properties": {
-      "id": {
-        "$id": "#/properties/id",
-        "type": "string",
-        "title": "The Id Schema",
-        "default": "",
-        "examples": [
-          "1"
-        ],
-        "pattern": "^(.*)$"
-      },
-      "name": {
-        "$id": "#/properties/name",
-        "type": "string",
-        "title": "The Name Schema",
-        "default": "",
-        "examples": [
-          "Gustavo Tavares"
-        ],
-        "pattern": "^(.*)$"
-      }
-    }
-  }
+const validSchema: ObjectSchema = {
+  required: { id: ValueType.string, name: ValueType.string},
+  optional: {}
+}
 
 describe('Validators', () => {
 
@@ -186,18 +157,19 @@ describe('Validators', () => {
   it('Should Return True to valid Object based on Schema', () => {
     
     const payload = { id: 'id', name: 'Teste Name'};
-    const result = Validators.isValidObject(validSchema, payload);
-    expect(result).to.true;
+    Validators.isValidObject(validSchema, payload)
+    .then(result => expect(result).to.be.true)
+    .catch(error => expect(error).to.be.true);
 
   });
 
-  it('Should Return False to invalid Object based on Schema', () => {
+  it('Should Reject Promise to invalid Object based on Schema', () => {
     
     const payload = { none: 'id', name: 'Teste Name'};
-    const result = Validators.isValidObject(validSchema, payload);
-    expect(result).to.false;
+    Validators.isValidObject(validSchema, payload)
+    .then(result => {})
+    .catch(error => expect(error).to.be.any);
 
   });
-
 
 });

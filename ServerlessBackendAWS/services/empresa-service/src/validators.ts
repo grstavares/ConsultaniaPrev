@@ -1,5 +1,20 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { Validator } from 'jsonschema';
+import { HttpStatusCode } from './utilities';
+import { ServiceError } from './types';
+// import { Validator } from 'jsonschema';
+
+export enum ValueType {
+    array,
+    object,
+    string,
+    number,
+    date
+}
+
+export interface ObjectSchema {
+    required: {[key: string]: ValueType};
+    optional: {[key: string]: ValueType};
+}
 
 export class Validators {
 
@@ -13,10 +28,21 @@ export class Validators {
     static isValidKinesisEvent(value: Object): boolean { return true }
     static isValidTopicArn(arn: string): boolean { return true }
     
-    static isValidObject(schema: Object, object: Object): boolean {
+    static isValidObject(schema: ObjectSchema, object: Object): Promise<boolean> {
 
-        const validator = new Validator();
-        return validator.validate(object, schema).valid
+        return new Promise((resolve: Function, reject: Function) => {
+            
+            const required = schema.required;
+            for (var name in required) {
+                if (!object.hasOwnProperty(name)) { 
+                    const error: ServiceError = { code: 'InvalidObjectBody', httpStatusCode: HttpStatusCode.badRequest }
+                    reject(error) 
+                }
+            }
+
+            resolve(true);
+
+        })
 
     }
 

@@ -10,11 +10,11 @@ export interface InfrastructureMetric {
     value: Object;
 }
 
-export interface APIResponse {
-    statusCode: number;
-    headers: Object;
-    body: string;
-}
+// export interface APIResponse {
+//     statusCode: number;
+//     headers: Object;
+//     body: string;
+// }
 
 export interface ProxyResolver {
     topic:(topicArn: string) => ProxySnsTopic;
@@ -63,7 +63,7 @@ export interface ProxySnsMessage {
 export interface ProxyS3Bucket {
     // region: string;
     // bucketName: string;
-    getObject: <T>(key: string) => Promise<T>; 
+    getObject: (key: string) => Promise<Object>; 
     putObject: (key: string, content: Object) => Promise<boolean>; 
 }
 

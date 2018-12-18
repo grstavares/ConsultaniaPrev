@@ -1,5 +1,352 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
 
+export const mockPost = {
+    "resource": "/instituto",
+    "path": "/instituto",
+    "httpMethod": "POST",
+    "headers": {
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "pt-br",
+        "Content-Type": "application/json",
+        "Host": "8br9i5cile.execute-api.sa-east-1.amazonaws.com",
+        "User-Agent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
+        "X-Amzn-Trace-Id": "Root=1-5c195cea-d2aa9a8f16df1a7ef8372804",
+        "X-Forwarded-For": "177.235.73.126",
+        "X-Forwarded-Port": "443",
+        "X-Forwarded-Proto": "https"
+    },
+    "multiValueHeaders": {
+        "Accept": [
+            "*/*"
+        ],
+        "Accept-Encoding": [
+            "gzip, deflate"
+        ],
+        "Accept-Language": [
+            "pt-br"
+        ],
+        "Content-Type": [
+            "application/json"
+        ],
+        "Host": [
+            "8br9i5cile.execute-api.sa-east-1.amazonaws.com"
+        ],
+        "User-Agent": [
+            "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)"
+        ],
+        "X-Amzn-Trace-Id": [
+            "Root=1-5c195cea-d2aa9a8f16df1a7ef8372804"
+        ],
+        "X-Forwarded-For": [
+            "177.235.73.126"
+        ],
+        "X-Forwarded-Port": [
+            "443"
+        ],
+        "X-Forwarded-Proto": [
+            "https"
+        ]
+    },
+    "queryStringParameters": null,
+    "multiValueQueryStringParameters": null,
+    "pathParameters": null,
+    "stageVariables": null,
+    "requestContext": {
+        "resourceId": "46msjn",
+        "resourcePath": "/instituto",
+        "httpMethod": "POST",
+        "extendedRequestId": "SHt0pFu5GjQFdOQ=",
+        "requestTime": "18/Dec/2018:20:47:38 +0000",
+        "path": "/beta/instituto",
+        "accountId": "831559051193",
+        "protocol": "HTTP/1.1",
+        "stage": "beta",
+        "domainPrefix": "8br9i5cile",
+        "requestTimeEpoch": 1545166058504,
+        "requestId": "27dd91fc-0306-11e9-9db3-cd21f64cd30a",
+        "identity": {
+            "cognitoIdentityPoolId": null,
+            "accountId": null,
+            "cognitoIdentityId": null,
+            "caller": null,
+            "sourceIp": "177.235.73.126",
+            "accessKey": null,
+            "cognitoAuthenticationType": null,
+            "cognitoAuthenticationProvider": null,
+            "userArn": null,
+            "userAgent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
+            "user": null
+        },
+        "domainName": "8br9i5cile.execute-api.sa-east-1.amazonaws.com",
+        "apiId": "8br9i5cile"
+    },
+    "body": "{\n \"id\":\"12345\",\n \"name\": \"Novo Teste\",\n  \"birthDate\": \"16-11-1944\",\n  \"addresses\": []\n}",
+    "isBase64Encoded": false
+}
+
+export const mockGet = {
+  "resource": "/instituto/{id}",
+  "path": "/instituto/12345",
+  "httpMethod": "GET",
+  "headers": {
+      "Accept": "*/*",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept-Language": "pt-br",
+      "Content-Type": "application/json",
+      "Host": "8br9i5cile.execute-api.sa-east-1.amazonaws.com",
+      "User-Agent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
+      "X-Amzn-Trace-Id": "Root=1-5c1945b2-29345fc5cd8d4df3761173ad",
+      "X-Forwarded-For": "177.235.73.126",
+      "X-Forwarded-Port": "443",
+      "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+      "Accept": [
+          "*/*"
+      ],
+      "Accept-Encoding": [
+          "gzip, deflate"
+      ],
+      "Accept-Language": [
+          "pt-br"
+      ],
+      "Content-Type": [
+          "application/json"
+      ],
+      "Host": [
+          "8br9i5cile.execute-api.sa-east-1.amazonaws.com"
+      ],
+      "User-Agent": [
+          "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)"
+      ],
+      "X-Amzn-Trace-Id": [
+          "Root=1-5c1945b2-29345fc5cd8d4df3761173ad"
+      ],
+      "X-Forwarded-For": [
+          "177.235.73.126"
+      ],
+      "X-Forwarded-Port": [
+          "443"
+      ],
+      "X-Forwarded-Proto": [
+          "https"
+      ]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+      "id": "12345"
+  },
+  "stageVariables": null,
+  "requestContext": {
+      "resourceId": "tanbkk",
+      "resourcePath": "/instituto/{id}",
+      "httpMethod": "GET",
+      "extendedRequestId": "SHfT0F4SmjQFQfA=",
+      "requestTime": "18/Dec/2018:19:08:34 +0000",
+      "path": "/beta/instituto/12345",
+      "accountId": "831559051193",
+      "protocol": "HTTP/1.1",
+      "stage": "beta",
+      "domainPrefix": "8br9i5cile",
+      "requestTimeEpoch": 1545160114034,
+      "requestId": "50af957d-02f8-11e9-9a1e-29795599f8b5",
+      "identity": {
+          "cognitoIdentityPoolId": null,
+          "accountId": null,
+          "cognitoIdentityId": null,
+          "caller": null,
+          "sourceIp": "177.235.73.126",
+          "accessKey": null,
+          "cognitoAuthenticationType": null,
+          "cognitoAuthenticationProvider": null,
+          "userArn": null,
+          "userAgent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
+          "user": null
+      },
+      "domainName": "8br9i5cile.execute-api.sa-east-1.amazonaws.com",
+      "apiId": "8br9i5cile"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}
+
+export const mockDelete = {
+  "resource": "/instituto/{id}",
+  "path": "/instituto/12345",
+  "httpMethod": "DELETE",
+  "headers": {
+      "Accept": "*/*",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept-Language": "pt-br",
+      "Content-Type": "application/json",
+      "Host": "8br9i5cile.execute-api.sa-east-1.amazonaws.com",
+      "User-Agent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
+      "X-Amzn-Trace-Id": "Root=1-5c194598-567fd0a9d1b574f7340e124a",
+      "X-Forwarded-For": "177.235.73.126",
+      "X-Forwarded-Port": "443",
+      "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+      "Accept": [
+          "*/*"
+      ],
+      "Accept-Encoding": [
+          "gzip, deflate"
+      ],
+      "Accept-Language": [
+          "pt-br"
+      ],
+      "Content-Type": [
+          "application/json"
+      ],
+      "Host": [
+          "8br9i5cile.execute-api.sa-east-1.amazonaws.com"
+      ],
+      "User-Agent": [
+          "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)"
+      ],
+      "X-Amzn-Trace-Id": [
+          "Root=1-5c194598-567fd0a9d1b574f7340e124a"
+      ],
+      "X-Forwarded-For": [
+          "177.235.73.126"
+      ],
+      "X-Forwarded-Port": [
+          "443"
+      ],
+      "X-Forwarded-Proto": [
+          "https"
+      ]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+      "id": "12345"
+  },
+  "stageVariables": null,
+  "requestContext": {
+      "resourceId": "tanbkk",
+      "resourcePath": "/instituto/{id}",
+      "httpMethod": "DELETE",
+      "extendedRequestId": "SHfP4GDIGjQFbOA=",
+      "requestTime": "18/Dec/2018:19:08:08 +0000",
+      "path": "/beta/instituto/12345",
+      "accountId": "831559051193",
+      "protocol": "HTTP/1.1",
+      "stage": "beta",
+      "domainPrefix": "8br9i5cile",
+      "requestTimeEpoch": 1545160088874,
+      "requestId": "41b07934-02f8-11e9-bce8-efe888938bba",
+      "identity": {
+          "cognitoIdentityPoolId": null,
+          "accountId": null,
+          "cognitoIdentityId": null,
+          "caller": null,
+          "sourceIp": "177.235.73.126",
+          "accessKey": null,
+          "cognitoAuthenticationType": null,
+          "cognitoAuthenticationProvider": null,
+          "userArn": null,
+          "userAgent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
+          "user": null
+      },
+      "domainName": "8br9i5cile.execute-api.sa-east-1.amazonaws.com",
+      "apiId": "8br9i5cile"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}
+
+export const mockPut = {
+    "resource": "/instituto/{id}",
+    "path": "/instituto/12345",
+    "httpMethod": "PUT",
+    "headers": {
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "pt-br",
+        "Content-Type": "application/json",
+        "Host": "8br9i5cile.execute-api.sa-east-1.amazonaws.com",
+        "User-Agent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
+        "X-Amzn-Trace-Id": "Root=1-5c195d98-967f8749d7c823831f87fc39",
+        "X-Forwarded-For": "177.235.73.126",
+        "X-Forwarded-Port": "443",
+        "X-Forwarded-Proto": "https"
+    },
+    "multiValueHeaders": {
+        "Accept": [
+            "*/*"
+        ],
+        "Accept-Encoding": [
+            "gzip, deflate"
+        ],
+        "Accept-Language": [
+            "pt-br"
+        ],
+        "Content-Type": [
+            "application/json"
+        ],
+        "Host": [
+            "8br9i5cile.execute-api.sa-east-1.amazonaws.com"
+        ],
+        "User-Agent": [
+            "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)"
+        ],
+        "X-Amzn-Trace-Id": [
+            "Root=1-5c195d98-967f8749d7c823831f87fc39"
+        ],
+        "X-Forwarded-For": [
+            "177.235.73.126"
+        ],
+        "X-Forwarded-Port": [
+            "443"
+        ],
+        "X-Forwarded-Proto": [
+            "https"
+        ]
+    },
+    "queryStringParameters": null,
+    "multiValueQueryStringParameters": null,
+    "pathParameters": {
+        "id": "12345"
+    },
+    "stageVariables": null,
+    "requestContext": {
+        "resourceId": "tanbkk",
+        "resourcePath": "/instituto/{id}",
+        "httpMethod": "PUT",
+        "extendedRequestId": "SHuPyGugmjQFaSA=",
+        "requestTime": "18/Dec/2018:20:50:32 +0000",
+        "path": "/beta/instituto/12345",
+        "accountId": "831559051193",
+        "protocol": "HTTP/1.1",
+        "stage": "beta",
+        "domainPrefix": "8br9i5cile",
+        "requestTimeEpoch": 1545166232299,
+        "requestId": "8f74bc1f-0306-11e9-820b-8159f7adeb67",
+        "identity": {
+            "cognitoIdentityPoolId": null,
+            "accountId": null,
+            "cognitoIdentityId": null,
+            "caller": null,
+            "sourceIp": "177.235.73.126",
+            "accessKey": null,
+            "cognitoAuthenticationType": null,
+            "cognitoAuthenticationProvider": null,
+            "userArn": null,
+            "userAgent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
+            "user": null
+        },
+        "domainName": "8br9i5cile.execute-api.sa-east-1.amazonaws.com",
+        "apiId": "8br9i5cile"
+    },
+    "body": "{\n \"id\":\"12345\",\n \"name\": \"Novo Teste\",\n  \"birthDate\": \"16-11-1944\",\n  \"addresses\": []\n}",
+    "isBase64Encoded": false
+}
+
+
 export const mockEvent: APIGatewayProxyEvent = {
   "body": "{\"id\":\"eyJ0ZXN0IjoiYm9keSJ9\", \"name\":\"Gustavo Tavares\", \"birthDate\":\"15-11-1977\", \"addresses\": [ { \"cep\": \"71915-250\", \"city\":\"Brasília\" }, { \"cep\": \"74110-090\", \"city\":\"Goiânia\" }], \"parametros\": { \"senha\": \"aquela\", \"tela\": \"principal\" } }",
   "resource": "/{proxy+}",

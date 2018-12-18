@@ -98,7 +98,7 @@ export class AWSTopic implements ProxySnsTopic {
 
 export class AWSBucket implements ProxyS3Bucket {
     constructor(private region: string, private name: string) { }
-    getObject<T>(key: string): Promise<T> { return new Promise((resolve: Function, reject: Function) => { resolve(null); }); }
+    getObject(key: string): Promise<Object> { return new Promise((resolve: Function, reject: Function) => { resolve(null); }); }
     putObject(key: string, content: Object): Promise<boolean> { return new Promise((resolve: Function, reject: Function) => { resolve(true); }); }
 }
 

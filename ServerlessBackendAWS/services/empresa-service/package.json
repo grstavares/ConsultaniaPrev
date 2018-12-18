@@ -4,7 +4,7 @@
   "description": "Empresa Microservice in TypeScript for ConsultaniaPrev Solution",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -r ts-node/register tests/**/*.spec.ts",
+    "test": "LAMBDA_TESTER_NODE_VERSION_CHECK=false mocha -r ts-node/register tests/**/*.spec.ts",
     "build": "webpack --config webpack.config.js"
   },
   "author": "Gustavo Tavares",

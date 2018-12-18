@@ -1,4 +1,5 @@
-import { APIResponse, ServiceError } from './types';
+import { ServiceError } from './types';
+import { APIGatewayProxyResult } from 'aws-lambda';
 
 export const HttpStatusCode = {
     ok: 200,
@@ -22,35 +23,37 @@ export class UUID {
 
 export class ResponseBuilder {
 
-    public static ok<T>(result: T): APIResponse { return ResponseBuilder.parseResponse(result, HttpStatusCode.ok); }
+    private static defaultHeaders = {'Content-Type': 'application/json'};
+
+    public static ok<T>(result: T): APIGatewayProxyResult { return ResponseBuilder.parseResponse(result, HttpStatusCode.ok); }
     
-    public static created<T>(url: string, result: T): APIResponse {
+    public static created<T>(url: string, result: T): APIGatewayProxyResult {
         const headers = { Location: url }
         return ResponseBuilder.parseResponse(result, HttpStatusCode.created, headers);
     }
 
-    public static badRequest(reason: string, traceId: string): APIResponse {
+    public static badRequest(reason: string, traceId: string): APIGatewayProxyResult {
         
         const error = ResponseBuilder.parseError(HttpStatusCode.badRequest, reason, traceId);
         return ResponseBuilder.parseResponse(error, HttpStatusCode.badRequest);
         
     }
     
-    public static forbidden(reason: string, traceId: string): APIResponse {
+    public static forbidden(reason: string, traceId: string): APIGatewayProxyResult {
         
         const error = ResponseBuilder.parseError(HttpStatusCode.forbidden, 'REDACTED', traceId);
         return ResponseBuilder.parseResponse(error, HttpStatusCode.forbidden);
         
     }
     
-    public static notFound(reason: string, traceId: string): APIResponse {
+    public static notFound(reason: string, traceId: string): APIGatewayProxyResult {
 
         const error = ResponseBuilder.parseError(HttpStatusCode.notFound, reason, traceId);
         return ResponseBuilder.parseResponse(error, HttpStatusCode.notFound);
 
     }
 
-    public static internalError(reason: string, traceId: string): APIResponse {
+    public static internalError(reason: string, traceId: string): APIGatewayProxyResult {
 
         const error = ResponseBuilder.parseError(HttpStatusCode.internalServerError, 'REDACTED', traceId);
         return ResponseBuilder.parseResponse(error, HttpStatusCode.internalServerError);
@@ -64,11 +67,11 @@ export class ResponseBuilder {
 
     }
 
-    private static parseResponse<T>(result: T, statusCode: number, headers?: {[key: string]: string}) {
+    private static parseResponse<T>(result: T, statusCode: number, headers?: {[key: string]: string}):APIGatewayProxyResult {
 
         const responseBody = result ? JSON.stringify(result) : null;
-        const parsedHeaders = headers ? headers : {};
-        const response: APIResponse = {
+        const parsedHeaders = headers ? Object.assign(headers, ResponseBuilder.defaultHeaders ) : ResponseBuilder.defaultHeaders;
+        const response: APIGatewayProxyResult = {
             statusCode: statusCode,
             headers: parsedHeaders,
             body: responseBody
