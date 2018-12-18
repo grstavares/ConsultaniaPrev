@@ -1,4 +1,5 @@
-export const instituto = {
+export const Instituto = {
+  schema: {
     "$id": "https://consultania.com.br/instituto.schema.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "InstitutoPrevidencia",
@@ -24,3 +25,4 @@ export const instituto = {
       }
     }
   }
+}

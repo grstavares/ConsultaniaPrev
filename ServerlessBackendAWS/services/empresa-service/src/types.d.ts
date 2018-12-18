@@ -2,7 +2,7 @@ import { DynamoDB } from 'aws-sdk';
 
 export interface BusinessEvent {
     topicArn: string;
-    body: string;
+    body: ProxySnsMessage;
 }
 
 export interface InfrastructureMetric {
@@ -75,14 +75,14 @@ export interface ProxyMetric {
 
 export interface ProxyTable {
     // region: string;
-    marshalObject: (object: Object) => DynamoDB.AttributeMap;
-    unmarshalObject: (object: DynamoDB.AttributeMap) => Object;
+    getItem: (key: string) => Promise<Object>;
     putItem: (key: string, object: Object) => Promise<boolean>;
-    deleteItem: (key: string, object: Object) => Promise<boolean>;
+    deleteItem: (key: string) => Promise<boolean>;
 }
 
-export interface ProxyError {
+export interface ServiceError {
     code: string;
+    httpStatusCode: number;
     resource?: string;
     payload?: Object;
 }

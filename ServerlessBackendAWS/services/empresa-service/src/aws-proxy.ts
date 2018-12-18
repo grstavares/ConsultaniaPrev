@@ -1,4 +1,4 @@
-import { ProxyTable, ProxyS3Bucket, ProxySnsTopic, ProxyMetric, ProxyResolver, ProxySnsMessage, ProxyError } from './types';
+import { ProxyTable, ProxyS3Bucket, ProxySnsTopic, ProxyMetric, ProxyResolver, ProxySnsMessage, ServiceError } from './types';
 import { SNS, DynamoDB } from 'aws-sdk';
 
 interface CachedObject<T> {
@@ -110,22 +110,16 @@ export class AWSMetric implements ProxyMetric {
 export class AWSTable implements ProxyTable {
 
     constructor(private region: string, private name: string) { }
-    
-    marshalObject(object: Object): DynamoDB.AttributeMap {
-        
-        const marshsalled = DynamoDB.Converter.marshall(object, { convertEmptyValues: true, wrapNumbers: true })
-        return marshsalled;
+
+    getItem(key: string): Promise<Object> {
+
+        return new Promise((resolve: Function, reject: Function) => {         
+            resolve({});
+        });
 
     }
 
-    unmarshalObject(object: DynamoDB.AttributeMap): Object {
-
-        const unmarshsalled = DynamoDB.Converter.unmarshall(object, { convertEmptyValues: true, wrapNumbers: true })
-        return unmarshsalled;
-
-    }
-
-    putItem(object: Object): Promise<boolean> { return new Promise((resolve: Function, reject: Function) => { 
+    putItem(key: string, object: Object): Promise<boolean> { return new Promise((resolve: Function, reject: Function) => { 
         
         const input = DynamoDB.Converter.input(object, { convertEmptyValues: true, wrapNumbers: true })
         const marshsalled = DynamoDB.Converter.marshall(object, { convertEmptyValues: true, wrapNumbers: true })
@@ -134,13 +128,13 @@ export class AWSTable implements ProxyTable {
     
     }
 
-    deleteItem(object: Object): Promise<boolean> { return new Promise((resolve: Function, reject: Function) => { resolve(true); }); }
+    deleteItem(key: string): Promise<boolean> { return new Promise((resolve: Function, reject: Function) => { resolve(true); }); }
 }
 
 class AWSHelper {
 
-    public static parseAWSError(error: AWS.AWSError): ProxyError {
-        return { code: 'invalid', resource: '', payload: '' }
+    public static parseAWSError(error: AWS.AWSError): ServiceError {
+        return { code: 'invalid', httpStatusCode: 500, resource: '', payload: '' }
     }
 
 }

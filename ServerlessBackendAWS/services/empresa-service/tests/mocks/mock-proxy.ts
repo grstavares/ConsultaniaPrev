@@ -10,3 +10,38 @@ export class MockProxyResolver implements ProxyResolver {
     table(region: string, name: string): ProxyTable  {return this._table; }
 
 }
+
+export class MockTable implements ProxyTable {
+
+    tableItems: Dictionary = {};
+
+    getItem(key: string): Promise<Object> {
+
+        return new Promise((resolve: Function, reject: Function) => {
+            const found = this.tableItems[key]
+            resolve(found);
+        });
+
+    }
+
+    putItem(key: string, object: Object): Promise<boolean> {
+        return new Promise((resolve: Function, reject: Function) => {
+
+            delete this.tableItems[key]
+            this.tableItems[key] = object
+            resolve(true);
+
+        });
+    }
+
+    deleteItem(key: string): Promise<boolean> {
+        return new Promise((resolve: Function, reject: Function) => {
+            delete this.tableItems[key]
+            resolve(true);
+        });
+    }
+}
+
+interface Dictionary {
+    [key: string]: Object;
+}

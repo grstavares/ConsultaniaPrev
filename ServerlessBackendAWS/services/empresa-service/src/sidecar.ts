@@ -1,18 +1,17 @@
-import { SNS } from 'aws-sdk';
 import { Context, APIGatewayProxyEvent, Callback, APIGatewayProxyResult } from 'aws-lambda';
-import { BusinessEvent, InfrastructureMetric, ProxyResolver, ProxySnsMessage } from './types.d';
-import { ResponseBuilder } from './utilities';
-import { instituto } from './schema';
+import { BusinessEvent, InfrastructureMetric, ProxyResolver, ServiceError } from './types.d';
+import { AwsHelper } from  './aws-helper';
+import { DynamoDB } from 'aws-sdk';
 
 enum SidecarError {
-    userNotAuthorized,
-    invalidObjectBody,
-    resourceNotAvailable,
-    dependencyError,
-    dependencyErrorSns,
-    configurationNotAvailable,
-    invalidConfiguration,
-    undefined
+    UserNotAuthorized = 'UserNotAuthorized',
+    InvalidObjectBody = 'InvalidObjectBody',
+    InvalidOperation = 'InvalidOperation',
+    ResourceNotAvailable = 'ResourceNotAvailable',
+    DependencyError = 'DependencyError',
+    ConfigurationNotAvailable = 'ConfigurationNotAvailable',
+    InvalidConfiguration = 'InvalidConfiguration',
+    undefined = 'undefined'
 }
 
 export class Sidecar {
@@ -42,10 +41,17 @@ export class Sidecar {
 
             } else {
 
-                const error = { error: SidecarError.userNotAuthorized }
+                const error = {
+                    error: SidecarError.UserNotAuthorized,
+                    payload: 'empty',
+                    parameters: {
+                        userId: event.requestContext.identity.userArn,
+                        checkedPolicies: JSON.stringify(['policA', 'policyB'])
+                    }
+                }
+
                 this.trail.push(trace.withError(error).build())
-                const response = ResponseBuilder.forbidden('Auth Failed!', this.lambdaContext.awsRequestId)
-                reject(response);
+                reject(error);
 
             }
 
@@ -94,13 +100,52 @@ export class Sidecar {
         const parameters = {bucketName: bucketName, eventId: eventId};
         const trace = new OperationBuilder().withAction('persistOnLake').withPayload(event.body).withParameters(parameters);
 
+        const bucket = this.dependencyResolver.bucket('region', bucketName);
         return new Promise((resolve: Function, reject: Function) => {
 
-            this.trail.push(trace.build());
-            resolve(true);
+            bucket.putObject(eventId, JSON.stringify(event)).then(success => {
+    
+                this.trail.push(trace.build());
+                resolve(true);            
+    
+            }).catch(error => {
+
+                this.trail.push(trace.withError(error).build());
+                reject(error);
+
+            });
 
         });
 
+    }
+
+    /**
+     * @param tableName string
+     * @param objectKey string
+     * @return Promise<Object>
+     * @description
+     * Get Object Value on noSQLTable
+     */
+    getInTable(tableName: string, key: string): Promise<Object> {
+
+        const parameters = {tableName: tableName, key: key};
+        const trace = new OperationBuilder().withAction('getInTable').withParameters(parameters);
+
+        const table = this.dependencyResolver.table('region', tableName);
+        return new Promise((resolve: Function, reject: Function) => {
+
+            table.getItem(key).then((object: DynamoDB.AttributeMap) => {
+                const result = AwsHelper.unmarshalObject(object);
+                this.trail.push(trace.build());
+                resolve(result);
+            }).catch((error: ServiceError) => {
+                const parameters = { itemId: key }
+                this.trail.push(trace.withParameters(parameters).withError(error).build());
+                reject(error);
+            });
+
+        });
+    
     }
 
     /**
@@ -112,15 +157,44 @@ export class Sidecar {
      * Persist Event in noSQLTable
      * The object must be provided as DynamoDB record.
      */
-    persistInTable(tableName: string, key: string, object: string): Promise<boolean> {
+    persistInTable(tableName: string, key: string, event: APIGatewayProxyEvent): Promise<boolean> {
 
-        const parameters = {tableName: tableName, key: key};
-        const trace = new OperationBuilder().withAction('persistInTable').withPayload(object).withParameters(parameters);
+        const operation = event.httpMethod;
+        const parameters = {tableName: tableName, key: key, operation: operation};
+        const trace = new OperationBuilder().withAction('persistInTable').withPayload(event.body).withParameters(parameters);
 
+        const table = this.dependencyResolver.table('region', tableName);
         return new Promise((resolve: Function, reject: Function) => {
 
-            this.trail.push(trace.build());
-            resolve(true);
+            if (operation.toLowerCase() === 'post' || operation.toLowerCase() === 'put') {
+                
+                const payload = AwsHelper.marshalObject(event.body);
+                table.putItem(key, payload).then(success => {
+                    this.trail.push(trace.build());
+                    resolve(true);            
+                }).catch(error => {
+                    this.trail.push(trace.withError(error).build());
+                    reject(error);
+                });
+
+            } else if (operation.toLowerCase() === 'delete') {
+                
+                table.deleteItem(key).then(success => {
+                    this.trail.push(trace.build());
+                    resolve(true);            
+                }).catch(error => {
+                    this.trail.push(trace.withError(error).build());
+                    reject(error);
+                });
+
+            } else {
+
+                const parameters = { requestedOperation: operation }
+                const error = SidecarError.InvalidOperation;
+                this.trail.push(trace.withParameters(parameters).withError(error).build());
+                reject(error);
+
+            }
 
         });
     
@@ -133,45 +207,25 @@ export class Sidecar {
      * @description
      * Publish Event in SNS Topic
      */
-    publishEvent(businessEvent: BusinessEvent, event: APIGatewayProxyEvent): Promise<boolean> {
+    publishEvent(topicArn: string, businessEvent: BusinessEvent, event: APIGatewayProxyEvent): Promise<boolean> {
 
-        const trace = new OperationBuilder().withAction('publishEvent')
+        const trace = new OperationBuilder().withAction('publishEvent').withPayload(JSON.stringify(businessEvent))
+        const topic = this.dependencyResolver.topic(topicArn);
 
         return new Promise((resolve: Function, reject: Function) => {
 
-            this.trail.push(trace.build());
-            resolve(true);
+            topic.publish(businessEvent.body).then(messageId => {
 
-            // if (!businessEvent.topicArn) {
-                
-            //     const metric = this.createMetricFromError(SidecarError.configurationNotAvailable);
-            //     this.publishMetric(metric)
-            //     .then(reject(SidecarError.configurationNotAvailable))
-            //     .catch(reject(SidecarError.configurationNotAvailable))
-            //     return
+                const parameters = { messageId: messageId }
+                this.trail.push(trace.withParameters(parameters).build());
+                resolve(true);
 
-            // }
-            
-            // const sns = this.dependencyResolver.topic('unecessary parameter');
-            // const msg: ProxySnsMessage = { Message: JSON.stringify(businessEvent.body), TopicArn: businessEvent.topicArn };
-            // sns.publish(msg).then(messageId => {
+            }).catch(error => {
 
-            //     const tracePayload:Object = Object.assign({ messageId: messageId }, businessEvent);
-            //     const stringfyPayload = JSON.stringify(tracePayload);
-            //     this.trail.push(trace.withPayload(stringfyPayload).build());
-            //     resolve(true);
+                this.trail.push(trace.withError(error).build());
+                reject(error);
 
-            // }).catch(publishError => {
-
-            //     const stringfyPayload = JSON.stringify(businessEvent);
-            //     this.trail.push(trace.withPayload(stringfyPayload).withError(publishError).build());
-
-            //     const metric = this.createMetricFromError(SidecarError.dependencyErrorSns);
-            //     this.publishMetric(metric);
-
-            //     reject(SidecarError.dependencyErrorSns);
-
-            // })
+            });
 
         });
 
@@ -185,9 +239,22 @@ export class Sidecar {
      */
     publishMetric(metricValue: InfrastructureMetric): Promise<boolean> { 
 
+        const trace = new OperationBuilder().withAction('publishMetric').withPayload(JSON.stringify(metricValue))
+        const metric = this.dependencyResolver.metric('region', metricValue.metricArn);
         return new Promise((resolve: Function, reject: Function) => {
 
-            resolve(true);
+            metric.publish(metricValue.metricArn, JSON.stringify(metricValue.value))
+            .then(success => {
+
+                this.trail.push(trace.build());
+                resolve(true);
+
+            }).catch(error => {
+
+                this.trail.push(trace.withError(error).build());
+                reject(error);
+
+            });
 
         });
 
@@ -199,7 +266,7 @@ export class Sidecar {
      * @description
      * Create Response Object based on event received
      */
-    createResponse(event: APIGatewayProxyEvent): APIGatewayProxyResult {
+    createResponse(event: APIGatewayProxyEvent, operation: string, content: Object): APIGatewayProxyResult {
         
         const result = {statusCode: 200, body: JSON.stringify(event)}
         return result;
@@ -212,9 +279,9 @@ export class Sidecar {
      * @description
      * Create Response Object based on throwed error
      */
-    createErrorResponse(error: SidecarError): APIGatewayProxyResult {
+    createErrorResponse(error: ServiceError): APIGatewayProxyResult {
         
-        const result = {statusCode: 200, body: JSON.stringify(error)}
+        const result = {statusCode: error.httpStatusCode, body: ''}
         return result;
     
     }
@@ -225,7 +292,7 @@ export class Sidecar {
      * @description
      * Publish Error in Configured Metric/LogGroup/LogStream/LogConcentrator
      */
-    publishError(error: SidecarError, payload: string): Promise<SidecarError> {
+    publishError(error: ServiceError, payload: string): Promise<ServiceError> {
         
         return new Promise((resolve: Function, reject: Function) => {
 
@@ -271,6 +338,22 @@ export class Sidecar {
         return metric;
 
     }
+
+    private gerErrorCode(error: SidecarError): number {
+
+        switch (error) {
+            case SidecarError.UserNotAuthorized:return 403;
+            case SidecarError.InvalidObjectBody: return 400;
+            case SidecarError.InvalidOperation: return 400;
+            case SidecarError.ResourceNotAvailable: return 500;
+            case SidecarError.DependencyError: return 500;
+            case SidecarError.ConfigurationNotAvailable: return 500;
+            case SidecarError.InvalidConfiguration: return 500;
+            default: return 500;
+        }
+
+    }
+
 
     /**
      * @param message Error message
