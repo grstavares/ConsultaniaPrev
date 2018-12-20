@@ -9,7 +9,7 @@
         // "target": "es5",
         "target": "es2015",
         "sourceMap": false,
-        "types": ["node"]
+        "types": ["node", "mocha", "chai" ]
     },
     "include": [
         "src/**/*"

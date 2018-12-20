@@ -1,7 +1,7 @@
 import { Context, Callback, APIGatewayProxyEvent } from 'aws-lambda';
 import { BusinessEvent, ProxyResolver, ServiceError } from './types.d';
 import { ResponseBuilder, UUID, ErrorHelper, HttpStatusCode } from './utilities';
-import { AWSProxyResolver } from './aws-proxy';
+import { AWSProxyResolver, AWSConfiguration } from './aws-proxy';
 import { Sidecar } from './sidecar';
 import { Validators } from './validators';
 import { Instituto } from './schema';
@@ -22,9 +22,9 @@ enum HandlerError {
     InvalidObjectBody = 'InvalidObjectBody',
 }
 
-const lakeName = 'thisBucket';
-const tableName = 'thisTable';
-const topicArn = 'thisTopic';
+const lakeName = process.env.SERVICE_LAKE_ARN || 'thisBucket';
+const tableName = process.env.SERVICE_TABLE_ARN || 'thisTable';
+const topicArn = process.env.SERVICE_TOPIC_ARN || 'thisTopic';
 const isLambda = !!(process.env.LAMBDA_TASK_ROOT || false);
 
 var mockResolver: ProxyResolver;
@@ -47,6 +47,8 @@ function getObjectId(event: APIGatewayProxyEvent): string {
 
 }
 
+function parseObjectKey(objectId: string): {[key:string]: any} { return { id : objectId}; }
+
 function getOperation(event: APIGatewayProxyEvent): AllowedOperation {
     
     const operation = event.httpMethod;
@@ -60,7 +62,15 @@ function getOperation(event: APIGatewayProxyEvent): AllowedOperation {
 
 function getDependencyResolver(context: Context): Promise<ProxyResolver> {
     
-    const resolver: ProxyResolver = isLambda ? new AWSProxyResolver() : mockResolver;
+    const awsConfig: AWSConfiguration = {
+        appName: process.env.APP_NAME || 'TemporaryAppName',
+        metricStorage: 60 * 5,  //five minutes
+        functionName: context.functionName,
+        functionStage: context.invokedFunctionArn,
+        functionVersion: context.functionVersion
+    }
+
+    const resolver: ProxyResolver = isLambda ? new AWSProxyResolver(awsConfig) : mockResolver;
     return new Promise((resolve: Function, reject: Function) => {
 
         if (resolver === null || resolver === undefined) {
@@ -77,11 +87,17 @@ export function injetResolver(resolver: ProxyResolver) { mockResolver = resolver
 
 export function handler (event: APIGatewayProxyEvent, context: Context, callback: Callback): void {
 
+    // process.on('unhandledRejection', (reason, p) => {
+    //     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+    //     // application specific logging, throwing an error, or other logic here
+    //   });
+
+    const traceId = context.awsRequestId;
+
     const operation = getOperation(event);
     if (operation === null || operation === undefined) {
 
         const error = HandlerError.OperationNotAllowed;
-        const traceId = context.awsRequestId;
         const message = `${JSON.stringify(error)}! TraceId:${traceId}`;
         publishErrorInContingence(message, event, context)
 
@@ -95,7 +111,6 @@ export function handler (event: APIGatewayProxyEvent, context: Context, callback
     if (objectId === null || objectId === undefined) {
 
         const error = HandlerError.ObjectIdNotAvailable;
-        const traceId = context.awsRequestId;
         const message = `${JSON.stringify(error)}! TraceId:${traceId}`;
         publishErrorInContingence(message, event, context)
 
@@ -126,7 +141,7 @@ export function handler (event: APIGatewayProxyEvent, context: Context, callback
 
         if (operation === AllowedOperation.GetInstituto) {
 
-            return sidecar.getInTable(tableName, objectId)
+            return sidecar.getInTable(tableName, parseObjectKey(objectId))
             .then(object => sidecar.createResponse(event, object, objectId))
             .then(response => sidecar.sendResponse(response, callback))
             .catch(sidecarError => {
@@ -138,7 +153,7 @@ export function handler (event: APIGatewayProxyEvent, context: Context, callback
 
             return sidecar.userIsAuthorizedToPerformOperation(event)
             .then(userIsAuthorized => Promise.all([
-                sidecar.persistInTable(tableName, objectId, event),
+                sidecar.persistInTable(tableName, event.httpMethod, parseObjectKey(objectId), JSON.parse(event.body)),
                 sidecar.persistOnLake(lakeName, objectId, event)
             ]))
             .then(persisted => sidecar.publishEvent(topicArn, successEvent, event))
@@ -156,10 +171,15 @@ export function handler (event: APIGatewayProxyEvent, context: Context, callback
 
             return Validators.isValidObject(Instituto, updatedId)
             .then(objectIsValid => sidecar.userIsAuthorizedToPerformOperation(event))
-            .then(userIsAuthorized => Promise.all([
-                sidecar.persistInTable(tableName, objectId, event),
-                sidecar.persistOnLake(lakeName, objectId, event)
-            ]))
+            .then(userIsAuthorized => {
+
+                const newObject = Object.assign(JSON.parse(event.body), { id: objectId })
+                Promise.all([
+                    sidecar.persistInTable(tableName, event.httpMethod, parseObjectKey(objectId), newObject),
+                    sidecar.persistOnLake(lakeName, traceId, event)
+                ])
+
+            })
             .then(persisted => sidecar.publishEvent(topicArn, successEvent, event))
             .then(eventPublished => sidecar.createResponse(event, event.body, objectId))
             .then(response => sidecar.sendResponse(response, callback))

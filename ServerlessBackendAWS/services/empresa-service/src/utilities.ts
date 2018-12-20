@@ -1,4 +1,4 @@
-import { ServiceError } from './types';
+import { ServiceError, InfrastructureMetric } from './types';
 import { APIGatewayProxyResult } from 'aws-lambda';
 
 export const HttpStatusCode = {
@@ -83,6 +83,37 @@ export class ResponseBuilder {
 
 }
 
+export class MetricBuilder {
+
+    timestamp: Date;
+    name: string;
+    value: number;
+    dimensions: {Name: string; Value: string}[] = [];
+
+    constructor(name: string, value: number) { 
+        this.timestamp = new Date();
+        this.name = name;
+        this.value = value;
+    }
+
+    withResource(resourceName: string): MetricBuilder { this.dimensions.push({ Name: 'Resource', Value: resourceName }); return this }
+    withResourceType(resourceName: string): MetricBuilder { this.dimensions.push({ Name: 'ResourceType', Value: resourceName }); return this }
+    withDimension(dimensionName: string, dimensionValue: string): MetricBuilder { this.dimensions.push({ Name: dimensionName, Value: dimensionValue }); return this }
+
+    build(): InfrastructureMetric {
+
+        const metric: InfrastructureMetric = {
+            timestamp: this.timestamp,
+            name: this.name,
+            value: this.value,
+            dimensions: this.dimensions
+        }
+
+        return metric;
+
+    }
+}
+
 export class ErrorHelper {
 
     public static newError(errorCode: string, resource: string, payload: Object): ServiceError {
@@ -92,4 +123,8 @@ export class ErrorHelper {
 
     }
 
+}
+
+export class EnvironmentHelper {
+    public static getParameter(name: string): string { return process.env[name]; }
 }

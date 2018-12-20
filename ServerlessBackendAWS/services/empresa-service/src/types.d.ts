@@ -6,8 +6,10 @@ export interface BusinessEvent {
 }
 
 export interface InfrastructureMetric {
-    metricArn: string;
-    value: Object;
+    timestamp: Date;
+    name: string;
+    value: number;
+    dimensions?: {Name: string; Value: string}[];
 }
 
 // export interface APIResponse {
@@ -17,10 +19,10 @@ export interface InfrastructureMetric {
 // }
 
 export interface ProxyResolver {
-    topic:(topicArn: string) => ProxySnsTopic;
+    topic:(arn: string) => ProxySnsTopic;
     bucket:(region: string, name: string) => ProxyS3Bucket;
-    metric:(region: string, name: string) => ProxyMetric;
-    table:(region: string, name: string) => ProxyTable;
+    metric:() => ProxyMetric;
+    table:(arn: string) => ProxyTable;
 }
 
 export interface ProxySnsTopic {
@@ -70,14 +72,14 @@ export interface ProxyS3Bucket {
 export interface ProxyMetric {
     // region: string;
     // table: string;
-    publish: (name: string, value: string) => Promise<boolean>;
+    publish: (metric: InfrastructureMetric) => Promise<boolean>;
 }
 
 export interface ProxyTable {
     // region: string;
-    getItem: (key: string) => Promise<Object>;
-    putItem: (key: string, object: Object) => Promise<boolean>;
-    deleteItem: (key: string) => Promise<boolean>;
+    getItem: (key: {[key:string]: any}) => Promise<Object>;
+    putItem: (keys: { [key: string]: any }, object: Object) => Promise<boolean>;
+    deleteItem: (keys: { [key: string]: any }) => Promise<boolean>;
 }
 
 export interface ServiceError {
@@ -85,4 +87,11 @@ export interface ServiceError {
     httpStatusCode: number;
     resource?: string;
     payload?: Object;
+}
+
+export interface ServiceParameter {
+    name: string;
+    type: 'ENV' | 'SECRET' | 'STORE'
+    isEncrypted?: boolean;
+    path?: string;
 }
