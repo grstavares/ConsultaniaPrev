@@ -1,6 +1,8 @@
-import { ProxyTable, ProxyS3Bucket, ProxySnsTopic, ProxyMetric, ProxyResolver, ProxySnsMessage, ServiceError, InfrastructureMetric } from './types';
-import { SNS, DynamoDB, CloudWatch, config, AWSError, S3 } from 'aws-sdk';
+import { ProxyTable, ProxyS3Bucket, ProxySnsTopic, ProxyMetric, ProxyResolver, ProxySnsMessage, ServiceError, InfrastructureMetric, InfrastructureMetricDimension } from './types';
+import { SNS, DynamoDB, CloudWatch, AWSError, S3 } from 'aws-sdk';
 import { AwsHelper } from './aws-helper';
+
+var AWSXRay = require('aws-xray-sdk');
 
 interface CachedObject<T> {
     type: string;
@@ -23,7 +25,7 @@ export class AWSProxyResolver implements ProxyResolver {
     metricCache: CachedObject<ProxyMetric>[] = [];
     tablesCache: CachedObject<ProxyTable>[] = [];
 
-    constructor(private config: AWSConfiguration) { }
+    constructor(private config: AWSConfiguration) { AWSXRay.enableManualMode(); }
 
     topic(arn): ProxySnsTopic {
 
@@ -57,13 +59,14 @@ export class AWSProxyResolver implements ProxyResolver {
 
     table(arn: string): ProxyTable {
 
-        const docClient = new DynamoDB.DocumentClient()
+        const dynamoClient = AWSXRay.captureAWSClient(new DynamoDB());
+        const documentClient = new DynamoDB.DocumentClient()
 
         const objectKey = 'table_' + arn
         const cached = this.tablesCache.filter((value) => { value.key === objectKey })
         if (cached.length > 0) {
             return cached[0].object
-        } else { return new AWSTable(docClient, arn) }
+        } else { return new AWSTable(dynamoClient, documentClient, arn) }
 
     }
 
@@ -81,15 +84,12 @@ export class AWSTopic implements ProxySnsTopic {
 
         return new Promise((resolve: Function, reject: Function) => {
 
-            const region: string | undefined = this.validateArnAndReturnRegion(message.TopicArn);
-            if (!region) { reject({ code: this.Errors.invalidArn, resource: this.arn }) }
-
-            const sns = new SNS({ region: region });
+            const sns = AWSXRay.captureAWSClient(new SNS());
             const snsEvent: SNS.PublishInput = { Message: JSON.stringify(message), TopicArn: this.arn };
 
             sns.publish(snsEvent, (error: AWS.AWSError, data: AWS.SNS.PublishResponse) => {
 
-                if (error) { reject(AwsHelper.parseAWSError(error))
+                if (error) { reject(AwsHelper.parseAWSError(error, {type: 'topic', name: this.arn}))
                 } else { resolve(data.MessageId); }
 
             });
@@ -115,7 +115,7 @@ export class AWSTopic implements ProxySnsTopic {
 
 export class AWSBucket implements ProxyS3Bucket {
 
-    s3 = new S3();
+    s3 = AWSXRay.captureAWSClient(new S3());
 
     constructor(private region: string, private name: string) { }
 
@@ -126,7 +126,7 @@ export class AWSBucket implements ProxyS3Bucket {
             
             this.s3.getObject(getObjectParams, (error: AWSError, data: S3.GetObjectOutput) => {
 
-                if (error) { reject(AwsHelper.parseAWSError(error))
+                if (error) { reject(AwsHelper.parseAWSError(error, {type: 'bucket', name: this.name}))
                 } else { resolve(data); }
 
             })
@@ -149,7 +149,7 @@ export class AWSBucket implements ProxyS3Bucket {
             
             this.s3.putObject(putObjectParams, (error: AWSError, data: S3.PutObjectOutput) => {
 
-                if (error) { reject(AwsHelper.parseAWSError(error))
+                if (error) { reject(AwsHelper.parseAWSError(error, {type: 'bucket', name: this.name}))
                 } else { resolve(data); }
 
             })
@@ -165,14 +165,14 @@ export class AWSBucket implements ProxyS3Bucket {
 export class AWSMetric implements ProxyMetric {
 
     cloudwatch: CloudWatch
-    defaultDimensions: {Name: string; Value: string}[]
+    dimensions: InfrastructureMetricDimension[] = []
 
     constructor(private configuration: AWSConfiguration) {
 
         this.cloudwatch = new CloudWatch();
-        this.defaultDimensions.push({ Name: 'function', Value: configuration.functionName })
-        this.defaultDimensions.push({ Name: 'stage', Value: configuration.functionStage })
-        this.defaultDimensions.push({ Name: 'version', Value: configuration.functionVersion })
+        this.dimensions.push({ Name: 'function', Value: configuration.functionName })
+        this.dimensions.push({ Name: 'stage', Value: configuration.functionStage })
+        this.dimensions.push({ Name: 'version', Value: configuration.functionVersion })
 
     }
 
@@ -180,23 +180,24 @@ export class AWSMetric implements ProxyMetric {
 
         return new Promise((resolve: Function, reject: Function) => {
 
-            const newDimensions = Object.assign(metric.dimensions, this.defaultDimensions)
+            const newDimensions = metric.dimensions;
+            for(var i = 0; i < newDimensions.length; i++) { this.dimensions.push(newDimensions[i]) }
 
             const metricData: CloudWatch.PutMetricDataInput = {
                 Namespace: this.configuration.appName,
                 MetricData: [{
                     MetricName: metric.name,
-                    Dimensions: newDimensions,
+                    Dimensions: this.dimensions,
                     Timestamp: metric.timestamp,
                     Value: metric.value,
                     Unit: 'Count',
-                    StorageResolution: this.configuration.metricStorage
+                    StorageResolution: 60
                 }]
             }
 
             this.cloudwatch.putMetricData(metricData, (error: AWSError, data) => {
 
-                if (error) {reject(AwsHelper.parseAWSError(error))
+                if (error) {reject(AwsHelper.parseAWSError(error, {type: 'metric', name: metric.name}))
                 } else {resolve(true);}
 
             })
@@ -208,22 +209,17 @@ export class AWSMetric implements ProxyMetric {
 
 export class AWSTable implements ProxyTable {
 
-    constructor(private docClient: DynamoDB.DocumentClient, private tableName: string) { }
+    constructor(private dynamo: DynamoDB, private docClient: DynamoDB.DocumentClient, private tableName: string) { }
 
     getItem(keys: { [key: string]: any }): Promise<Object> {
 
-        var getItemParams: DynamoDB.DocumentClient.GetItemInput = { Key: keys, TableName: this.tableName, ReturnConsumedCapacity: 'TOTAL' };
+        var getItemParams: DynamoDB.GetItemInput = { Key: keys, TableName: this.tableName, ReturnConsumedCapacity: 'TOTAL' };
 
         return new Promise((resolve: Function, reject: Function) => {
 
-            this.docClient.get(getItemParams, function (err, data: DynamoDB.DocumentClient.GetItemOutput) {
-
-                if (!err) {
-                    const result = data.Item ? data.Item : null
-                    resolve(result);
-                } else { reject(AwsHelper.parseAWSError(err)); }
-
-            });
+            this.dynamo.getItem(getItemParams).promise()
+            .then(result => resolve(result.Item ? AwsHelper.unmarshalObject(result.Item) : null))
+            .catch(error => reject(AwsHelper.parseAWSError(error, {type: 'table', name: this.tableName} )))
 
         });
 
@@ -231,17 +227,18 @@ export class AWSTable implements ProxyTable {
 
     putItem(keys: { [key: string]: any }, object: Object): Promise<boolean> {
 
-        var putItemParams: DynamoDB.DocumentClient.PutItemInput = { TableName: this.tableName, Item: object, ReturnConsumedCapacity: 'TOTAL' };
+        const payload = AwsHelper.marshalObject(object);
+        const putObject:DynamoDB.PutItemInput = { 'TableName': this.tableName, 'Item': payload, ReturnConsumedCapacity: 'TOTAL' }
 
         return new Promise((resolve: Function, reject: Function) => {
 
-            this.docClient.put(putItemParams, function (err, data: DynamoDB.DocumentClient.PutItemOutput) {
-
-                if (!err) {
-                    resolve(true);
-                } else { reject(AwsHelper.parseAWSError(err)); }
-
-            });
+            this.dynamo.putItem(putObject).promise()
+            .then(result => {
+                resolve(true)
+            })
+            .catch(error => {
+                reject(AwsHelper.parseAWSError(error, {type: 'table', name: this.tableName} ))
+            })
 
         });
 
@@ -249,17 +246,13 @@ export class AWSTable implements ProxyTable {
 
     deleteItem(keys: { [key: string]: any }): Promise<boolean> {
 
-        var deleteItemParams: DynamoDB.DocumentClient.DeleteItemInput = { TableName: this.tableName, Key: keys, ReturnConsumedCapacity: 'TOTAL' };
+        var deleteItemParams: DynamoDB.DeleteItemInput = { TableName: this.tableName, Key: keys, ReturnConsumedCapacity: 'TOTAL' };
 
         return new Promise((resolve: Function, reject: Function) => {
 
-            this.docClient.delete(deleteItemParams, function (err, data: DynamoDB.DocumentClient.DeleteItemOutput) {
-
-                if (!err) {
-                    resolve(true);
-                } else { reject(AwsHelper.parseAWSError(err)); }
-
-            });
+            this.dynamo.deleteItem(deleteItemParams).promise()
+            .then(result => resolve(true))
+            .catch(error => reject(AwsHelper.parseAWSError(error, {type: 'table', name: this.tableName} )))
 
         });
 

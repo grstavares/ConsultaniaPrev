@@ -6,70 +6,28 @@ import { AttributeDefinitions, KeySchema, CreateTableInput, CreateTableOutput, D
 import { UUID } from '../../src/utilities';
 import { DynamoDBMock } from './dynamo-mock';
 
-export interface LocalDynamoConfiguration {
-    tableNames: string[];
-    tableKeys: KeySchema[];
-    tableAttributes: AttributeDefinitions[];
-}
-
 export class MockProxyResolver implements ProxyResolver {
 
-    errors = {
-        table: false,
-        topic: false,
-        bucket: false,
-        metric: false,
+    errorInTable: boolean;
+
+    constructor(private _topic: ProxySnsTopic, private _bucket: ProxyS3Bucket, private _metric: ProxyMetric, private dynamo: DynamoDBMock) {
+
+        this.errorInTable = false;
+
     }
 
-    mockDynamo = new DynamoDBMock();
-    rawDynamo: DynamoDB;
-    docClient: DynamoDB.DocumentClient;
+    topic(arn: string): ProxySnsTopic { return this._topic; }
+    bucket(region: string, name: string): ProxyS3Bucket { return this._bucket; }
+    metric(): ProxyMetric { return this._metric; }
 
-    constructor(private _topic: ProxySnsTopic, private _bucket: ProxyS3Bucket, private _metric: ProxyMetric) { }
+    table(arn): ProxyTable {
 
-    topic(arn: string): ProxySnsTopic { return this.errors.topic ? null : this._topic; }
-    bucket(region: string, name: string): ProxyS3Bucket { return this.errors.bucket ? null : this._bucket; }
-    metric(): ProxyMetric { return this.errors.metric ? null : this._metric; }
-    table(arn): ProxyTable { return this.errors.table ? null : new AWSTable(this.docClient, arn); }
+        if (this.errorInTable) {
 
-    initDynamo(dynamo: LocalDynamoConfiguration): Promise<boolean[]> {
+            this.errorInTable = false;
+            return null;
 
-        const port = this.mockDynamo.start(null);
-        const options = {
-            endpoint: `http://localhost:${port}`,
-            region: "localhost",
-            accessKeyId: "MOCK_ACCESS_KEY_ID",
-            secretAccessKey: "MOCK_SECRET_ACCESS_KEY",
-            convertEmptyValues: true,
-        };
-
-        this.rawDynamo = new DynamoDB(options);
-        this.docClient = new DynamoDB.DocumentClient(options);
-
-        const tableCount = dynamo.tableNames.length;
-
-        var promises: Promise<boolean>[] = [];
-
-        var i: number;
-        for (i = 0; i < tableCount; i++) {
-
-            const createTable: CreateTableInput = {
-                AttributeDefinitions: dynamo.tableAttributes[i],
-                KeySchema: dynamo.tableKeys[i],
-                ProvisionedThroughput: { ReadCapacityUnits: 50, WriteCapacityUnits: 50 },
-                TableName: dynamo.tableNames[i]
-            };
-
-            promises.push(new Promise((resolve, reject) => {
-                this.rawDynamo.createTable(createTable, (error: AWSError, data: CreateTableOutput) => {
-                    if (error) {reject(error);
-                    } else {resolve(true);}
-                });
-            }))
-
-        }
-
-        return Promise.all(promises);
+        } else { return new AWSTable(this.dynamo.docClient, arn); }
 
     }
 
@@ -78,10 +36,11 @@ export class MockProxyResolver implements ProxyResolver {
         return new Promise((resolve, reject) => {
 
             const listTables: DynamoDB.ListTablesInput = {}
-            this.rawDynamo.listTables(listTables, (error: AWSError, data) => {
+            this.dynamo.rawDynamo.listTables(listTables, (error: AWSError, data) => {
 
-                if (!error) {resolve(data.TableNames)
-                } else { reject(AwsHelper.parseAWSError(error)) }
+                if (!error) {
+                    resolve(data.TableNames)
+                } else { reject(AwsHelper.parseAWSError(error, {type: 'dynamo', name: 'listTables'})) }
 
             })
 
@@ -91,33 +50,29 @@ export class MockProxyResolver implements ProxyResolver {
     }
 
     injectObjectOnTable(arn: string, object: Object): Promise<boolean> {
-    
+
         const table = this.table(arn);
         return table.putItem({}, object)
 
     }
 
-    getObjectOnTable(arn: string, key: {[key: string]: any}): Promise<Object> {
-    
+    getObjectOnTable(arn: string, key: { [key: string]: any }): Promise<Object> {
+
         const table = this.table(arn);
         return table.getItem(key)
 
     }
 
-    removeObjectFromTable(arn: string, key: {[key: string]: any}): Promise<boolean> {
-    
+    removeObjectFromTable(arn: string, key: { [key: string]: any }): Promise<boolean> {
+
         const table = this.table(arn);
         return table.deleteItem(key)
 
     }
 
-    injectError(errors: {table: boolean; topic: boolean; bucket: boolean; metric: boolean}): void {
-        this.errors = errors;
-    }
+    withErrorInTable(): MockProxyResolver { this.errorInTable = true; return this; }
 
-    clearErrors(): void { this.errors = { table: false, topic: false, bucket: false, metric: false} }
-
-    finish(): void { this.mockDynamo.stop(); this.docClient = null; this.mockDynamo = null; }
+    finish(): void { this.dynamo.stop() }
 
 }
 
@@ -162,7 +117,7 @@ export class LocalDynamoTable implements ProxyTable {
 
                 if (!err) {
                     resolve(data.Item);
-                } else { reject(AwsHelper.parseAWSError(err)); }
+                } else { reject(AwsHelper.parseAWSError(err, {type: 'table', name: this.tableName})); }
 
             });
 
@@ -180,7 +135,7 @@ export class LocalDynamoTable implements ProxyTable {
 
                 if (!err) {
                     resolve(true);
-                } else { reject(AwsHelper.parseAWSError(err)); }
+                } else { reject(AwsHelper.parseAWSError(err, {type: 'table', name: this.tableName})); }
 
             });
 
@@ -198,7 +153,7 @@ export class LocalDynamoTable implements ProxyTable {
 
                 if (!err) {
                     resolve(true);
-                } else { reject(AwsHelper.parseAWSError(err)); }
+                } else { reject(AwsHelper.parseAWSError(err, {type: 'table', name: this.tableName})); }
 
             });
 

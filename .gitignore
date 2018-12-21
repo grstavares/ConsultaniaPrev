@@ -5,6 +5,7 @@ node_modules/
 
 ## Build generated
 build/
+built/
 dist/
 DerivedData/
 

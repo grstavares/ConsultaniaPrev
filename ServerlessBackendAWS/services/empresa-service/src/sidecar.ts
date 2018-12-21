@@ -5,13 +5,12 @@ import { ResponseBuilder, MetricBuilder } from './utilities';
 
 const isLambda = !!(process.env.LAMBDA_TASK_ROOT || false);
 
-enum SidecarError {
+export enum SidecarError {
     UserNotAuthorized = 'UserNotAuthorized',
     ResourceNotFound = 'ResourceNotFound',
     InvalidObjectBody = 'InvalidObjectBody',
     InvalidOperation = 'InvalidOperation',
     InvalidConfiguration = 'InvalidConfiguration',
-    DependencyNotAvailable = 'DependencyNotAvailable',
     DependencyError = 'DependencyError',
     ConfigurationNotAvailable = 'ConfigurationNotAvailable',
     undefined = 'undefined'
@@ -24,9 +23,11 @@ export const SidecarMetric = {
 
 export class Sidecar {
 
-    trail: SidecarOperation[] = []
+    traceId: string;
+    operation: string;
+    trail: SidecarOperation[] = [];
 
-    constructor(private dependencyResolver: ProxyResolver, private lambdaContext: Context) { }
+    constructor(private dependencyResolver: ProxyResolver, private lambdaContext: Context, traceId: string, operation: string) { this.traceId = traceId; this.operation = operation }
 
     /**
      * @param parameter ServiceParameter
@@ -37,7 +38,7 @@ export class Sidecar {
     getParameter(parameter: ServiceParameter): string {
         if (parameter.type === 'ENV') {
             return process.env[parameter.name]
-        } else {return '';}
+        } else { return ''; }
     }
 
     /**
@@ -50,7 +51,7 @@ export class Sidecar {
      */
     userIsAuthorizedToPerformOperation(event: APIGatewayProxyEvent): Promise<boolean> {
 
-        const trace = new OperationBuilder().withAction('userIsAuthorizedToPerformOperation');
+        const trace = new OperationBuilder(this.traceId, this.operation).withAction('userIsAuthorizedToPerformOperation');
 
         return new Promise((resolve: Function, reject: Function) => {
 
@@ -90,35 +91,46 @@ export class Sidecar {
     persistOnLake(bucketName: string, eventId: string, event: APIGatewayProxyEvent): Promise<boolean> {
 
         const parameters = { bucketName: bucketName, eventId: eventId };
-        const trace = new OperationBuilder().withAction('persistOnLake').withPayload(event.body).withParameters(parameters);
+        const trace = new OperationBuilder(this.traceId, this.operation).withAction('persistOnLake').withPayload(event.body).withParameters(parameters);
 
         const bucket = this.dependencyResolver.bucket('region', bucketName);
         return new Promise((resolve: Function, reject: Function) => {
 
             if (bucket) {
 
-                bucket.putObject(eventId, JSON.stringify(event)).then(success => {
+                bucket.putObject(eventId + '.json', JSON.stringify(event)).then(success => {
                     this.trail.push(trace.build());
                     resolve(true);
                 }).catch(error => {
-                    this.trail.push(trace.withError(error).build());
-                    reject(error);
+
+                    const parameters = { resourceType: 'bucket', resourceName: bucketName }
+                    this.trail.push(trace.withError(error).withParameters(parameters).build());
+
+                    const metric = new MetricBuilder(SidecarMetric.DependencyError, 1).withResourceType('bucket').withResource(bucketName).build()
+                    this.publishMetric(metric)
+                        .then(value => reject(error))
+                        .catch(publishingError => {
+                            this.publishErrorInContingence(JSON.stringify(error));
+                            this.publishErrorInContingence(publishingError);
+                            reject(error);
+                        })
+
                 });
 
             } else {
 
                 const parameters = { resourceType: 'bucket', resourceName: bucketName }
-                const error: ServiceError = {code: SidecarError.DependencyNotAvailable, httpStatusCode: 500, resource: bucketName, payload: event};
+                const error: ServiceError = { code: SidecarError.DependencyError, httpStatusCode: 500, resource: bucketName, payload: event };
                 this.trail.push(trace.withError(error).withParameters(parameters).build());
 
                 const metric = new MetricBuilder(SidecarMetric.DependencyError, 1).withResourceType('bucket').withResource(bucketName).build()
                 this.publishMetric(metric)
-                .then(value => reject(error))
-                .catch(publishingError => {
-                    this.publishErrorInContingence(JSON.stringify(error));
-                    this.publishErrorInContingence(publishingError);
-                    reject(error);
-                })
+                    .then(value => reject(error))
+                    .catch(publishingError => {
+                        this.publishErrorInContingence(JSON.stringify(error));
+                        this.publishErrorInContingence(publishingError);
+                        reject(error);
+                    })
 
             }
 
@@ -133,10 +145,10 @@ export class Sidecar {
      * @description
      * Get Object Value on noSQLTable
      */
-    getInTable(tableName: string, keys: {[key:string]: any}): Promise<Object> {
+    getInTable(tableName: string, keys: { [key: string]: any }): Promise<Object> {
 
         const parameters = { tableName: tableName, key: keys };
-        const trace = new OperationBuilder().withAction('getInTable').withParameters(parameters);
+        const trace = new OperationBuilder(this.traceId, this.operation).withAction('getInTable').withParameters(parameters);
 
         const table = this.dependencyResolver.table(tableName);
         return new Promise((resolve: Function, reject: Function) => {
@@ -146,33 +158,46 @@ export class Sidecar {
                 table.getItem(keys).then((object: Object) => {
 
                     if (object) {
+
                         this.trail.push(trace.build());
                         resolve(object);
+                        
                     } else {
-                        const error: ServiceError = {code: SidecarError.ResourceNotFound, httpStatusCode: 404, resource: tableName + '/' + JSON.stringify(keys)};
+                        const error: ServiceError = { code: SidecarError.ResourceNotFound, httpStatusCode: 404, resource: tableName + '/' + JSON.stringify(keys) };
                         this.trail.push(trace.withError(error).withParameters(parameters).build());
                         reject(error);
                     }
 
                 }).catch((error: ServiceError) => {
-                    this.trail.push(trace.withParameters(keys).withError(error).build());
-                    reject(error);
+
+                    const parameters = { resourceType: 'table', resourceName: tableName }
+                    this.trail.push(trace.withError(error).withParameters(parameters).build());
+
+                    const metric = new MetricBuilder(SidecarMetric.DependencyError, 1).withResourceType('table').withResource(tableName).build()
+                    this.publishMetric(metric)
+                        .then(value => reject(error))
+                        .catch(publishingError => {
+                            this.publishErrorInContingence(JSON.stringify(error));
+                            this.publishErrorInContingence(publishingError);
+                            reject(error);
+                        })
+
                 });
 
             } else {
 
                 const parameters = { resourceType: 'table', resourceName: tableName }
-                const error: ServiceError = {code: SidecarError.DependencyNotAvailable, httpStatusCode: 500, resource: tableName, payload: null};
+                const error: ServiceError = { code: SidecarError.DependencyError, httpStatusCode: 500, resource: tableName, payload: null };
                 this.trail.push(trace.withError(error).withParameters(parameters).build());
 
                 const metric = new MetricBuilder(SidecarMetric.DependencyError, 1).withResourceType('table').withResource(tableName).build()
                 this.publishMetric(metric)
-                .then(value => reject(error))
-                .catch(publishingError => {
-                    this.publishErrorInContingence(JSON.stringify(error));
-                    this.publishErrorInContingence(publishingError);
-                    reject(error);
-                })
+                    .then(value => reject(error))
+                    .catch(publishingError => {
+                        this.publishErrorInContingence(JSON.stringify(error));
+                        this.publishErrorInContingence(publishingError);
+                        reject(error);
+                    })
 
             }
 
@@ -189,10 +214,10 @@ export class Sidecar {
      * Persist Event in noSQLTable
      * The object must be provided as DynamoDB record.
      */
-    persistInTable(tableName: string, operation: string, keys: {[key:string]: any}, content: Object): Promise<boolean> {
+    persistInTable(tableName: string, operation: string, keys: { [key: string]: any }, content: Object): Promise<boolean> {
 
         const parameters = { tableName: tableName, key: keys, operation: operation };
-        const trace = new OperationBuilder().withAction('persistInTable').withPayload(JSON.stringify(content)).withParameters(parameters);
+        const trace = new OperationBuilder(this.traceId, this.operation).withAction('persistInTable').withPayload(JSON.stringify(content)).withParameters(parameters);
 
         const table = this.dependencyResolver.table(tableName);
         return new Promise((resolve: Function, reject: Function) => {
@@ -202,46 +227,80 @@ export class Sidecar {
                 if (operation.toLowerCase() === 'post' || operation.toLowerCase() === 'put') {
 
                     table.putItem(keys, content).then(success => {
+
                         this.trail.push(trace.build());
                         resolve(true);
+
                     }).catch(error => {
-                        this.trail.push(trace.withError(error).build());
-                        reject(error);
+
+                        const parameters = { resourceType: 'table', resourceName: tableName }
+                        this.trail.push(trace.withError(error).withParameters(parameters).build());
+
+                        const metric = new MetricBuilder(SidecarMetric.DependencyError, 1).withResourceType('table').withResource(tableName).build()
+                        this.publishMetric(metric)
+                            .then(value => reject(error))
+                            .catch(publishingError => {
+                                this.publishErrorInContingence(JSON.stringify(error));
+                                this.publishErrorInContingence(publishingError);
+                                reject(error);
+                            })
+
                     });
 
                 } else if (operation.toLowerCase() === 'delete') {
 
                     table.deleteItem(keys).then(success => {
+
                         this.trail.push(trace.build());
                         resolve(true);
+
                     }).catch(error => {
-                        this.trail.push(trace.withError(error).build());
-                        reject(error);
+
+                        const parameters = { resourceType: 'table', resourceName: tableName }
+                        this.trail.push(trace.withError(error).withParameters(parameters).build());
+
+                        const metric = new MetricBuilder(SidecarMetric.DependencyError, 1).withResourceType('table').withResource(tableName).build()
+                        this.publishMetric(metric)
+                            .then(value => reject(error))
+                            .catch(publishingError => {
+                                this.publishErrorInContingence(JSON.stringify(error));
+                                this.publishErrorInContingence(publishingError);
+                                reject(error);
+                            })
+
                     });
 
                 } else {
 
-                    const parameters = { requestedOperation: operation }
-                    const error: ServiceError = {code: SidecarError.InvalidOperation, httpStatusCode: 405, resource: tableName, payload: content};
-                    this.trail.push(trace.withParameters(parameters).withError(error).build());
-                    reject(error);
+                    const parameters = { resourceType: 'table', resourceName: tableName }
+                    const error: ServiceError = { code: SidecarError.InvalidOperation, httpStatusCode: 500, resource: tableName, payload: content };
+                    this.trail.push(trace.withError(error).withParameters(parameters).build());
+
+                    const metric = new MetricBuilder(SidecarMetric.DependencyError, 1).withResourceType('table').withResource(tableName).build()
+                    this.publishMetric(metric)
+                        .then(value => reject(error))
+                        .catch(publishingError => {
+                            this.publishErrorInContingence(JSON.stringify(error));
+                            this.publishErrorInContingence(publishingError);
+                            reject(error);
+                        })
 
                 }
 
             } else {
 
                 const parameters = { resourceType: 'table', resourceName: tableName }
-                const error: ServiceError = {code: SidecarError.DependencyNotAvailable, httpStatusCode: 500, resource: tableName, payload: content};
+                const error: ServiceError = { code: SidecarError.DependencyError, httpStatusCode: 500, resource: tableName, payload: content };
                 this.trail.push(trace.withError(error).withParameters(parameters).build());
 
                 const metric = new MetricBuilder(SidecarMetric.DependencyError, 1).withResourceType('table').withResource(tableName).build()
                 this.publishMetric(metric)
-                .then(value => reject(error))
-                .catch(publishingError => {
-                    this.publishErrorInContingence(JSON.stringify(error));
-                    this.publishErrorInContingence(publishingError);
-                    reject(error);
-                })
+                    .then(value => reject(error))
+                    .catch(publishingError => {
+                        this.publishErrorInContingence(JSON.stringify(error));
+                        this.publishErrorInContingence(publishingError);
+                        reject(error);
+                    })
 
             }
 
@@ -258,7 +317,7 @@ export class Sidecar {
      */
     publishEvent(topicArn: string, businessEvent: BusinessEvent, event: APIGatewayProxyEvent): Promise<boolean> {
 
-        const trace = new OperationBuilder().withAction('publishEvent').withPayload(JSON.stringify(businessEvent))
+        const trace = new OperationBuilder(this.traceId, this.operation).withAction('publishEvent').withPayload(JSON.stringify(businessEvent))
         const topic = this.dependencyResolver.topic(topicArn);
 
         return new Promise((resolve: Function, reject: Function) => {
@@ -273,26 +332,35 @@ export class Sidecar {
 
                 }).catch(error => {
 
-                    this.trail.push(trace.withError(error).build());
-                    reject(error);
+                    const parameters = { resourceType: 'topic', resourceName: topicArn }
+                    this.trail.push(trace.withError(error).withParameters(parameters).build());
+
+                    const metric = new MetricBuilder(SidecarMetric.DependencyError, 1).withResourceType('topic').withResource(topicArn).build()
+                    this.publishMetric(metric)
+                        .then(value => reject(error))
+                        .catch(publishingError => {
+                            this.publishErrorInContingence(JSON.stringify(error));
+                            this.publishErrorInContingence(publishingError);
+                            reject(error);
+                        })
 
                 });
 
             } else {
 
                 const parameters = { resourceType: 'topic', resourceName: topicArn }
-                const error: ServiceError = {code: SidecarError.DependencyNotAvailable, httpStatusCode: 500, resource: topicArn, payload: event};
+                const error: ServiceError = { code: SidecarError.DependencyError, httpStatusCode: 500, resource: topicArn, payload: event };
                 this.trail.push(trace.withError(error).withParameters(parameters).build());
-                
+
                 const metric = new MetricBuilder(SidecarMetric.DependencyError, 1).withResourceType('topic').withResource(topicArn).build()
                 this.publishMetric(metric)
-                .then(value => reject(error))
-                .catch(publishingError => {
-                    this.publishErrorInContingence(JSON.stringify(error));
-                    this.publishErrorInContingence(publishingError);
-                    reject(error);
-                })
-                
+                    .then(value => reject(error))
+                    .catch(publishingError => {
+                        this.publishErrorInContingence(JSON.stringify(error));
+                        this.publishErrorInContingence(publishingError);
+                        reject(error);
+                    })
+
             }
 
         });
@@ -307,7 +375,7 @@ export class Sidecar {
      */
     publishMetric(metricValue: InfrastructureMetric): Promise<boolean> {
 
-        const trace = new OperationBuilder().withAction('publishMetric').withPayload(JSON.stringify(metricValue))
+        const trace = new OperationBuilder(this.traceId, this.operation).withAction('publishMetric').withPayload(JSON.stringify(metricValue))
         const metric = this.dependencyResolver.metric();
         return new Promise((resolve: Function, reject: Function) => {
 
@@ -321,7 +389,11 @@ export class Sidecar {
 
                     }).catch(error => {
 
-                        this.trail.push(trace.withError(error).build());
+                        const parameters = { resourceType: 'metric', resourceName: metricValue.name }
+                        this.trail.push(trace.withError(error).withParameters(parameters).build());
+
+                        const metric = new MetricBuilder(SidecarMetric.DependencyError, 1).withResourceType('metric').withResource(metricValue.name).build()
+                        this.publishErrorInContingence(JSON.stringify(metric))
                         reject(error);
 
                     });
@@ -329,17 +401,12 @@ export class Sidecar {
             } else {
 
                 const parameters = { resourceType: 'metric', resourceName: metricValue.name }
-                const error: ServiceError = {code: SidecarError.DependencyNotAvailable, httpStatusCode: 500, resource: metricValue.name, payload: event};
+                const error: ServiceError = { code: SidecarError.DependencyError, httpStatusCode: 500, resource: metricValue.name, payload: event };
                 this.trail.push(trace.withError(error).withParameters(parameters).build());
-                
+
                 const metric = new MetricBuilder(SidecarMetric.DependencyError, 1).withResourceType('metric').withResource(metricValue.name).build()
-                this.publishMetric(metric)
-                .then(value => reject(error))
-                .catch(publishingError => {
-                    this.publishErrorInContingence(JSON.stringify(error));
-                    this.publishErrorInContingence(publishingError);
-                    reject(error);
-                })
+                this.publishErrorInContingence(JSON.stringify(metric))
+                reject(error);
 
             }
 
@@ -361,7 +428,7 @@ export class Sidecar {
         let functionName = frame.split(" ")[5];
 
         const parameters = { function: functionName, line: lineNumber, error: error }
-        const trace = new OperationBuilder().withAction('publishError').withParameters(parameters).withPayload(JSON.stringify(payload))
+        const trace = new OperationBuilder(this.traceId, this.operation).withAction('publishError').withParameters(parameters).withPayload(JSON.stringify(payload))
         return new Promise((resolve: Function, reject: Function) => {
 
             this.trail.push(trace.build());
@@ -378,16 +445,17 @@ export class Sidecar {
      */
     createResponse(event: APIGatewayProxyEvent, content: Object, objectId: string): APIGatewayProxyResult {
 
-        var result:APIGatewayProxyResult
+        var result: APIGatewayProxyResult
         const operation = event.httpMethod.toLowerCase()
 
-        if (operation == 'post') { 
+        if (operation == 'post') {
 
             const url = event.path + '/' + objectId;
             result = ResponseBuilder.created(url, content)
 
-        } else if (operation == 'delete') {result = ResponseBuilder.ok(null);
-        } else if (operation == 'put' || operation == 'get') {result = ResponseBuilder.ok(content);}
+        } else if (operation == 'delete') {
+            result = ResponseBuilder.ok(null);
+        } else if (operation == 'put' || operation == 'get') { result = ResponseBuilder.ok(content); }
 
         return result;
 
@@ -402,15 +470,15 @@ export class Sidecar {
     createErrorResponse(error: ServiceError): APIGatewayProxyResult {
 
         switch (error.code) {
-            case 'UserNotAuthorized': return ResponseBuilder.forbidden(error.resource, ''); 
-            case 'ResourceNotFound': return ResponseBuilder.notFound(error.resource, ''); 
-            case 'InvalidObjectBody': return ResponseBuilder.badRequest(error.resource, '');
-            case 'InvalidOperation' : return ResponseBuilder.badRequest(error.resource, '');
-            case 'InvalidConfiguration': return ResponseBuilder.internalError(error.resource, '');
-            case 'DependencyNotAvailable': return ResponseBuilder.internalError(error.resource, '');
-            case 'DependencyError': return ResponseBuilder.internalError(error.resource, '');
-            case 'ConfigurationNotAvailable': return ResponseBuilder.internalError(error.resource, '');
-            default: return ResponseBuilder.internalError(error.resource, '');
+            case 'UserNotAuthorized': return ResponseBuilder.forbidden(error.code, this.traceId);
+            case 'ResourceNotFound': return ResponseBuilder.notFound(error.code, this.traceId);
+            case 'InvalidObjectBody': return ResponseBuilder.badRequest(error.code, this.traceId);
+            case 'InvalidOperation': return ResponseBuilder.badRequest(error.code, this.traceId);
+            case 'InvalidConfiguration': return ResponseBuilder.internalError(error.code, this.traceId);
+            case 'DependencyNotAvailable': return ResponseBuilder.internalError(error.code, this.traceId);
+            case 'DependencyError': return ResponseBuilder.internalError(error.code, this.traceId);
+            case 'ConfigurationNotAvailable': return ResponseBuilder.internalError(error.code, this.traceId);
+            default: return ResponseBuilder.internalError(error.code, this.traceId);
         }
 
     }
@@ -446,7 +514,7 @@ export class Sidecar {
     private publishOperationTrail(): void {
 
         if (!isLambda) {
-            if (!existsSync('./testreports')) {mkdirSync('./testreports')}
+            if (!existsSync('./testreports')) { mkdirSync('./testreports') }
             const filename = new Date().getTime() + '.json'
             writeFileSync('./testreports/lambdaexecution' + filename, JSON.stringify(this.trail, null, 2), 'utf-8');
 
@@ -466,7 +534,7 @@ export class Sidecar {
 
         if (!isLambda) {
 
-            if (!existsSync('./testreports')) {mkdirSync('./testreports')}
+            if (!existsSync('./testreports')) { mkdirSync('./testreports') }
             const filename = new Date().getTime() + '.txt'
             writeFileSync('./testreports/console_' + filename, `Publishing Error in Contigence! -> ${message}`, 'utf-8');
 
@@ -480,6 +548,8 @@ export class Sidecar {
 }
 
 export class SidecarOperation {
+    traceId: string;
+    operation: string;
     timestamp: Date;
     durationInMillis: number;
     action: string;
@@ -489,6 +559,8 @@ export class SidecarOperation {
     error?: Object | SidecarError;
 
     constructor(builder: OperationBuilder) {
+        this.traceId = builder.traceId;
+        this.operation = builder.operation;
         this.timestamp = builder.timestamp;
         this.durationInMillis = builder.durationInMillis;
         this.action = builder.action;
@@ -501,7 +573,8 @@ export class SidecarOperation {
 }
 
 class OperationBuilder {
-
+    traceId: string;
+    operation: string;
     timestamp: Date;
     durationInMillis: number;
     action: string;
@@ -510,7 +583,7 @@ class OperationBuilder {
     payload?: string;
     error?: Object | SidecarError;
 
-    constructor() { this.timestamp = new Date(); }
+    constructor(traceId: string, operation: string) { this.traceId = traceId; this.operation = operation; this.timestamp = new Date(); }
 
     withAction(name: string): OperationBuilder { this.action = name; return this }
     withParameters(object: Object): OperationBuilder { this.parameters = object; return this }

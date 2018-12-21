@@ -19,6 +19,10 @@ module.exports = {
   },
   output: {
     filename: 'index.js',
+    library: "index",
     path: path.resolve(__dirname, 'dist')
+  },
+  optimization: {
+    minimize: false
   }
 };

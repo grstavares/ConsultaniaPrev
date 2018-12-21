@@ -4,7 +4,6 @@ export const Instituto: ObjectSchema = {
   required: {
     id: ValueType.string,
     name: ValueType.string,
-    birthDate: ValueType.date,
     addresses: ValueType.object
   },
   optional: {},

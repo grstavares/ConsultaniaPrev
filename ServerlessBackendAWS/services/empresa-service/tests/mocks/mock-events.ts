@@ -17,36 +17,16 @@ export const mockPost = {
         "X-Forwarded-Proto": "https"
     },
     "multiValueHeaders": {
-        "Accept": [
-            "*/*"
-        ],
-        "Accept-Encoding": [
-            "gzip, deflate"
-        ],
-        "Accept-Language": [
-            "pt-br"
-        ],
-        "Content-Type": [
-            "application/json"
-        ],
-        "Host": [
-            "8brfalsele.execute-api.sa-east-1.amazonaws.com"
-        ],
-        "User-Agent": [
-            "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)"
-        ],
-        "X-Amzn-Trace-Id": [
-            "Root=1-5c195cea-d2aa9a8f16df1a7ef8372804"
-        ],
-        "X-Forwarded-For": [
-            "177.235.73.126"
-        ],
-        "X-Forwarded-Port": [
-            "443"
-        ],
-        "X-Forwarded-Proto": [
-            "https"
-        ]
+        "Accept": [ "*/*" ],
+        "Accept-Encoding": [ "gzip, deflate" ],
+        "Accept-Language": [ "pt-br" ],
+        "Content-Type": [ "application/json" ],
+        "Host": [ "8brfalsele.execute-api.sa-east-1.amazonaws.com" ],
+        "User-Agent": [ "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)" ],
+        "X-Amzn-Trace-Id": [ "Root=1-5c195cea-d2aa9a8f16df1a7ef8372804" ],
+        "X-Forwarded-For": [ "177.235.73.126" ],
+        "X-Forwarded-Port": [ "443" ],
+        "X-Forwarded-Proto": [ "https" ]
     },
     "queryStringParameters": null,
     "multiValueQueryStringParameters": null,
@@ -102,42 +82,20 @@ export const mockGet = {
       "X-Forwarded-Proto": "https"
   },
   "multiValueHeaders": {
-      "Accept": [
-          "*/*"
-      ],
-      "Accept-Encoding": [
-          "gzip, deflate"
-      ],
-      "Accept-Language": [
-          "pt-br"
-      ],
-      "Content-Type": [
-          "application/json"
-      ],
-      "Host": [
-          "8brfalsele.execute-api.sa-east-1.amazonaws.com"
-      ],
-      "User-Agent": [
-          "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)"
-      ],
-      "X-Amzn-Trace-Id": [
-          "Root=1-5c1945b2-29345fc5cd8d4df3761173ad"
-      ],
-      "X-Forwarded-For": [
-          "177.235.73.126"
-      ],
-      "X-Forwarded-Port": [
-          "443"
-      ],
-      "X-Forwarded-Proto": [
-          "https"
-      ]
+      "Accept": [ "*/*" ],
+      "Accept-Encoding": [ "gzip, deflate" ],
+      "Accept-Language": [ "pt-br" ],
+      "Content-Type": [ "application/json" ],
+      "Host": [ "8brfalsele.execute-api.sa-east-1.amazonaws.com" ],
+      "User-Agent": [ "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)" ],
+      "X-Amzn-Trace-Id": [ "Root=1-5c1945b2-29345fc5cd8d4df3761173ad" ],
+      "X-Forwarded-For": [ "177.235.73.126" ],
+      "X-Forwarded-Port": [ "443" ],
+      "X-Forwarded-Proto": [ "https" ]
   },
   "queryStringParameters": null,
   "multiValueQueryStringParameters": null,
-  "pathParameters": {
-      "id": "12345POST987"
-  },
+  "pathParameters": { "id": "12345POST987" },
   "stageVariables": null,
   "requestContext": {
       "resourceId": "tanbkk",
@@ -189,42 +147,20 @@ export const mockDelete = {
       "X-Forwarded-Proto": "https"
   },
   "multiValueHeaders": {
-      "Accept": [
-          "*/*"
-      ],
-      "Accept-Encoding": [
-          "gzip, deflate"
-      ],
-      "Accept-Language": [
-          "pt-br"
-      ],
-      "Content-Type": [
-          "application/json"
-      ],
-      "Host": [
-          "8brfalsele.execute-api.sa-east-1.amazonaws.com"
-      ],
-      "User-Agent": [
-          "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)"
-      ],
-      "X-Amzn-Trace-Id": [
-          "Root=1-5c194598-567fd0a9d1b574f7340e124a"
-      ],
-      "X-Forwarded-For": [
-          "177.235.73.126"
-      ],
-      "X-Forwarded-Port": [
-          "443"
-      ],
-      "X-Forwarded-Proto": [
-          "https"
-      ]
+      "Accept": [ "*/*" ],
+      "Accept-Encoding": [ "gzip, deflate" ],
+      "Accept-Language": [ "pt-br" ],
+      "Content-Type": [ "application/json" ],
+      "Host": [ "8brfalsele.execute-api.sa-east-1.amazonaws.com" ],
+      "User-Agent": [ "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)" ],
+      "X-Amzn-Trace-Id": [ "Root=1-5c194598-567fd0a9d1b574f7340e124a" ],
+      "X-Forwarded-For": [ "177.235.73.126" ],
+      "X-Forwarded-Port": [ "443" ],
+      "X-Forwarded-Proto": [ "https" ]
   },
   "queryStringParameters": null,
   "multiValueQueryStringParameters": null,
-  "pathParameters": {
-      "id": "12345PUT4433"
-  },
+  "pathParameters": { "id": "12345PUT4433" },
   "stageVariables": null,
   "requestContext": {
       "resourceId": "tanbkk",
@@ -276,36 +212,16 @@ export const mockPut = {
         "X-Forwarded-Proto": "https"
     },
     "multiValueHeaders": {
-        "Accept": [
-            "*/*"
-        ],
-        "Accept-Encoding": [
-            "gzip, deflate"
-        ],
-        "Accept-Language": [
-            "pt-br"
-        ],
-        "Content-Type": [
-            "application/json"
-        ],
-        "Host": [
-            "8brfalsele.execute-api.sa-east-1.amazonaws.com"
-        ],
-        "User-Agent": [
-            "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)"
-        ],
-        "X-Amzn-Trace-Id": [
-            "Root=1-5c195d98-967f8749d7c823831f87fc39"
-        ],
-        "X-Forwarded-For": [
-            "177.235.73.126"
-        ],
-        "X-Forwarded-Port": [
-            "443"
-        ],
-        "X-Forwarded-Proto": [
-            "https"
-        ]
+        "Accept": [ "*/*" ],
+        "Accept-Encoding": [ "gzip, deflate" ],
+        "Accept-Language": [ "pt-br" ],
+        "Content-Type": [ "application/json" ],
+        "Host": [ "8brfalsele.execute-api.sa-east-1.amazonaws.com" ],
+        "User-Agent": [ "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)" ],
+        "X-Amzn-Trace-Id": [ "Root=1-5c195d98-967f8749d7c823831f87fc39" ],
+        "X-Forwarded-For": [ "177.235.73.126" ],
+        "X-Forwarded-Port": [ "443" ],
+        "X-Forwarded-Proto": [ "https" ]
     },
     "queryStringParameters": null,
     "multiValueQueryStringParameters": null,

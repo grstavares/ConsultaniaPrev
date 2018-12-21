@@ -5,11 +5,16 @@ export interface BusinessEvent {
     body: ProxySnsMessage;
 }
 
+export interface InfrastructureMetricDimension {
+    Name: string;
+    Value: string;
+}
+
 export interface InfrastructureMetric {
     timestamp: Date;
     name: string;
     value: number;
-    dimensions?: {Name: string; Value: string}[];
+    dimensions: InfrastructureMetricDimension[];
 }
 
 // export interface APIResponse {

@@ -26,6 +26,7 @@
     "typescript": "^3.2.2"
   },
   "dependencies": {
+    "aws-xray-sdk": "^2.1.0",
     "jsonschema": "^1.2.4"
   }
 }

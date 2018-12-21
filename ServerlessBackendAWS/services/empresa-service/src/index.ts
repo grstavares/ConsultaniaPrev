@@ -8,10 +8,10 @@ import { Instituto } from './schema';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 
 enum AllowedOperation {
-    GetInstituto,
-    CreateInstituto,
-    UpdateInstituto,
-    DeleteInstituto
+    GetInstituto = 'GetInstituto',
+    CreateInstituto = 'CreateInstituto',
+    UpdateInstituto = 'UpdateInstituto',
+    DeleteInstituto = 'DeleteInstituto'
 }
 
 enum HandlerError {
@@ -27,6 +27,7 @@ const tableName = process.env.SERVICE_TABLE_ARN || 'thisTable';
 const topicArn = process.env.SERVICE_TOPIC_ARN || 'thisTopic';
 const isLambda = !!(process.env.LAMBDA_TASK_ROOT || false);
 
+// var mockResolver: ProxyResolver;
 var mockResolver: ProxyResolver;
 
 function getObjectId(event: APIGatewayProxyEvent): string {
@@ -47,7 +48,7 @@ function getObjectId(event: APIGatewayProxyEvent): string {
 
 }
 
-function parseObjectKey(objectId: string): {[key:string]: any} { return { id : objectId}; }
+function parseObjectKey(objectId: string): {[key:string]: any} { return { id : objectId }; }
 
 function getOperation(event: APIGatewayProxyEvent): AllowedOperation {
     
@@ -87,10 +88,10 @@ export function injetResolver(resolver: ProxyResolver) { mockResolver = resolver
 
 export function handler (event: APIGatewayProxyEvent, context: Context, callback: Callback): void {
 
-    // process.on('unhandledRejection', (reason, p) => {
-    //     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
-    //     // application specific logging, throwing an error, or other logic here
-    //   });
+    process.on('unhandledRejection', (reason, p) => {
+        console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+        // application specific logging, throwing an error, or other logic here
+      });
 
     const traceId = context.awsRequestId;
 
@@ -122,7 +123,7 @@ export function handler (event: APIGatewayProxyEvent, context: Context, callback
 
     getDependencyResolver(context).then(resolver => {
 
-        const sidecar = new Sidecar(resolver, context);
+        const sidecar = new Sidecar(resolver, context, traceId, operation.toString());
 
         const isValidAPIGatewayEvent = Validators.isValidAPIGatewayEvent(event);
 
@@ -152,10 +153,8 @@ export function handler (event: APIGatewayProxyEvent, context: Context, callback
         } else if (operation == AllowedOperation.DeleteInstituto) {
 
             return sidecar.userIsAuthorizedToPerformOperation(event)
-            .then(userIsAuthorized => Promise.all([
-                sidecar.persistInTable(tableName, event.httpMethod, parseObjectKey(objectId), JSON.parse(event.body)),
-                sidecar.persistOnLake(lakeName, objectId, event)
-            ]))
+            .then(userIsAuthorized => sidecar.persistOnLake(lakeName, objectId, event))
+            .then(persistedInLake => sidecar.persistInTable(tableName, event.httpMethod, {id: { S: objectId} }, JSON.parse(event.body)))
             .then(persisted => sidecar.publishEvent(topicArn, successEvent, event))
             .then(eventPublished => sidecar.createResponse(event, event.body, objectId))
             .then(response => sidecar.sendResponse(response, callback))
@@ -171,22 +170,20 @@ export function handler (event: APIGatewayProxyEvent, context: Context, callback
 
             return Validators.isValidObject(Instituto, updatedId)
             .then(objectIsValid => sidecar.userIsAuthorizedToPerformOperation(event))
-            .then(userIsAuthorized => {
-
+            .then(userIsAuthorized => sidecar.persistOnLake(lakeName, traceId, event))
+            .then(persistedOnLake => {
                 const newObject = Object.assign(JSON.parse(event.body), { id: objectId })
-                Promise.all([
-                    sidecar.persistInTable(tableName, event.httpMethod, parseObjectKey(objectId), newObject),
-                    sidecar.persistOnLake(lakeName, traceId, event)
-                ])
-
+                sidecar.persistInTable(tableName, event.httpMethod, parseObjectKey(objectId), newObject)
             })
             .then(persisted => sidecar.publishEvent(topicArn, successEvent, event))
             .then(eventPublished => sidecar.createResponse(event, event.body, objectId))
             .then(response => sidecar.sendResponse(response, callback))
             .catch(sidecarError => {
+
                 const response = sidecar.createErrorResponse(sidecarError);
                 sidecar.sendResponse(response, callback);
-            })
+
+            }).catch(error => {console.log('reach the last catch block')});
 
         }
 

@@ -1,4 +1,4 @@
-import { ServiceError, InfrastructureMetric } from './types';
+import { ServiceError, InfrastructureMetric, InfrastructureMetricDimension } from './types';
 import { APIGatewayProxyResult } from 'aws-lambda';
 
 export const HttpStatusCode = {
@@ -88,7 +88,7 @@ export class MetricBuilder {
     timestamp: Date;
     name: string;
     value: number;
-    dimensions: {Name: string; Value: string}[] = [];
+    dimensions: InfrastructureMetricDimension[] = [];
 
     constructor(name: string, value: number) { 
         this.timestamp = new Date();

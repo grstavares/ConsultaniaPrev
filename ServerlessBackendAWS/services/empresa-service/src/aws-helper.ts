@@ -17,15 +17,28 @@ export class AwsHelper {
 
     }
 
-    public static parseAWSError(error: AWSError): ServiceError {
-        console.log(error.code)
-        console.log(error.statusCode)
-        console.log(error.message)
+    public static parseAWSError(error: AWSError, resource: { type: string; name: string; } ): ServiceError {
 
-        const errorCode = error.code.toLowerCase() === 'missingrequiredparameter' ? 'InvalidObjectBody' : 'undefined'
-        const httpCode = error.code.toLowerCase() === 'missingrequiredparameter' ? 400 : 500
+        var errorCode  = 'undefined';
+        var httpCode = 500
+        var resourceDescription = resource ? JSON.stringify(resource) : 'undefined';
 
-        return {code: errorCode, httpStatusCode: httpCode, resource: error.name, payload: null}
+        switch (error.code.toLowerCase()) {
+            case 'networkingerror':
+                errorCode = 'NetworkError'
+                httpCode = 500;
+                break;
+            case 'missingrequiredparameter':
+                errorCode = 'InvalidObjectBody'
+                httpCode = 400;
+                break;
+            default:
+                console.log('AWSError not identified!')
+                console.log(error);
+                break;
+        }
+
+        return {code: errorCode, httpStatusCode: httpCode, resource: resourceDescription, payload: error}
 
     }
 
