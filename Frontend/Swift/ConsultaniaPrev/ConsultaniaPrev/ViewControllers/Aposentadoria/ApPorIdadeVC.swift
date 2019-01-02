@@ -54,7 +54,7 @@ class ApPorIdadeVC: UIViewController {
         pathLayer.strokeColor = self.animationColor.cgColor
         pathLayer.fillColor = UIColor.clear.cgColor
         pathLayer.lineWidth = 5.0
-        pathLayer.lineCap = kCALineCapRound
+        pathLayer.lineCap = CAShapeLayerLineCap.round
         
         let alvo = 65
         let idade = Calendar.current.dateComponents([.year], from: self.user.nascimento, to: Date()).year!
@@ -76,7 +76,7 @@ class ApPorIdadeVC: UIViewController {
         animation.toValue = 1.0
         animation.duration = animationTime
         animation.isRemovedOnCompletion = false
-        animation.fillMode = kCAFillModeForwards
+        animation.fillMode = CAMediaTimingFillMode.forwards
         pathLayer.add(animation, forKey: "drawLineAnimation")
         
     }

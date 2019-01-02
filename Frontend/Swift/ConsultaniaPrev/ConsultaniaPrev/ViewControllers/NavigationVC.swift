@@ -44,6 +44,6 @@ extension NavigationVC: Themed {
 
         navigationBar.barTintColor = theme.barBackgroundColor
         navigationBar.tintColor = theme.barForegroundColor
-        navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "Avenir Next", size: 18.0)!, NSAttributedStringKey.foregroundColor: theme.barForegroundColor]
+        navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Avenir Next", size: 18.0)!, NSAttributedString.Key.foregroundColor: theme.barForegroundColor]
     }
 }

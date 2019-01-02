@@ -103,8 +103,8 @@ class AgendamentoVC: UIViewController {
     
     private func configVC() -> Void {
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         self.formatter.dateFormat = "dd/MM/yyyy HH:mm"
         self.datePicker.minimumDate = Date()
@@ -114,7 +114,7 @@ class AgendamentoVC: UIViewController {
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
         let doneButton = UIBarButtonItem(title: "Selecionar", style: .plain, target: self, action: #selector(donedatePicker));
-        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
         let cancelButton = UIBarButtonItem(title: "Cancelar", style: .plain, target: self, action: #selector(cancelDatePicker));
         toolbar.setItems([cancelButton,spaceButton, doneButton], animated: false)
         
@@ -167,7 +167,7 @@ class AgendamentoVC: UIViewController {
     
     @objc func keyboardWillShow(notification: NSNotification) {
         
-        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             
             if self.modalViewTopConstraint.constant == self.originalTopConstraintConstant {
                 
