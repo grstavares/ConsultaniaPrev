@@ -1,0 +1,102 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  AppName: 
+    Type: String
+    Default: AppName
+    Description: The Name of the App to be Created
+
+Resources:
+
+  # AuthenticationPool:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: '/authentication.yml'
+  #     Parameters:
+  #       AppName:
+  #         Ref: AppName
+  #     TimeoutInMinutes: 60
+
+  NewsService:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: './service_news.yml'
+      Parameters:
+        AppName:
+          Ref: AppName
+      TimeoutInMinutes: 60
+
+  # ActivitiesService:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: '/service_activities.json'
+  #     Parameters:
+  #       AppName:
+  #         Ref: AppName
+  #     TimeoutInMinutes: 60
+
+  # ComplaintsService:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: '/service_complaints.json'
+  #     Parameters:
+  #       AppName:
+  #         Ref: AppName
+  #     TimeoutInMinutes: 60
+
+  # DocumentsService:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: '/service_documents.json'
+  #     Parameters:
+  #       AppName:
+  #         Ref: AppName
+  #     TimeoutInMinutes: 60
+
+  # FinancialService:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: '/service_financial.json'
+  #     Parameters:
+  #       AppName:
+  #         Ref: AppName
+  #     TimeoutInMinutes: 60
+
+  # InstitutionService:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: '/service_institution.json'
+  #     Parameters:
+  #       AppName:
+  #         Ref: AppName
+  #     TimeoutInMinutes: 60
+
+  # PeopleService:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: '/service_people.json'
+  #     Parameters:
+  #       AppName:
+  #         Ref: AppName
+  #     TimeoutInMinutes: 60
+
+  # RetirementService:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: '/service_news.json'
+  #     Parameters:
+  #       AppName:
+  #         Ref: AppName
+  #     TimeoutInMinutes: 60
+
+# Outputs:
+#   UserPoolId:
+#     Value:
+#       Fn::GetAtt:
+#         - AuthenticationPool
+#         - Outputs.UserPoolId
+#   IdentityPoolId:
+#     Value:
+#       Fn::GetAtt:
+#         - AuthenticationPool
+#         - Outputs.IdentityPoolId

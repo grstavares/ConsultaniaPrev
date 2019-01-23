@@ -1,0 +1,43 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "Root API for Application",
+
+  "Parameters": {
+
+    "AppName": {
+      "Type": "String",
+      "Description": "The Name of the Application",
+      "AllowedPattern": "(?!-)[a-zA-Z0-9-.]{1,63}(?<!-)",
+      "ConstraintDescription": "must be a url compatible."
+    }
+
+  },
+
+  "Resources": {
+
+    "AppRestApi": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Description": { "Fn::Join": ["", ["REST API for application ", { "Ref": "AppName" }]] },
+        "Name": { "Fn::Join": ["-", [{ "Ref": "AppName" }, "API"]] }
+      }
+    }
+
+  },
+
+  "Outputs" : {
+
+    "AppRestAPIReference": {
+      "Value": { "Ref": "AppRestApi"},
+      "Description": "Application RestAPI definition"
+    },
+    
+    "AppRestAPIRootResource": {
+      "Value": { "Fn::GetAtt": ["AppRestApi", "RootResourceId"] },
+      "Description": "Application RestAPI Root Resource Id"
+    }
+
+  }
+
+}

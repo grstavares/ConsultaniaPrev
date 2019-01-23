@@ -1,0 +1,70 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "News Report Service",
+  
+    "Parameters": {
+      
+      "AppName": {
+        "Type": "String",
+        "Description": "The Name of the Application",
+        "AllowedPattern": "(?!-)[a-zA-Z0-9-.]{1,63}(?<!-)",
+        "ConstraintDescription": "must be a url compatible."
+      }
+      
+    },
+
+    "Resources": {
+  
+        "MainFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+              "Code": "./services/news/dist/index.js",
+              "FunctionName" : { "Fn::Join": ["", [{ "Ref": "AppName" }, "-NewsReport-MainFunction"]] },
+              "Description": { "Fn::Join": ["", [{ "Ref": "AppName" }, "-NewsReport-MainFunction"]] },
+              "Handler": "index.handler",
+              "Runtime": "nodejs8.10",
+              "Timeout": 10,
+              "MemorySize": 128,
+              "Role": { "Fn::GetAtt": ["MainFunctionExecutionRole", "Arn"] }
+          }
+        },
+    
+        "MainFunctionExecutionRole": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+              "RoleName": { "Fn::Join": ["", [{ "Ref": "AppName" }, "-NewsReport-MainFcnExecutionRole"]] },
+              "AssumeRolePolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [{
+                      "Effect": "Allow",
+                      "Principal": { "Service": ["lambda.amazonaws.com"] },
+                      "Action": ["sts:AssumeRole"]
+                      }]
+              },
+              "Path": "/",
+              "Policies": [{
+                  "PolicyName": "root",
+                  "PolicyDocument": {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                          {
+                              "Effect": "Allow",
+                              "Resource": "*",
+                              "Action": [ "dynamodb:GetItem", "dynamodb:Query", "dynamodb:Scan", "dynamodb:BatchGetItem", "dynamodb:BatchWriteItem", "dynamodb:PutItem", "dynamodb:UpdateItem", "dynamodb:DeleteItem" ]
+                          },
+                          {
+                              "Effect": "Allow",
+                              "Resource": "*",
+                              "Action": ["logs:CreateLogGroup", "logs:PutLogEvents", "logs:CreateLogStream"]
+                          }
+                      ]
+                  }
+              }]
+          }
+        }
+    
+    },
+
+    "Outputs": { }
+
+}

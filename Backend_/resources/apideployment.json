@@ -1,0 +1,42 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+  
+    "Description": "Root API Deployment for Application",
+  
+    "Parameters": {
+  
+      "AppRestApiId": {
+        "Type": "String",
+        "Description": "The RestAPI Id of the Application"
+        },
+
+        "StageName": {
+            "Type": "String",
+            "Description": "The Name of the Stage"
+        }
+  
+    },
+  
+    "Resources": {
+  
+      "APIDeployment": {
+        "Type" : "AWS::ApiGateway::Deployment",
+        "Properties" : {
+          "Description" : "Automated API Deployment",
+          "RestApiId" : { "Ref": "AppRestApiId" },
+          "StageName" : { "Ref": "StageName" }
+        }
+      }
+  
+    },
+
+    "Outputs": {
+  
+      "APIUrl": {
+        "Value": { "Fn::Join" : [ "", [ "https://", { "Ref" : "AppRestApiId" }, ".execute-api.", { "Ref" : "AWS::Region" }, ".amazonaws.com/", { "Ref" : "StageName" }, "/" ] ] },
+        "Description": "The Endpoint URL of API."
+      }
+  
+    }
+
+  }
