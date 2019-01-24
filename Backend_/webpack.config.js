@@ -28,13 +28,17 @@ var defaultConfig = {
 
 function moduleConfig(name) {
 
-  return Object.assign({}, defaultConfig, {
+  var moduleOutput = Object.assign( {
+    filename: name + '/index.js'
+  }, defaultConfig.output );
+
+  var config = Object.assign({}, defaultConfig, {
     name: name,
     entry: './src/' + name + '/index.ts',
-    output: {
-      filename: name + '/index.js'
-    }
+    output: moduleOutput
   });
+
+  return config;
 
 }
 
@@ -54,7 +58,8 @@ var messagesService = Object.assign({}, defaultConfig, {
   }
 });
 
-var services = ['activities', 'complaints', 'documents', 'financial', 'institution', 'messages', 'news', 'people', 'retirement'];
+// var services = ['activities', 'complaints', 'documents', 'financial', 'institution', 'messages', 'news', 'people', 'retirement'];
+var services = [ 'news', 'retirement' ];
 var servicesConfig = services.forEach(value => moduleConfig(value));
 
 module.exports = function () {

@@ -57,7 +57,7 @@
             "Properties": {
                 "Code": "../dist/news/index.js",
                 "FunctionName": { "Fn::Join": [ "-", [ { "Ref": "AppName" }, { "Ref": "ServiceName" }, "MainFunction" ] ] },
-                "Handler": "main.handler",
+                "Handler": "index.handler",
                 "MemorySize": 128,
                 "Role": {
                     "Fn::GetAtt": ["MainFunctionExecutionRole", "Arn"]

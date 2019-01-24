@@ -10,7 +10,7 @@ Resources:
   AuthenticationPool:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: "/authentication.yml"
+      TemplateURL: "./authentication.yml"
       Parameters:
         AppName:
           Ref: AppName
@@ -19,7 +19,7 @@ Resources:
   AppRestAPI:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: "/apidefinition.yml"
+      TemplateURL: "./apidefinition.json"
       Parameters:
         AppName:
           Ref: AppName
@@ -47,7 +47,7 @@ Resources:
   APIDeployment:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: "/apideployment.yml"
+      TemplateURL: "./apideployment.json"
       Parameters:
         AppName:
           Ref: AppName
