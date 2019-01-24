@@ -1,31 +1,59 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
 Parameters:
-  AppName: 
+  AppName:
     Type: String
     Default: AppName
     Description: The Name of the App to be Created
 
 Resources:
-
-  # AuthenticationPool:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: '/authentication.yml'
-  #     Parameters:
-  #       AppName:
-  #         Ref: AppName
-  #     TimeoutInMinutes: 60
-
-  NewsService:
+  AuthenticationPool:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: './service_news.yml'
+      TemplateURL: "/authentication.yml"
       Parameters:
         AppName:
           Ref: AppName
       TimeoutInMinutes: 60
 
+  AppRestAPI:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: "/apidefinition.yml"
+      Parameters:
+        AppName:
+          Ref: AppName
+      TimeoutInMinutes: 60
+
+  NewsService:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: "./service_news.json"
+      Parameters:
+        AppName:
+          Ref: AppName
+        AppRestAPI:
+          Ref: AppRestAPI
+        AppRestAPIRootResource:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIRootResource
+        AppUserPoolId:
+          Fn::GetAtt:
+            - AuthenticationPool
+            - Outputs.UserPoolId
+      TimeoutInMinutes: 60
+
+  APIDeployment:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: "/apideployment.yml"
+      Parameters:
+        AppName:
+          Ref: AppName
+        AppRestAPI:
+          Ref: AppRestAPI
+      TimeoutInMinutes: 60
   # ActivitiesService:
   #   Type: AWS::CloudFormation::Stack
   #   Properties:
@@ -34,7 +62,6 @@ Resources:
   #       AppName:
   #         Ref: AppName
   #     TimeoutInMinutes: 60
-
   # ComplaintsService:
   #   Type: AWS::CloudFormation::Stack
   #   Properties:
@@ -43,7 +70,6 @@ Resources:
   #       AppName:
   #         Ref: AppName
   #     TimeoutInMinutes: 60
-
   # DocumentsService:
   #   Type: AWS::CloudFormation::Stack
   #   Properties:
@@ -52,7 +78,6 @@ Resources:
   #       AppName:
   #         Ref: AppName
   #     TimeoutInMinutes: 60
-
   # FinancialService:
   #   Type: AWS::CloudFormation::Stack
   #   Properties:
@@ -61,7 +86,6 @@ Resources:
   #       AppName:
   #         Ref: AppName
   #     TimeoutInMinutes: 60
-
   # InstitutionService:
   #   Type: AWS::CloudFormation::Stack
   #   Properties:
@@ -70,7 +94,6 @@ Resources:
   #       AppName:
   #         Ref: AppName
   #     TimeoutInMinutes: 60
-
   # PeopleService:
   #   Type: AWS::CloudFormation::Stack
   #   Properties:
@@ -79,7 +102,6 @@ Resources:
   #       AppName:
   #         Ref: AppName
   #     TimeoutInMinutes: 60
-
   # RetirementService:
   #   Type: AWS::CloudFormation::Stack
   #   Properties:
@@ -89,14 +111,19 @@ Resources:
   #         Ref: AppName
   #     TimeoutInMinutes: 60
 
-# Outputs:
-#   UserPoolId:
-#     Value:
-#       Fn::GetAtt:
-#         - AuthenticationPool
-#         - Outputs.UserPoolId
-#   IdentityPoolId:
-#     Value:
-#       Fn::GetAtt:
-#         - AuthenticationPool
-#         - Outputs.IdentityPoolId
+Outputs:
+  UserPoolId:
+    Value:
+      Fn::GetAtt:
+        - AuthenticationPool
+        - Outputs.UserPoolId
+  IdentityPoolId:
+    Value:
+      Fn::GetAtt:
+        - AuthenticationPool
+        - Outputs.IdentityPoolId
+  RestAPIUrl:
+    Value:
+      Fn::GetAtt:
+        - APIDeployment
+        - Outputs.APIUrl

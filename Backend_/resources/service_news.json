@@ -1,0 +1,360 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+
+    "Description": "NewsReport MicroService",
+
+    "Parameters": {
+
+        "AppName": {
+            "Type": "String",
+            "Description": "The Name of the Application",
+            "AllowedPattern": "(?!-)[a-zA-Z0-9-.]{1,63}(?<!-)",
+            "ConstraintDescription": "must be a url compatible."
+        },
+
+        "ServiceName": {
+            "Type": "String",
+            "Default": "NewsReport"
+        },
+
+        "AppRestAPI": {
+            "Type": "String",
+            "Description": "API Gateway Rest API Definition"
+        },
+
+        "AppRestAPIRootResource": {
+            "Type": "String",
+            "Description": "API Gateway Rest API Root Resource"
+        },
+
+        "AppUserPoolId": {
+            "Type": "String",
+            "Description": "Cognito User Pool of Application"
+        }
+
+    },
+
+    "Resources": {
+
+        "ServiceTableName": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": { "Fn::Join": [ "-", [ { "Ref": "AppName" }, { "Ref": "ServiceName" }, "Table" ] ] },
+                "BillingMode": "PAY_PER_REQUEST",
+                "KeySchema": [{
+                    "AttributeName": "itemId",
+                    "KeyType": "HASH"
+                }],
+                "AttributeDefinitions": [{
+                    "AttributeName": "itemId",
+                    "AttributeType": "S"
+                }]
+            }
+        },
+
+        "MainFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": "../dist/news/index.js",
+                "FunctionName": { "Fn::Join": [ "-", [ { "Ref": "AppName" }, { "Ref": "ServiceName" }, "MainFunction" ] ] },
+                "Handler": "main.handler",
+                "MemorySize": 128,
+                "Role": {
+                    "Fn::GetAtt": ["MainFunctionExecutionRole", "Arn"]
+                },
+                "Environment": {
+                    "Variables": {
+                        "DYNAMO_TABLE": {
+                            "Ref": "ServiceTableName"
+                        }
+                    }
+                },
+                "Runtime": "nodejs8.10",
+                "Timeout": 10
+            }
+        },
+
+        "MainFunctionExecutionRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": ["lambda.amazonaws.com"]
+                        },
+                        "Action": ["sts:AssumeRole"]
+                    }]
+                },
+                "Path": "/",
+                "Policies": [{
+                    "PolicyName": "root",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Resource": {
+                                    "Fn::GetAtt": ["ServiceTableName", "Arn"]
+                                },
+                                "Action": [
+                                    "dynamodb:GetItem", "dynamodb:Query", "dynamodb:Scan",
+                                    "dynamodb:BatchGetItem", "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem", "dynamodb:UpdateItem", "dynamodb:DeleteItem"
+                                ]
+                            }, {
+                                "Effect": "Allow",
+                                "Resource": "*",
+                                "Action": ["logs:CreateLogGroup", "logs:PutLogEvents", "logs:CreateLogStream"]
+                            }, {
+                                "Effect": "Allow",
+                                "Resource": "*",
+                                "Action": [ "cloudwatch:PutMetricData" ]
+                            }
+                        ]
+                    }
+                }]
+            }
+        },
+
+        "GatewayInvokeLambdaPermission": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "Action": "lambda:invokeFunction",
+                "FunctionName": { "Fn::GetAtt": ["MainFunction", "Arn"] },
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": { "Fn::Join": ["", ["arn:aws:execute-api:", { "Ref": "AWS::Region" }, ":", { "Ref": "AWS::AccountId" }, ":", { "Ref": "AppRestAPI" }, "/*"]] }
+            }
+        },
+
+        "ApiResourceNewsReports": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+                "RestApiId": {
+                    "Ref": "AppRestAPI"
+                },
+                "ParentId": {
+                    "Ref": "AppRestAPIRootResource"
+                },
+                "PathPart": "newsreports"
+            }
+        },
+
+        "ApiResourceNewsReportsOPTIONS": {
+            "DependsOn": "GatewayInvokeLambdaPermission",
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+                "AuthorizationType": "NONE",
+                "HttpMethod": "OPTIONS",
+                "ResourceId": {
+                    "Ref": "ApiResourceNewsReports"
+                },
+                "RestApiId": {
+                    "Ref": "AppRestAPI"
+                },
+                "Integration": {
+                    "Type": "MOCK",
+                    "IntegrationResponses": [{
+                        "StatusCode": "200",
+                        "ResponseParameters": {
+                            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                            "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                            "method.response.header.Access-Control-Allow-Origin": "'*'"
+                        },
+                        "ResponseTemplates": {
+                            "application/json": "{'statusCode': 200}"
+                        }
+                    }],
+                    "PassthroughBehavior": "WHEN_NO_MATCH"
+                },
+                "MethodResponses": [{
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                        "method.response.header.Access-Control-Allow-Headers": false,
+                        "method.response.header.Access-Control-Allow-Methods": false,
+                        "method.response.header.Access-Control-Allow-Origin": false
+                    }
+                }]
+            }
+        },
+
+        "ApiResourceNewsReportsPOST": {
+            "DependsOn": "GatewayInvokeLambdaPermission",
+            "Type": "AWS::ApiGateway::Method",
+
+            "Properties": {
+
+                "AuthorizationType": "NONE",
+                "HttpMethod": "POST",
+                "RestApiId": {
+                    "Ref": "AppRestAPI"
+                },
+                "ResourceId": {
+                    "Ref": "ApiResourceNewsReports"
+                },
+                "Integration": {
+                    "Type": "AWS_PROXY",
+                    "IntegrationHttpMethod": "POST",
+                    "Uri": {
+                        "Fn::Join": ["", ["arn:aws:apigateway:", {
+                            "Ref": "AWS::Region"
+                        }, ":lambda:path/2015-03-31/functions/", {
+                            "Fn::GetAtt": ["MainFunction", "Arn"]
+                        }, "/invocations"]]
+                    }
+                }
+
+            }
+        },
+
+        "ApiResourceNewsReport": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+                "RestApiId": {
+                    "Ref": "AppRestAPI"
+                },
+                "ParentId": {
+                    "Ref": "ApiResourceNewsReports"
+                },
+                "PathPart": "{newsreportId}"
+            }
+        },
+
+        "ApiResourceNewsReportOPTIONS": {
+            "DependsOn": "GatewayInvokeLambdaPermission",
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+                "AuthorizationType": "NONE",
+                "HttpMethod": "OPTIONS",
+                "ResourceId": {
+                    "Ref": "ApiResourceNewsReport"
+                },
+                "RestApiId": {
+                    "Ref": "AppRestAPI"
+                },
+                "Integration": {
+                    "Type": "MOCK",
+                    "IntegrationResponses": [{
+                        "StatusCode": "200",
+                        "ResponseParameters": {
+                            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                            "method.response.header.Access-Control-Allow-Methods": "'GET, PUT, DELETE,OPTIONS'",
+                            "method.response.header.Access-Control-Allow-Origin": "'*'"
+                        },
+                        "ResponseTemplates": {
+                            "application/json": "{'statusCode': 200}"
+                        }
+                    }],
+                    "PassthroughBehavior": "WHEN_NO_MATCH"
+                },
+                "MethodResponses": [{
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                        "method.response.header.Access-Control-Allow-Headers": false,
+                        "method.response.header.Access-Control-Allow-Methods": false,
+                        "method.response.header.Access-Control-Allow-Origin": false
+                    }
+                }]
+            }
+        },
+
+        "ApiResourceNewsReportGET": {
+            "DependsOn": "GatewayInvokeLambdaPermission",
+            "Type": "AWS::ApiGateway::Method",
+
+            "Properties": {
+
+                "AuthorizationType": "NONE",
+                "HttpMethod": "GET",
+                "RestApiId": {
+                    "Ref": "AppRestAPI"
+                },
+                "ResourceId": {
+                    "Ref": "ApiResourceNewsReport"
+                },
+                "RequestParameters": {
+                    "method.request.path.newsreportId": true
+                },
+                "Integration": {
+                    "Type": "AWS_PROXY",
+                    "IntegrationHttpMethod": "POST",
+                    "Uri": {
+                        "Fn::Join": ["", ["arn:aws:apigateway:", {
+                            "Ref": "AWS::Region"
+                        }, ":lambda:path/2015-03-31/functions/", {
+                            "Fn::GetAtt": ["MainFunction", "Arn"]
+                        }, "/invocations"]]
+                    }
+                }
+
+            }
+        },
+
+        "ApiResourceNewsReportPUT": {
+            "DependsOn": "GatewayInvokeLambdaPermission",
+            "Type": "AWS::ApiGateway::Method",
+
+            "Properties": {
+
+                "AuthorizationType": "NONE",
+                "HttpMethod": "PUT",
+                "RestApiId": {
+                    "Ref": "AppRestAPI"
+                },
+                "ResourceId": {
+                    "Ref": "ApiResourceNewsReport"
+                },
+                "RequestParameters": {
+                    "method.request.path.newsreportId": true
+                },
+                "Integration": {
+                    "Type": "AWS_PROXY",
+                    "IntegrationHttpMethod": "POST",
+                    "Uri": {
+                        "Fn::Join": ["", ["arn:aws:apigateway:", {
+                            "Ref": "AWS::Region"
+                        }, ":lambda:path/2015-03-31/functions/", {
+                            "Fn::GetAtt": ["MainFunction", "Arn"]
+                        }, "/invocations"]]
+                    }
+                }
+
+            }
+        },
+
+        "ApiResourceNewsReportDELETE": {
+            "DependsOn": "GatewayInvokeLambdaPermission",
+            "Type": "AWS::ApiGateway::Method",
+
+            "Properties": {
+
+                "AuthorizationType": "NONE",
+                "HttpMethod": "DELETE",
+                "RestApiId": {
+                    "Ref": "AppRestAPI"
+                },
+                "ResourceId": {
+                    "Ref": "ApiResourceNewsReport"
+                },
+                "RequestParameters": {
+                    "method.request.path.newsreportId": true
+                },
+                "Integration": {
+                    "Type": "AWS_PROXY",
+                    "IntegrationHttpMethod": "POST",
+                    "Uri": {
+                        "Fn::Join": ["", ["arn:aws:apigateway:", {
+                            "Ref": "AWS::Region"
+                        }, ":lambda:path/2015-03-31/functions/", {
+                            "Fn::GetAtt": ["MainFunction", "Arn"]
+                        }, "/invocations"]]
+                    }
+                }
+
+            }
+        }
+
+    }
+
+}
