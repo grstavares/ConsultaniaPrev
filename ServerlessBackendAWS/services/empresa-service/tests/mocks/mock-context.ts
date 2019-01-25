@@ -8,7 +8,7 @@ export const mockContext: Context = {
     memoryLimitInMB: 128,
     functionVersion: "$LATEST",
     awsRequestId: "ccc4f019-01f3-11e9-b390-ddba96f8c1d3",
-    invokedFunctionArn: "arn:aws:lambda:sa-east-1:831559051193:function:TestFunctionAndEvent",
+    invokedFunctionArn: "arn:aws:lambda:sa-east-1:123456789012:function:TestFunctionAndEvent",
     getRemainingTimeInMillis: () => {return 5},
     // Functions for compatibility with earlier Node.js Runtime v0.10.42
     // For more details see http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-using-old-runtime.html#nodejs-prog-model-oldruntime-context-methods

@@ -165,7 +165,10 @@ export class DynamoDBTable implements NoSQLTable {
 
     private parseValue(value: any): Object {
 
-        return (typeof value === 'number') ? { N: String(value) } : (typeof value === 'string') ? { S: value } : this.marshalObject(value);
+        return (typeof value === 'number') ? { N: String(value) } :
+         (typeof value === 'string') ? { S: value } :
+         (typeof value === 'boolean') ? { BOOL: value } :
+         this.marshalObject(value);
 
     }
 

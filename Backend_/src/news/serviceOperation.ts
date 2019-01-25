@@ -31,7 +31,7 @@ export class ServiceOperation extends BaseOperations {
             } else if (method.toLowerCase() === 'post') { return AllowedOperation.CreateNewsReport;
             } else {return null; }
 
-        } else if (resource.toLowerCase() === '/newsreports/{newsreportId}') {
+        } else if (resource.toLowerCase() === '/newsreports/{newsreportid}') {
 
             if (method.toLowerCase() === 'get') { return AllowedOperation.GetNewsReport;
             } else if (method.toLowerCase() === 'put') { return AllowedOperation.UpdateNewsReport;
@@ -45,6 +45,7 @@ export class ServiceOperation extends BaseOperations {
     public async perform(injector: DependencyInjector): Promise<APIGatewayResponse> {
 
         const operation = this.getOperation();
+
         switch (operation) {
 
             case 'GetAllNewsReport': {
@@ -61,7 +62,10 @@ export class ServiceOperation extends BaseOperations {
                 const objectKey = UUID.newUUID();
                 const objectValues = this.eventParser.getPayload();
                 const keyedObject = { uuid: objectKey, ...objectValues};
-                return this.putItem(injector, { uuid: objectKey }, keyedObject);
+
+                return this.putItem(injector, { uuid: objectKey }, keyedObject)
+                .then((response) => ResponseBuilder.created('teste', keyedObject));
+
             }
 
             case 'UpdateNewsReport': {

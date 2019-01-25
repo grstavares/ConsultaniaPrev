@@ -29,7 +29,7 @@ export class BaseOperations {
         return injector.getNoSQLTable()
         .then(async (table) => table.putItem(keys, item))
         .then((result) => ResponseBuilder.ok(item))
-        .catch((reason: ServiceError) => ResponseBuilder.serviceError(reason, this.traceId));
+        .catch((reason: ServiceError) => {console.log(reason); return ResponseBuilder.serviceError(reason, this.traceId)});
 
     }
 
