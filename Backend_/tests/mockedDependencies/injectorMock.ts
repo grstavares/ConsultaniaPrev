@@ -45,6 +45,7 @@ export class ErrorNoSQLTable implements NoSQLTable {
     public async putItem(keys: { [key: string]: any }, object: Object): Promise<boolean> { return Promise.reject(); }
     public async deleteItems(keys: { [key: string]: any }): Promise<boolean> { return Promise.reject(); }
     public async updateItem(keys: { [key: string]: any }, values: { [key: string]: any }): Promise<boolean> { return Promise.reject(); }
+    public async queryIndex(indexName: string, keys: { [key: string]: any }): Promise<Object[]> { return Promise.reject(); }
 }
 
 export class MockedMessageBus implements MessageBus {

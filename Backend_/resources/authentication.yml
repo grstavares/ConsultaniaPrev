@@ -1,7 +1,9 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
-Parameters: 
-  AppName: 
+Description: "Authentication Provider"
+
+Parameters:
+  AppName:
     Type: String
     Default: AppName
     Description: The Name of the App to be Created
@@ -12,8 +14,8 @@ Resources:
   UserPoolSNSRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: 
-        Fn::Join: 
+      RoleName:
+        Fn::Join:
           - ''
           - - Ref: AppName
             - "UserPoolSNSRole"
@@ -34,12 +36,12 @@ Resources:
               - Effect: Allow
                 Action: sns:publish
                 Resource: '*'
-      
+
   UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName:
-        Fn::Join: 
+        Fn::Join:
           - '-'
           - - Ref: AppName
             - "UserPool"
@@ -71,7 +73,7 @@ Resources:
     Type: AWS::Cognito::UserPoolClient
     Properties:
       ClientName:
-        Fn::Join: 
+        Fn::Join:
           - '-'
           - - Ref: AppName
             - "Client"
@@ -83,7 +85,7 @@ Resources:
     Type: AWS::Cognito::IdentityPool
     Properties:
       IdentityPoolName:
-        Fn::Join: 
+        Fn::Join:
           - ''
           - - Ref: AppName
             - "IdentityPool"
@@ -99,8 +101,8 @@ Resources:
   UnAuthorizedRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: 
-        Fn::Join: 
+      RoleName:
+        Fn::Join:
           - ''
           - - Ref: AppName
             - "UnAuthorizedRole"
@@ -126,8 +128,8 @@ Resources:
   AuthorizedRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: 
-        Fn::Join: 
+      RoleName:
+        Fn::Join:
           - ''
           - - Ref: AppName
             - "AuthorizedRole"

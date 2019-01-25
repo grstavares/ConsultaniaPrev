@@ -1,4 +1,5 @@
 var path = require('path');
+var ZipPlugin = require('zip-webpack-plugin');
 
 var defaultConfig = {
   mode: "production",
@@ -28,6 +29,12 @@ var defaultConfig = {
 
 function moduleConfig(name) {
 
+  var zipConfig = {
+    path: name + '/',
+    filename: name + '.zip',
+    extension: 'zip'
+  };
+
   var moduleOutput = Object.assign( {
     filename: name + '/index.js'
   }, defaultConfig.output );
@@ -35,32 +42,16 @@ function moduleConfig(name) {
   var config = Object.assign({}, defaultConfig, {
     name: name,
     entry: './src/' + name + '/index.ts',
-    output: moduleOutput
+    output: moduleOutput,
+    plugins: [new ZipPlugin(zipConfig)]
   });
 
   return config;
 
 }
 
-var newsService = Object.assign({}, defaultConfig, {
-  name: 'service_news',
-  entry: './src/news/index.ts',
-  output: {
-    filename: 'news/index.js'
-  }
-});
-
-var messagesService = Object.assign({}, defaultConfig, {
-  name: 'service_messages',
-  entry: './src/messages/index.ts',
-  output: {
-    filename: 'messages/index.js'
-  }
-});
-
-// var services = ['activities', 'complaints', 'documents', 'financial', 'institution', 'messages', 'news', 'people', 'retirement'];
-var services = [ 'news', 'retirement' ];
-var servicesConfig = services.forEach(value => moduleConfig(value));
+// var services = [ 'financial', 'institution', 'messages', 'people'];
+var services = [ 'news', 'retirement', 'activities', 'complaints', 'documents' ];
 
 module.exports = function () {
 
@@ -73,31 +64,3 @@ module.exports = function () {
   return array;
 
 }();
-
-// module.exports = {
-//   mode: "production",
-//   target: 'node',
-//   entry: ['./src/news/index.ts', './src/messages/index.ts'],
-//   module: {
-//     rules: [{
-//       test: /\.tsx?$/,
-//       use: 'ts-loader',
-//       exclude: /node_modules/
-//     }]
-//   },
-//   resolve: {
-//     extensions: ['.tsx', '.ts', '.js']
-//   },
-//   externals: {
-//     'aws-sdk': 'aws-sdk'
-//   },
-//   output: {
-//     filename: 'service_[name].js',
-//     library: "index",
-//     libraryTarget: 'commonjs2',
-//     path: path.resolve(__dirname, './dist')
-//   },
-//   optimization: {
-//     minimize: false
-//   }
-// };

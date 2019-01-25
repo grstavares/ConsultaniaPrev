@@ -1,0 +1,116 @@
+{
+    "resource": "/newsreports",
+    "path": "/newsreports",
+    "httpMethod": "POST",
+    "headers": {
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "pt-br",
+        "CloudFront-Forwarded-Proto": "https",
+        "CloudFront-Is-Desktop-Viewer": "true",
+        "CloudFront-Is-Mobile-Viewer": "false",
+        "CloudFront-Is-SmartTV-Viewer": "false",
+        "CloudFront-Is-Tablet-Viewer": "false",
+        "CloudFront-Viewer-Country": "BR",
+        "Content-Type": "text/plain",
+        "Host": "zfd6m3x3f6.execute-api.us-east-1.amazonaws.com",
+        "User-Agent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
+        "Via": "1.1 28a30873e1e5b92657cf0bcd1c7e4c84.cloudfront.net (CloudFront)",
+        "X-Amz-Cf-Id": "U5LeaO-FVW2nxdxbspGDlfVRHmwZxBwiQhAlT5MuMZ-pHvGGaxTRUA==",
+        "X-Amzn-Trace-Id": "Root=1-5c4a4ce1-3b48b588595f5462dd23d344",
+        "X-Forwarded-For": "177.235.72.106, 70.132.44.83",
+        "X-Forwarded-Port": "443",
+        "X-Forwarded-Proto": "https"
+    },
+    "multiValueHeaders": {
+        "Accept": [
+            "*/*"
+        ],
+        "Accept-Encoding": [
+            "gzip, deflate"
+        ],
+        "Accept-Language": [
+            "pt-br"
+        ],
+        "CloudFront-Forwarded-Proto": [
+            "https"
+        ],
+        "CloudFront-Is-Desktop-Viewer": [
+            "true"
+        ],
+        "CloudFront-Is-Mobile-Viewer": [
+            "false"
+        ],
+        "CloudFront-Is-SmartTV-Viewer": [
+            "false"
+        ],
+        "CloudFront-Is-Tablet-Viewer": [
+            "false"
+        ],
+        "CloudFront-Viewer-Country": [
+            "BR"
+        ],
+        "Content-Type": [
+            "text/plain"
+        ],
+        "Host": [
+            "zfd6m3x3f6.execute-api.us-east-1.amazonaws.com"
+        ],
+        "User-Agent": [
+            "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)"
+        ],
+        "Via": [
+            "1.1 28a30873e1e5b92657cf0bcd1c7e4c84.cloudfront.net (CloudFront)"
+        ],
+        "X-Amz-Cf-Id": [
+            "U5LeaO-FVW2nxdxbspGDlfVRHmwZxBwiQhAlT5MuMZ-pHvGGaxTRUA=="
+        ],
+        "X-Amzn-Trace-Id": [
+            "Root=1-5c4a4ce1-3b48b588595f5462dd23d344"
+        ],
+        "X-Forwarded-For": [
+            "177.235.72.106, 70.132.44.83"
+        ],
+        "X-Forwarded-Port": [
+            "443"
+        ],
+        "X-Forwarded-Proto": [
+            "https"
+        ]
+    },
+    "queryStringParameters": null,
+    "multiValueQueryStringParameters": null,
+    "pathParameters": null,
+    "stageVariables": null,
+    "requestContext": {
+        "resourceId": "rd3rxa",
+        "resourcePath": "/newsreports",
+        "httpMethod": "POST",
+        "extendedRequestId": "UCDzRFnvIAMFYfA=",
+        "requestTime": "24/Jan/2019:23:40:17 +0000",
+        "path": "/poc/newsreports",
+        "accountId": "123456789012",
+        "protocol": "HTTP/1.1",
+        "stage": "poc",
+        "domainPrefix": "zfd6m3x3f6",
+        "requestTimeEpoch": 1548373217706,
+        "requestId": "67b719ee-2031-11e9-88d2-a1501b495f94",
+        "identity": {
+            "cognitoIdentityPoolId": null,
+            "accountId": null,
+            "cognitoIdentityId": null,
+            "caller": null,
+            "sourceIp": "177.235.72.106",
+            "accessKey": null,
+            "cognitoAuthenticationType": null,
+            "cognitoAuthenticationProvider": null,
+            "userArn": null,
+            "userAgent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
+            "user": null
+        },
+        "domainName": "zfd6m3x3f6.execute-api.us-east-1.amazonaws.com",
+        "apiId": "zfd6m3x3f6"
+    },
+    "body": "{\n  \"contents\": \"Nothing Important\",\n  \"dateCreation\": 1548373056679,\n  \"imageUrl\": \"https://images.google.com\",\n  \"title\": \"This is a New News\",\n  \"url\": \"https://www.google.com\"\n}",
+    "isBase64Encoded": false
+}

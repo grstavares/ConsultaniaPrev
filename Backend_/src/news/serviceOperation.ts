@@ -16,7 +16,7 @@ export enum AllowedOperation {
 export class ServiceOperation extends BaseOperations {
 
     private readonly httpPathParamId = 'newsreportId';
-    private readonly tableHashKey = 'uuid';
+    private readonly tableHashKey = 'itemId';
 
     constructor(private readonly eventParser: InputParser, traceId: string) { super(traceId); }
 
@@ -50,20 +50,20 @@ export class ServiceOperation extends BaseOperations {
 
             case 'GetAllNewsReport': {
                 const objectKey = this.eventParser.getPathParam(this.httpPathParamId);
-                return this.getItem(injector, { uuid: objectKey });
+                return this.queryItemsOnIndexByKeys(injector, 'indexName', { itemId: objectKey });
             }
 
             case 'GetNewsReport': {
                 const objectKey = this.eventParser.getPathParam(this.httpPathParamId);
-                return this.getItem(injector, { uuid: objectKey });
+                return this.getItem(injector, { itemId: objectKey });
             }
 
             case 'CreateNewsReport': {
                 const objectKey = UUID.newUUID();
                 const objectValues = this.eventParser.getPayload();
-                const keyedObject = { uuid: objectKey, ...objectValues};
+                const keyedObject = { itemId: objectKey, ...objectValues};
 
-                return this.putItem(injector, { uuid: objectKey }, keyedObject)
+                return this.putItem(injector, { itemId: objectKey }, keyedObject)
                 .then((response) => ResponseBuilder.created('teste', keyedObject));
 
             }
@@ -75,14 +75,14 @@ export class ServiceOperation extends BaseOperations {
 
                 /* tslint:disable no-dynamic-delete */
                 delete objectValues[this.tableHashKey];
-                return this.updateItem(injector, { uuid: objectKey }, objectValues);
+                return this.updateItem(injector, { itemId: objectKey }, objectValues);
 
             }
 
             case 'RemoveNewsReport': {
                 const objectKey = this.eventParser.getPathParam(this.httpPathParamId);
                 const deleteMarker = { wasDeleted: true };
-                return this.updateItem(injector, { uuid: objectKey }, deleteMarker);
+                return this.updateItem(injector, { itemId: objectKey }, deleteMarker);
             }
 
             default: {

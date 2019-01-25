@@ -22,18 +22,15 @@ export class AWSDependencyInjector {
         const tablename = process.env.DYNAMO_TABLE_NAME;
         if (tablename === null || tablename == undefined) {
 
-            const error = new ErrorBuilder(this.errorType, DependencyInjectorError.DependencyNotConfigured, HttpStatusCode.internalServerError).withResource('NoSQLTable').build();
-            const response = ResponseBuilder.internalError(error.code, this.traceId);
+            const serviceError = new ErrorBuilder(this.errorType, DependencyInjectorError.DependencyNotConfigured, HttpStatusCode.internalServerError).withResource('NoSQLTable').build();
             const metric = new MetricBuilder(BackendMetrics.DependencyNotConfigured, 1).withResourceType('NoSQLTable').build();
 
-            console.log(error);
+            console.log(serviceError);
             return this.tryToPublishMetric(metric)
-            .then(async (result) => Promise.reject(response))
-            .catch(async (publishError) => Promise.reject(response));
+            .then(async (result) => Promise.reject(serviceError))
+            .catch(async (publishError) => Promise.reject(serviceError));
 
-        }
-
-        return new DynamoDBTable(tablename);
+        } else { return new DynamoDBTable(tablename); }
 
     }
 

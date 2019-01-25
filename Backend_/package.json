@@ -4,8 +4,19 @@
   "description": "Backend for ConsultaniaPrev Solution using serverless and micrservices architectures in AWS",
   "main": "src/index.js",
   "scripts": {
-    "test": "LAMBDA_TESTER_NODE_VERSION_CHECK=false mocha -r ts-node/register tests/**/*.spec.ts",
-    "build": "webpack --config webpack.config.js"
+    "test-all": "LAMBDA_TESTER_NODE_VERSION_CHECK=false mocha -r ts-node/register tests/**/*.spec.ts",
+    "build-activities": "webpack --config ./src/activities/webpack.config.js",
+    "build-complaints": "webpack --config ./src/complaints/webpack.config.js",
+    "build-documents": "webpack --config ./src/documents/webpack.config.js",
+    "build-financial": "webpack --config ./src/financial/webpack.config.js",
+    "build-institution": "webpack --config ./src/institution/webpack.config.js",
+    "build-messages": "webpack --config ./src/messages/webpack.config.js",
+    "build-news": "webpack --config ./src/news/webpack.config.js",
+    "build-people": "webpack --config ./src/people/webpack.config.js",
+    "build-retirement": "webpack --config ./src/retirement/webpack.config.js",
+    "build-all": "npm run test-all && npm run build-activities && npm run build-complaints && npm run build-documents && npm run build-financial && npm run build-institution && npm run build-messages && npm run build-news && npm run build-people && npm run build-retirement",
+    "package": "npm run build-all && aws cloudformation package --template-file ./resources/masterstack.yml --s3-bucket grstavares-code-us-east-1 --output-template-file ./resources/packaged.yml --profile backenddev",
+    "deploy": "npm run package && aws cloudformation deploy --template-file ./resources/packaged.yml --capabilities CAPABILITY_NAMED_IAM --profile backenddev --stack-name"
   },
   "author": "Gustavo Tavares",
   "license": "ISC",
@@ -23,7 +34,10 @@
     "ts-loader": "^5.3.3",
     "ts-node": "^7.0.1",
     "tslint": "^5.12.1",
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.2",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1",
+    "zip-webpack-plugin": "^3.0.0"
   },
   "dependencies": {
     "aws-xray-sdk": "^2.1.0"

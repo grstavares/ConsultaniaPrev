@@ -1,7 +1,7 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
 
-    "Description": "NewsReport MicroService",
+    "Description": "Institution MicroService",
 
     "Parameters": {
 
@@ -14,7 +14,7 @@
 
         "ServiceName": {
             "Type": "String",
-            "Default": "NewsReport"
+            "Default": "Institution"
         },
 
         "AppRestAPI": {
@@ -47,18 +47,24 @@
             "Properties": {
                 "TableName": { "Fn::Join": [ "-", [ { "Ref": "AppName" }, { "Ref": "ServiceName" }, "Table" ] ] },
                 "BillingMode": "PAY_PER_REQUEST",
-                "KeySchema": [{ "AttributeName": "institutionId", "KeyType": "HASH" }, { "AttributeName": "itemId", "KeyType": "RANGE" }],
-                "AttributeDefinitions": [{ "AttributeName": "institutionId", "AttributeType": "S" }, { "AttributeName": "itemId", "AttributeType": "S" }]
+                "KeySchema": [{
+                    "AttributeName": "institutionId",
+                    "KeyType": "HASH"
+                }],
+                "AttributeDefinitions": [{
+                    "AttributeName": "institutionId",
+                    "AttributeType": "S"
+                }]
             }
         },
 
         "MainFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
-                "Code": "../dist/news/news.zip",
+                "Code": "../dist/institution/institution.zip",
                 "FunctionName": { "Fn::Join": [ "-", [ { "Ref": "AppName" }, { "Ref": "ServiceName" }, "MainFunction" ] ] },
                 "Description": { "Fn::Join": [ "", [ { "Ref": "ServiceName" }, " Main Function for Application ", { "Ref": "AppName" }] ] },
-                "Handler": "news/index.handler",
+                "Handler": "institution/index.handler",
                 "MemorySize": 128,
                 "Role": {
                     "Fn::GetAtt": ["MainFunctionExecutionRole", "Arn"]
@@ -130,7 +136,7 @@
             }
         },
 
-        "ApiResourceNewsReports": {
+        "ApiResourceInstitutions": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
                 "RestApiId": {
@@ -139,18 +145,18 @@
                 "ParentId": {
                     "Ref": "AppRestAPIRootResource"
                 },
-                "PathPart": "newsreports"
+                "PathPart": "intitutions"
             }
         },
 
-        "ApiResourceNewsReportsOPTIONS": {
+        "ApiResourceInstitutionsOPTIONS": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
                 "AuthorizationType": "NONE",
                 "HttpMethod": "OPTIONS",
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReports"
+                    "Ref": "ApiResourceInstitutions"
                 },
                 "RestApiId": {
                     "Ref": "AppRestAPI"
@@ -181,7 +187,7 @@
             }
         },
 
-        "ApiResourceNewsReportsGET": {
+        "ApiResourceInstitutionsGET": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
 
@@ -193,7 +199,7 @@
                     "Ref": "AppRestAPI"
                 },
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReports"
+                    "Ref": "ApiResourceInstitutions"
                 },
                 "Integration": {
                     "Type": "AWS_PROXY",
@@ -210,7 +216,7 @@
             }
         },
 
-        "ApiResourceNewsReportsPOST": {
+        "ApiResourceInstitutionsPOST": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
 
@@ -222,7 +228,7 @@
                     "Ref": "AppRestAPI"
                 },
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReports"
+                    "Ref": "ApiResourceInstitutions"
                 },
                 "Integration": {
                     "Type": "AWS_PROXY",
@@ -239,27 +245,27 @@
             }
         },
 
-        "ApiResourceNewsReport": {
+        "ApiResourceInstitution": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
                 "RestApiId": {
                     "Ref": "AppRestAPI"
                 },
                 "ParentId": {
-                    "Ref": "ApiResourceNewsReports"
+                    "Ref": "ApiResourceInstitutions"
                 },
-                "PathPart": "{newsreportId}"
+                "PathPart": "{institutionId}"
             }
         },
 
-        "ApiResourceNewsReportOPTIONS": {
+        "ApiResourceInstitutionOPTIONS": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
                 "AuthorizationType": "NONE",
                 "HttpMethod": "OPTIONS",
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReport"
+                    "Ref": "ApiResourceInstitution"
                 },
                 "RestApiId": {
                     "Ref": "AppRestAPI"
@@ -290,7 +296,7 @@
             }
         },
 
-        "ApiResourceNewsReportGET": {
+        "ApiResourceInstitutionGET": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
 
@@ -302,10 +308,10 @@
                     "Ref": "AppRestAPI"
                 },
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReport"
+                    "Ref": "ApiResourceInstitution"
                 },
                 "RequestParameters": {
-                    "method.request.path.newsreportId": true
+                    "method.request.path.institutionId": true
                 },
                 "Integration": {
                     "Type": "AWS_PROXY",
@@ -322,7 +328,7 @@
             }
         },
 
-        "ApiResourceNewsReportPUT": {
+        "ApiResourceInstitutionPUT": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
 
@@ -334,10 +340,10 @@
                     "Ref": "AppRestAPI"
                 },
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReport"
+                    "Ref": "ApiResourceInstitution"
                 },
                 "RequestParameters": {
-                    "method.request.path.newsreportId": true
+                    "method.request.path.institutionId": true
                 },
                 "Integration": {
                     "Type": "AWS_PROXY",
@@ -354,7 +360,7 @@
             }
         },
 
-        "ApiResourceNewsReportDELETE": {
+        "ApiResourceInstitutionDELETE": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
 
@@ -366,10 +372,10 @@
                     "Ref": "AppRestAPI"
                 },
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReport"
+                    "Ref": "ApiResourceInstitution"
                 },
                 "RequestParameters": {
-                    "method.request.path.newsreportId": true
+                    "method.request.path.institutionId": true
                 },
                 "Integration": {
                     "Type": "AWS_PROXY",

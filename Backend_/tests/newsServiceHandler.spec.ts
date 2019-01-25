@@ -1,13 +1,13 @@
 /* tslint:disable all */
-import { handler, setInjector } from '../../src/news/index'
+import { handler, setInjector } from '../src/news/index'
 import 'mocha';
 import { expect, should } from 'chai';
 import lambdaTester = require('lambda-tester');
 
-import { MockedEvents, AWSEvent } from '../mockedEvents/MockedEvents';
+import { MockedEvents, AWSEvent } from './mockedEvents/MockedEvents';
 import { KeySchema, AttributeDefinitions } from 'aws-sdk/clients/dynamodb';
-import { DynamoDBMock, LocalDynamoConfiguration } from '../mockedDependencies/dynamoMock';
-import { DependencyInjectorMock } from '../mockedDependencies/injectorMock';
+import { DynamoDBMock, LocalDynamoConfiguration } from './mockedDependencies/dynamoMock';
+import { DependencyInjectorMock } from './mockedDependencies/injectorMock';
 
 let mockedEvents:MockedEvents;
 let mockedInjector: DependencyInjectorMock;
@@ -20,8 +20,8 @@ describe('Lambda Handler', () => {
         mockedEvents = new MockedEvents();
 
         const tableNames = ['NewsReports'];
-        const tableKeys: KeySchema[] = [ [{ AttributeName: 'uuid', KeyType: 'HASH'}] ];
-        const tableAttributes: AttributeDefinitions[] = [ [{ AttributeName: 'uuid', AttributeType: 'S' }] ];
+        const tableKeys: KeySchema[] = [ [{ AttributeName: 'itemId', KeyType: 'HASH'}] ];
+        const tableAttributes: AttributeDefinitions[] = [ [{ AttributeName: 'itemId', AttributeType: 'S' }] ];
 
         this.timeout(10000);
         const dynamoconfig: LocalDynamoConfiguration = {
@@ -38,6 +38,19 @@ describe('Lambda Handler', () => {
             done();
         })
         .catch((error) => {throw new Error(error); });
+
+    });
+
+    it('NewsReport::Get OK response when send a Get Request For RootResource', async () => {
+
+        setInjector(mockedInjector);
+        const mocked = mockedEvents.getEvent(AWSEvent.NewsReportGetAll);
+        const object1 = new ItemBuilder().withUUID('InexistentId1').withTitle('Mock Title').withContent('Mock Content').withdateCreation('teste').withLastUpdate(null).withUrl('http://www.google.com').withImageUrl('https://images.google.com').build();
+        const object2 = new ItemBuilder().withUUID('InexistentId2').withTitle('Mock Title').withContent('Mock Content').withdateCreation('teste').withLastUpdate(null).withUrl('http://www.google.com').withImageUrl('https://images.google.com').build();
+
+        const responseA = await mockedInjector.injectItemOnTable({ uuid: 'InexistentId1'}, object1);
+        const responseB = await mockedInjector.injectItemOnTable({ uuid: 'InexistentId2'}, object2);
+        return lambdaTester(handler).event(mocked).expectResult((verifier) => { expect(verifier.statusCode).to.eql(200) });
 
     });
 
@@ -148,7 +161,7 @@ class ItemBuilder {
 
     build(): Object {
         return {
-            uuid: this.uuid,
+            itemId: this.uuid,
             title: this.title,
             contents: this.contents,
             dataCreation: this.dataCreation,

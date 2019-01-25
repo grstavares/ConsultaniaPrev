@@ -118,6 +118,32 @@ export class DynamoDBTable implements NoSQLTable {
 
     }
 
+    public async queryIndex(indexName: string, keys: { [key: string]: any }): Promise<Object[]> {
+
+        // const queryExpression = this.updateExpression(keys);
+
+        const scanItemParams: DynamoDB.ScanInput = {
+            // ExpressionAttributeNames: queryExpression.ExpressionAttributeNames,
+            // ExpressionAttributeValues: queryExpression.ExpressionAttributeValues,
+            // FilterExpression: queryExpression.UpdateExpression,
+            ReturnConsumedCapacity: 'TOTAL',
+            TableName: this.tableName,
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+
+            this.dynamoDB.scan(scanItemParams).promise()
+            .then((result) => {
+
+                const dynamoItems = result.Items;
+                const objectItems = dynamoItems.map((item, index, array) => this.unmarshalObject(item));
+                resolve(objectItems);
+
+            }).catch((error) => reject(AWSParser.parseAWSError(error, {type: 'table', name: this.tableName})));
+
+        });
+    }
+
     public updateExpression(object: { [key: string]: any }): { UpdateExpression: string; ExpressionAttributeNames: ExpressionAttributeNameMap; ExpressionAttributeValues: ExpressionAttributeValueMap } {
 
         if (Object.keys(object).length === 0) { throw Error('NoValues'); }

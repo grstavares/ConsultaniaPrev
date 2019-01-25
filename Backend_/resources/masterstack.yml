@@ -1,5 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
+Description: "Application Master Stack"
+
 Parameters:
   AppName:
     Type: String
@@ -25,15 +27,17 @@ Resources:
           Ref: AppName
       TimeoutInMinutes: 60
 
-  NewsService:
+  ActivitiesService:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: "./service_news.json"
+      TemplateURL: './service_activities.json'
       Parameters:
         AppName:
           Ref: AppName
         AppRestAPI:
-          Ref: AppRestAPI
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIReference
         AppRestAPIRootResource:
           Fn::GetAtt:
             - AppRestAPI
@@ -44,72 +48,218 @@ Resources:
             - Outputs.UserPoolId
       TimeoutInMinutes: 60
 
-  APIDeployment:
+  ComplaintsService:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: "./apideployment.json"
+      TemplateURL: './service_complaints.json'
       Parameters:
         AppName:
           Ref: AppName
         AppRestAPI:
-          Ref: AppRestAPI
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIReference
+        AppRestAPIRootResource:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIRootResource
+        AppUserPoolId:
+          Fn::GetAtt:
+            - AuthenticationPool
+            - Outputs.UserPoolId
       TimeoutInMinutes: 60
-  # ActivitiesService:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: '/service_activities.json'
-  #     Parameters:
-  #       AppName:
-  #         Ref: AppName
-  #     TimeoutInMinutes: 60
-  # ComplaintsService:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: '/service_complaints.json'
-  #     Parameters:
-  #       AppName:
-  #         Ref: AppName
-  #     TimeoutInMinutes: 60
-  # DocumentsService:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: '/service_documents.json'
-  #     Parameters:
-  #       AppName:
-  #         Ref: AppName
-  #     TimeoutInMinutes: 60
-  # FinancialService:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: '/service_financial.json'
-  #     Parameters:
-  #       AppName:
-  #         Ref: AppName
-  #     TimeoutInMinutes: 60
-  # InstitutionService:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: '/service_institution.json'
-  #     Parameters:
-  #       AppName:
-  #         Ref: AppName
-  #     TimeoutInMinutes: 60
-  # PeopleService:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: '/service_people.json'
-  #     Parameters:
-  #       AppName:
-  #         Ref: AppName
-  #     TimeoutInMinutes: 60
-  # RetirementService:
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties:
-  #     TemplateURL: '/service_news.json'
-  #     Parameters:
-  #       AppName:
-  #         Ref: AppName
-  #     TimeoutInMinutes: 60
+
+  DocumentsService:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: './service_documents.json'
+      Parameters:
+        AppName:
+          Ref: AppName
+        AppRestAPI:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIReference
+        AppRestAPIRootResource:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIRootResource
+        AppUserPoolId:
+          Fn::GetAtt:
+            - AuthenticationPool
+            - Outputs.UserPoolId
+      TimeoutInMinutes: 60
+
+  FinancialService:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: './service_financial.json'
+      Parameters:
+        AppName:
+          Ref: AppName
+        AppRestAPI:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIReference
+        AppRestAPIRootResource:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIRootResource
+        AppUserPoolId:
+          Fn::GetAtt:
+            - AuthenticationPool
+            - Outputs.UserPoolId
+      TimeoutInMinutes: 60
+
+  InstitutionService:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: './service_institution.json'
+      Parameters:
+        AppName:
+          Ref: AppName
+        AppRestAPI:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIReference
+        AppRestAPIRootResource:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIRootResource
+        AppUserPoolId:
+          Fn::GetAtt:
+            - AuthenticationPool
+            - Outputs.UserPoolId
+      TimeoutInMinutes: 60
+
+  MessageService:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: "./service_messages.json"
+      Parameters:
+        AppName:
+          Ref: AppName
+        AppRestAPI:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIReference
+        AppRestAPIRootResource:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIRootResource
+        AppUserPoolId:
+          Fn::GetAtt:
+            - AuthenticationPool
+            - Outputs.UserPoolId
+      TimeoutInMinutes: 60
+
+  NewsService:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: "./service_news.json"
+      Parameters:
+        AppName:
+          Ref: AppName
+        AppRestAPI:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIReference
+        AppRestAPIRootResource:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIRootResource
+        AppUserPoolId:
+          Fn::GetAtt:
+            - AuthenticationPool
+            - Outputs.UserPoolId
+      TimeoutInMinutes: 60
+
+  PeopleService:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: './service_people.json'
+      Parameters:
+        AppName:
+          Ref: AppName
+        AppRestAPI:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIReference
+        AppRestAPIRootResource:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIRootResource
+        AppUserPoolId:
+          Fn::GetAtt:
+            - AuthenticationPool
+            - Outputs.UserPoolId
+      TimeoutInMinutes: 60
+
+  RetirementService:
+      Type: AWS::CloudFormation::Stack
+      Properties:
+        TemplateURL: './service_retirement.json'
+        Parameters:
+          AppName:
+            Ref: AppName
+          AppRestAPI:
+            Fn::GetAtt:
+              - AppRestAPI
+              - Outputs.AppRestAPIReference
+          AppRestAPIRootResource:
+            Fn::GetAtt:
+              - AppRestAPI
+              - Outputs.AppRestAPIRootResource
+          AppUserPoolId:
+            Fn::GetAtt:
+              - AuthenticationPool
+              - Outputs.UserPoolId
+        TimeoutInMinutes: 60
+
+  APIDeployment:
+    DependsOn: NewsService
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: "./apideployment.json"
+      Parameters:
+        AppRestApiId:
+          Fn::GetAtt:
+            - AppRestAPI
+            - Outputs.AppRestAPIReference
+        StageName:
+          Fn::Join:
+          - ''
+          - - v
+            - Fn::GetAtt:
+              - ActivitiesService
+              - Outputs.ServiceStackVersionNumber
+            - Fn::GetAtt:
+              - ComplaintsService
+              - Outputs.ServiceStackVersionNumber
+            - Fn::GetAtt:
+              - DocumentsService
+              - Outputs.ServiceStackVersionNumber
+            - Fn::GetAtt:
+              - FinancialService
+              - Outputs.ServiceStackVersionNumber
+            - Fn::GetAtt:
+              - InstitutionService
+              - Outputs.ServiceStackVersionNumber
+            - Fn::GetAtt:
+              - MessageService
+              - Outputs.ServiceStackVersionNumber
+            - Fn::GetAtt:
+              - NewsService
+              - Outputs.ServiceStackVersionNumber
+            - Fn::GetAtt:
+              - PeopleService
+              - Outputs.ServiceStackVersionNumber
+            - Fn::GetAtt:
+              - RetirementService
+              - Outputs.ServiceStackVersionNumber
+
+      TimeoutInMinutes: 60
+
 
 Outputs:
   UserPoolId:

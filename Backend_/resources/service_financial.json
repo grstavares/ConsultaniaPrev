@@ -1,7 +1,7 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
 
-    "Description": "NewsReport MicroService",
+    "Description": "Financial MicroService",
 
     "Parameters": {
 
@@ -14,7 +14,7 @@
 
         "ServiceName": {
             "Type": "String",
-            "Default": "NewsReport"
+            "Default": "Financial"
         },
 
         "AppRestAPI": {
@@ -55,10 +55,10 @@
         "MainFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
-                "Code": "../dist/news/news.zip",
+                "Code": "../dist/financial/financial.zip",
                 "FunctionName": { "Fn::Join": [ "-", [ { "Ref": "AppName" }, { "Ref": "ServiceName" }, "MainFunction" ] ] },
                 "Description": { "Fn::Join": [ "", [ { "Ref": "ServiceName" }, " Main Function for Application ", { "Ref": "AppName" }] ] },
-                "Handler": "news/index.handler",
+                "Handler": "financial/index.handler",
                 "MemorySize": 128,
                 "Role": {
                     "Fn::GetAtt": ["MainFunctionExecutionRole", "Arn"]
@@ -130,7 +130,7 @@
             }
         },
 
-        "ApiResourceNewsReports": {
+        "ApiResourceFinancialEntries": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
                 "RestApiId": {
@@ -139,18 +139,18 @@
                 "ParentId": {
                     "Ref": "AppRestAPIRootResource"
                 },
-                "PathPart": "newsreports"
+                "PathPart": "financial"
             }
         },
 
-        "ApiResourceNewsReportsOPTIONS": {
+        "ApiResourceFinancialEntriesOPTIONS": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
                 "AuthorizationType": "NONE",
                 "HttpMethod": "OPTIONS",
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReports"
+                    "Ref": "ApiResourceFinancialEntries"
                 },
                 "RestApiId": {
                     "Ref": "AppRestAPI"
@@ -181,7 +181,7 @@
             }
         },
 
-        "ApiResourceNewsReportsGET": {
+        "ApiResourceFinancialEntriesGET": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
 
@@ -193,7 +193,7 @@
                     "Ref": "AppRestAPI"
                 },
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReports"
+                    "Ref": "ApiResourceFinancialEntries"
                 },
                 "Integration": {
                     "Type": "AWS_PROXY",
@@ -210,7 +210,7 @@
             }
         },
 
-        "ApiResourceNewsReportsPOST": {
+        "ApiResourceFinancialEntriesPOST": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
 
@@ -222,7 +222,7 @@
                     "Ref": "AppRestAPI"
                 },
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReports"
+                    "Ref": "ApiResourceFinancialEntries"
                 },
                 "Integration": {
                     "Type": "AWS_PROXY",
@@ -239,27 +239,27 @@
             }
         },
 
-        "ApiResourceNewsReport": {
+        "ApiResourceFinancialEntrie": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
                 "RestApiId": {
                     "Ref": "AppRestAPI"
                 },
                 "ParentId": {
-                    "Ref": "ApiResourceNewsReports"
+                    "Ref": "ApiResourceFinancialEntries"
                 },
-                "PathPart": "{newsreportId}"
+                "PathPart": "{entryId}"
             }
         },
 
-        "ApiResourceNewsReportOPTIONS": {
+        "ApiResourceFinancialEntrieOPTIONS": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
                 "AuthorizationType": "NONE",
                 "HttpMethod": "OPTIONS",
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReport"
+                    "Ref": "ApiResourceFinancialEntrie"
                 },
                 "RestApiId": {
                     "Ref": "AppRestAPI"
@@ -290,7 +290,7 @@
             }
         },
 
-        "ApiResourceNewsReportGET": {
+        "ApiResourceFinancialEntrieGET": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
 
@@ -302,10 +302,10 @@
                     "Ref": "AppRestAPI"
                 },
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReport"
+                    "Ref": "ApiResourceFinancialEntrie"
                 },
                 "RequestParameters": {
-                    "method.request.path.newsreportId": true
+                    "method.request.path.entryId": true
                 },
                 "Integration": {
                     "Type": "AWS_PROXY",
@@ -322,7 +322,7 @@
             }
         },
 
-        "ApiResourceNewsReportPUT": {
+        "ApiResourceFinancialEntriePUT": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
 
@@ -334,10 +334,10 @@
                     "Ref": "AppRestAPI"
                 },
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReport"
+                    "Ref": "ApiResourceFinancialEntrie"
                 },
                 "RequestParameters": {
-                    "method.request.path.newsreportId": true
+                    "method.request.path.entryId": true
                 },
                 "Integration": {
                     "Type": "AWS_PROXY",
@@ -354,7 +354,7 @@
             }
         },
 
-        "ApiResourceNewsReportDELETE": {
+        "ApiResourceFinancialEntrieDELETE": {
             "DependsOn": "GatewayInvokeLambdaPermission",
             "Type": "AWS::ApiGateway::Method",
 
@@ -366,10 +366,10 @@
                     "Ref": "AppRestAPI"
                 },
                 "ResourceId": {
-                    "Ref": "ApiResourceNewsReport"
+                    "Ref": "ApiResourceFinancialEntrie"
                 },
                 "RequestParameters": {
-                    "method.request.path.newsreportId": true
+                    "method.request.path.entryId": true
                 },
                 "Integration": {
                     "Type": "AWS_PROXY",

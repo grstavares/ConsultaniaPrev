@@ -4,6 +4,7 @@ import { Context, APIGatewayProxyEvent } from 'aws-lambda';
 import fs = require('fs');
 
 export enum AWSEvent {
+    NewsReportGetAll = 'APIGatewayEvent_NewsReportGetAll',
     NewsReportDelete = 'APIGatewayEvent_NewsReportDelete',
     NewsReportGet = 'APIGatewayEvent_NewsReportGet',
     NewsReportPost = 'APIGatewayEvent_NewsReportPost',

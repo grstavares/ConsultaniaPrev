@@ -17,6 +17,7 @@ export interface NoSQLTable {
     putItem(keys: { [key: string]: any }, object: Object): Promise<boolean>;
     updateItem(keys: { [key: string]: any }, values: { [key: string]: any }): Promise<boolean>;
     deleteItems(keys: { [key: string]: any }): Promise<boolean>;
+    queryIndex(indexName: string, keys: { [key: string]: any }): Promise<Object[]>;
 }
 
 export interface MessageBus {
