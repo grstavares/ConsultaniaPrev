@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test-all": "LAMBDA_TESTER_NODE_VERSION_CHECK=false mocha -r ts-node/register tests/**/*.spec.ts",
+    "test": "npm run test-all",
     "build-activities": "webpack --config ./src/activities/webpack.config.js",
     "build-complaints": "webpack --config ./src/complaints/webpack.config.js",
     "build-documents": "webpack --config ./src/documents/webpack.config.js",

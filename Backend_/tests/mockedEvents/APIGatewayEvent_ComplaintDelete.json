@@ -1,6 +1,6 @@
 {
     "resource": "/complaints/{complaintId}",
-    "path": "/complaints/removeFromDB",
+    "path": "/complaints/willBeRemovedFromDB",
     "httpMethod": "DELETE",
     "headers": {
         "Accept": "*/*",
@@ -81,7 +81,7 @@
     "queryStringParameters": null,
     "multiValueQueryStringParameters": null,
     "pathParameters": {
-        "complaintId": "removeFromDB"
+        "complaintId": "willBeRemovedFromDB"
     },
     "stageVariables": null,
     "requestContext": {
@@ -90,7 +90,7 @@
         "httpMethod": "DELETE",
         "extendedRequestId": "UIn3dHk7IAMFjpA=",
         "requestTime": "26/Jan/2019:23:27:56 +0000",
-        "path": "/v111111111/complaints/removeFromDB",
+        "path": "/v111111111/complaints/willBeRemovedFromDB",
         "accountId": "123456789012",
         "protocol": "HTTP/1.1",
         "stage": "v111111111",

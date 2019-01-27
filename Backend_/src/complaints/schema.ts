@@ -1,4 +1,5 @@
 export interface Complaint {
+    institutionId: string;
     uuid: string;
     title: string;
     content: string;

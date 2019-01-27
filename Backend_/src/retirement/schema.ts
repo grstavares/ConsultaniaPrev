@@ -1,4 +1,5 @@
 export interface Retirement {
+    institutionId: string;
     uuid: string;
     startDate: number;
     endDate: number;

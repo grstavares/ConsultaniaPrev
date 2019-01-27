@@ -59,6 +59,8 @@ export class ResponseBuilder {
 
     public static serviceError(serviceError: ServiceError, traceId: string): APIGatewayResponse {
 
+/* ** */console.log(serviceError);
+
         const error = ResponseBuilder.parseError(serviceError.httpStatusCode, 'REDACTED', traceId);
         return ResponseBuilder.parseResponse(error, serviceError.httpStatusCode);
 

@@ -15,7 +15,7 @@ export interface NoSQLTable {
     getItem(keys: {[key: string]: any}): Promise<Object>;
     queryItemByHashKey(keys: {[key: string]: any}): Promise<Object[]>;
     putItem(keys: { [key: string]: any }, object: Object): Promise<boolean>;
-    updateItem(keys: { [key: string]: any }, values: { [key: string]: any }): Promise<boolean>;
+    updateItem(keys: { [key: string]: any }, values: { [key: string]: any }): Promise<Object>;
     deleteItems(keys: { [key: string]: any }): Promise<boolean>;
     queryIndex(indexName: string, keys: { [key: string]: any }): Promise<Object[]>;
 }

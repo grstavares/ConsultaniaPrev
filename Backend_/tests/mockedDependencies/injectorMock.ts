@@ -29,6 +29,13 @@ export class DependencyInjectorMock implements DependencyInjector {
 
     }
 
+    public async getItemByKey(keys: { [key: string]: any }): Promise<Object> {
+
+        return this.getNoSQLTable()
+        .then(async (table) => table.getItem(keys));
+
+    }
+
     public getInputParser(event: any): InputParser {
 
         /* tslint:disable no-unsafe-any*/

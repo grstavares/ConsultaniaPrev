@@ -80,13 +80,14 @@ export class DynamoDBTable implements NoSQLTable {
 
     }
 
-    public async updateItem(keys: { [key: string]: any }, values: { [key: string]: any }): Promise<boolean> {
+    public async updateItem(keys: { [key: string]: any }, values: { [key: string]: any }): Promise<Object> {
 
         const parsedKeys = this.marshalObject(keys);
         const updateExpression = this.updateExpression(values);
 
         const updateItemParams: DynamoDB.UpdateItemInput = {
             TableName: this.tableName,
+            ReturnValues: 'ALL_NEW',
             Key: parsedKeys,
             UpdateExpression: updateExpression.UpdateExpression,
             ExpressionAttributeNames: updateExpression.ExpressionAttributeNames,
@@ -96,7 +97,7 @@ export class DynamoDBTable implements NoSQLTable {
         return new Promise((resolve: Function, reject: Function) => {
 
             this.dynamoDB.updateItem(updateItemParams).promise()
-            .then((result) => resolve(true))
+            .then((result) => resolve(this.unmarshalObject(result.Attributes)))
             .catch((error) => reject(AWSParser.parseAWSError(error, {type: 'table', name: this.tableName})));
 
         });
@@ -191,10 +192,16 @@ export class DynamoDBTable implements NoSQLTable {
 
     private parseValue(value: any): Object {
 
-        return (typeof value === 'number') ? { N: String(value) } :
-         (typeof value === 'string') ? { S: value } :
-         (typeof value === 'boolean') ? { BOOL: value } :
-         this.marshalObject(value);
+        if (Array.isArray(value)) {
+
+            const objectArray = [];
+            value.forEach((item) => objectArray.push(this.parseValue(item)));
+            return { L: objectArray };
+
+        } else if (typeof value === 'string') { return { S: value };
+        } else if (typeof value === 'boolean') { return { BOOL: value };
+        } else if (typeof value === 'number') { return { N: String(value) };
+        } else { return this.marshalObject(value); }
 
     }
 

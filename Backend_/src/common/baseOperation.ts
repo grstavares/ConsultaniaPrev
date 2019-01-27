@@ -28,7 +28,7 @@ export class BaseOperations {
 
         return injector.getNoSQLTable()
         .then(async (table) => table.getItem(keys))
-        .then((objects) => ResponseBuilder.ok(objects))
+        .then((object) => { if (object !== null) { return ResponseBuilder.ok(object); } else { return ResponseBuilder.notFound('', this.traceId); } })
         .catch((reason: ServiceError) => ResponseBuilder.serviceError(reason, this.traceId));
 
     }
@@ -46,7 +46,7 @@ export class BaseOperations {
 
         return injector.getNoSQLTable()
         .then(async (table) => table.updateItem(keys, values))
-        .then((result) => ResponseBuilder.ok({}))
+        .then((result) => ResponseBuilder.ok(result))
         .catch((reason: ServiceError) => ResponseBuilder.serviceError(reason, this.traceId));
 
     }

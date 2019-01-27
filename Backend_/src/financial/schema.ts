@@ -1,7 +1,9 @@
 export interface FinancialEntry {
+    institutionId: string;
     uuid: string;
     date: number;
-    period: [number, number];       // Tuple with Start and End Date of Period of Reference;
+    periodStart: number;
+    periodoEnd: number;
     subject: string;
     description?: string;
     value: number;

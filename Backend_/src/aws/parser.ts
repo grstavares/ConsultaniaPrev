@@ -25,9 +25,14 @@ export class AWSParser {
                 errorType = 'InvalidObjectBody';
                 httpCode = 400;
                 break;
+            case 'validationexception':
+                errorCode = 'ObjectNotCompatibleWithExpected';
+                errorType = 'ObjectNotCompatibleWithExpected';
+                httpCode = 500;
+                break;
             default:
-                console.log('AWSError not identified!');
-                console.log(error);
+                const printable = JSON.stringify({statusCode: error.statusCode, code: error.code, message: error.message});
+                console.log(`AWSError not identified -> ${printable}`);
         }
 
         return {code: errorCode, type: errorType, httpStatusCode: httpCode, resource: resourceDescription, payload: error};

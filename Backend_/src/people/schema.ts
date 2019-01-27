@@ -1,4 +1,5 @@
 export interface Person {
+    institutionId: string;
     uuid: string;
     firstName: string;
     lastName: string;

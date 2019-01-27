@@ -2,21 +2,20 @@ import { ResponseBuilder, UUID } from '../common/utilities';
 import { APIGatewayResponse, ServiceError } from '../common/types';
 import { InputParser, DependencyInjector } from '../common/backend';
 import { BaseOperations } from '../common/baseOperation';
-import { NewsReport, ObjectModel } from './schema';
 
 export enum AllowedOperation {
 
-    GetAllNewsReport = 'GetAllNewsReport',
-    GetNewsReport = 'GetNewsReport',
-    CreateNewsReport = 'CreateNewsReport',
-    UpdateNewsReport = 'UpdateNewsReport',
-    RemoveNewsReport = 'RemoveNewsReport',
+    GetAllFinancialEntry = 'GetAllFinancialEntry',
+    GetFinancialEntry = 'GetFinancialEntry',
+    CreateFinancialEntry = 'CreateFinancialEntry',
+    UpdateFinancialEntry = 'UpdateFinancialEntry',
+    RemoveFinancialEntry = 'RemoveFinancialEntry',
 
 }
 
 export class ServiceOperation extends BaseOperations {
 
-    private readonly httpPathParamId = 'newsreportId';
+    private readonly httpPathParamId = 'entryId';
     private readonly tableHashKey = 'itemId';
 
     constructor(private readonly eventParser: InputParser, traceId: string) { super(traceId); }
@@ -26,17 +25,17 @@ export class ServiceOperation extends BaseOperations {
         const resource = this.eventParser.getResource();
         const method = this.eventParser.getHttpMethod();
 
-        if (resource.toLowerCase() === '/newsreports') {
+        if (resource.toLowerCase() === '/financial') {
 
-            if (method.toLowerCase() === 'get') { return AllowedOperation.GetAllNewsReport;
-            } else if (method.toLowerCase() === 'post') { return AllowedOperation.CreateNewsReport;
+            if (method.toLowerCase() === 'get') { return AllowedOperation.GetAllFinancialEntry;
+            } else if (method.toLowerCase() === 'post') { return AllowedOperation.CreateFinancialEntry;
             } else {return null; }
 
-        } else if (resource.toLowerCase() === '/newsreports/{newsreportid}') {
+        } else if (resource.toLowerCase() === '/financial/{entryid}') {
 
-            if (method.toLowerCase() === 'get') { return AllowedOperation.GetNewsReport;
-            } else if (method.toLowerCase() === 'put') { return AllowedOperation.UpdateNewsReport;
-            } else if (method.toLowerCase() === 'delete') { return AllowedOperation.RemoveNewsReport;
+            if (method.toLowerCase() === 'get') { return AllowedOperation.GetFinancialEntry;
+            } else if (method.toLowerCase() === 'put') { return AllowedOperation.UpdateFinancialEntry;
+            } else if (method.toLowerCase() === 'delete') { return AllowedOperation.RemoveFinancialEntry;
             } else {return null; }
 
         } else { return null; }
@@ -50,17 +49,17 @@ export class ServiceOperation extends BaseOperations {
 
         switch (operation) {
 
-            case 'GetAllNewsReport': {
+            case 'GetAllFinancialEntry': {
                 const objectKey = this.eventParser.getPathParam(this.httpPathParamId);
                 return this.queryItemsOnIndexByKeys(injector, 'indexName', { institutionId: institutionId, itemId: objectKey });
             }
 
-            case 'GetNewsReport': {
+            case 'GetFinancialEntry': {
                 const objectKey = this.eventParser.getPathParam(this.httpPathParamId);
                 return this.getItem(injector, { institutionId: institutionId, itemId: objectKey });
             }
 
-            case 'CreateNewsReport': {
+            case 'CreateFinancialEntry': {
 
                 const objectKey = UUID.newUUID();
                 const objectValues = this.eventParser.getPayload();
@@ -76,11 +75,10 @@ export class ServiceOperation extends BaseOperations {
 
             }
 
-            case 'UpdateNewsReport': {
+            case 'UpdateFinancialEntry': {
 
                 const objectKey = this.eventParser.getPathParam(this.httpPathParamId);
                 const objectValues = this.eventParser.getPayload();
-                const keyedObject = { institutionId: institutionId, itemId: objectKey, ...objectValues};
 
                 /* tslint:disable no-dynamic-delete */
                 delete objectValues[this.tableHashKey];
@@ -88,7 +86,7 @@ export class ServiceOperation extends BaseOperations {
 
             }
 
-            case 'RemoveNewsReport': {
+            case 'RemoveFinancialEntry': {
                 const objectKey = this.eventParser.getPathParam(this.httpPathParamId);
                 const deleteMarker = { wasDeleted: true };
                 return this.updateItem(injector, { institutionId: institutionId, itemId: objectKey }, deleteMarker);

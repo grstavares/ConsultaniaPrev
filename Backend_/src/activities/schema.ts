@@ -1,4 +1,5 @@
 export interface Activity {
+    institutionId: string;
     uuid: string;
     title: string;
     contents: string;

@@ -1,4 +1,5 @@
 export interface Message {
+    institutionId: string;
     uuid: string;
     title: string;
     summary?: string;

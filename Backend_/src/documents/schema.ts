@@ -1,4 +1,5 @@
 export interface Document {
+    institutionId: string;
     uuid: string;
     title: string;
     summary: string;
