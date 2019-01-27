@@ -1,23 +1,24 @@
 {
-    "resource": "/newsreports/{newsreportId}",
-    "path": "/newsreports/12345",
+    "resource": "/retirement/{retirementId}",
+    "path": "/retirement/existOnDB",
     "httpMethod": "GET",
     "headers": {
         "Accept": "*/*",
         "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "pt-br",
+        "cache-control": "no-cache",
         "CloudFront-Forwarded-Proto": "https",
         "CloudFront-Is-Desktop-Viewer": "true",
         "CloudFront-Is-Mobile-Viewer": "false",
         "CloudFront-Is-SmartTV-Viewer": "false",
         "CloudFront-Is-Tablet-Viewer": "false",
         "CloudFront-Viewer-Country": "BR",
-        "Host": "zfd6m3x3f6.execute-api.us-east-1.amazonaws.com",
-        "User-Agent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
-        "Via": "1.1 0ec58d65ed61c24abd56f7646d182faf.cloudfront.net (CloudFront)",
-        "X-Amz-Cf-Id": "i6tHhotzYXrQ0X-_2RHPs2RH4muDrF734PUU-zqGH-7DGxQX9NoesA==",
-        "X-Amzn-Trace-Id": "Root=1-5c4a4b63-296d5748e39793b02be09650",
-        "X-Forwarded-For": "177.235.72.106, 70.132.44.160",
+        "Host": "2rfdigvrbi.execute-api.us-east-1.amazonaws.com",
+        "Postman-Token": "62b32fd8-815f-4851-8cf5-b59ffb16ae75",
+        "User-Agent": "PostmanRuntime/7.6.0",
+        "Via": "1.1 2956a3912b6df78334645b0a30dd42e8.cloudfront.net (CloudFront)",
+        "X-Amz-Cf-Id": "3d2_dNhVXtJC8v6RwYMKin9Qvd287IdJOwXJll06_9iuU8BSwVbfwQ==",
+        "X-Amzn-Trace-Id": "Root=1-5c4cfcdc-657a964ac510b2375ca09863",
+        "X-Forwarded-For": "177.235.72.106, 70.132.44.93",
         "X-Forwarded-Port": "443",
         "X-Forwarded-Proto": "https"
     },
@@ -28,8 +29,8 @@
         "Accept-Encoding": [
             "gzip, deflate"
         ],
-        "Accept-Language": [
-            "pt-br"
+        "cache-control": [
+            "no-cache"
         ],
         "CloudFront-Forwarded-Proto": [
             "https"
@@ -50,22 +51,25 @@
             "BR"
         ],
         "Host": [
-            "zfd6m3x3f6.execute-api.us-east-1.amazonaws.com"
+            "2rfdigvrbi.execute-api.us-east-1.amazonaws.com"
+        ],
+        "Postman-Token": [
+            "62b32fd8-815f-4851-8cf5-b59ffb16ae75"
         ],
         "User-Agent": [
-            "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)"
+            "PostmanRuntime/7.6.0"
         ],
         "Via": [
-            "1.1 0ec58d65ed61c24abd56f7646d182faf.cloudfront.net (CloudFront)"
+            "1.1 2956a3912b6df78334645b0a30dd42e8.cloudfront.net (CloudFront)"
         ],
         "X-Amz-Cf-Id": [
-            "i6tHhotzYXrQ0X-_2RHPs2RH4muDrF734PUU-zqGH-7DGxQX9NoesA=="
+            "3d2_dNhVXtJC8v6RwYMKin9Qvd287IdJOwXJll06_9iuU8BSwVbfwQ=="
         ],
         "X-Amzn-Trace-Id": [
-            "Root=1-5c4a4b63-296d5748e39793b02be09650"
+            "Root=1-5c4cfcdc-657a964ac510b2375ca09863"
         ],
         "X-Forwarded-For": [
-            "177.235.72.106, 70.132.44.160"
+            "177.235.72.106, 70.132.44.93"
         ],
         "X-Forwarded-Port": [
             "443"
@@ -77,22 +81,22 @@
     "queryStringParameters": null,
     "multiValueQueryStringParameters": null,
     "pathParameters": {
-        "newsreportId": "12345"
+        "retirementId": "existOnDB"
     },
     "stageVariables": null,
     "requestContext": {
-        "resourceId": "qrswaz",
-        "resourcePath": "/newsreports/{newsreportId}",
+        "resourceId": "17t58p",
+        "resourcePath": "/retirement/{retirementId}",
         "httpMethod": "GET",
-        "extendedRequestId": "UCC3mHM6IAMFXOA=",
-        "requestTime": "24/Jan/2019:23:33:55 +0000",
-        "path": "/poc/newsreports/12345",
+        "extendedRequestId": "UIxyeHVfoAMFW3g=",
+        "requestTime": "27/Jan/2019:00:35:40 +0000",
+        "path": "/v111111111/retirement/existOnDB",
         "accountId": "123456789012",
         "protocol": "HTTP/1.1",
-        "stage": "poc",
-        "domainPrefix": "zfd6m3x3f6",
-        "requestTimeEpoch": 1548372835845,
-        "requestId": "841be430-2030-11e9-9640-1bdd2884d8ff",
+        "stage": "v111111111",
+        "domainPrefix": "2rfdigvrbi",
+        "requestTimeEpoch": 1548549340631,
+        "requestId": "7928b84b-21cb-11e9-a96c-4b4d1072085f",
         "identity": {
             "cognitoIdentityPoolId": null,
             "accountId": null,
@@ -103,11 +107,11 @@
             "cognitoAuthenticationType": null,
             "cognitoAuthenticationProvider": null,
             "userArn": null,
-            "userAgent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
+            "userAgent": "PostmanRuntime/7.6.0",
             "user": null
         },
-        "domainName": "zfd6m3x3f6.execute-api.us-east-1.amazonaws.com",
-        "apiId": "zfd6m3x3f6"
+        "domainName": "2rfdigvrbi.execute-api.us-east-1.amazonaws.com",
+        "apiId": "2rfdigvrbi"
     },
     "body": null,
     "isBase64Encoded": false

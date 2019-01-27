@@ -5,19 +5,20 @@
     "headers": {
         "Accept": "*/*",
         "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "pt-br",
+        "cache-control": "no-cache",
         "CloudFront-Forwarded-Proto": "https",
         "CloudFront-Is-Desktop-Viewer": "true",
         "CloudFront-Is-Mobile-Viewer": "false",
         "CloudFront-Is-SmartTV-Viewer": "false",
         "CloudFront-Is-Tablet-Viewer": "false",
         "CloudFront-Viewer-Country": "BR",
-        "Host": "zfd6m3x3f6.execute-api.us-east-1.amazonaws.com",
-        "User-Agent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
-        "Via": "1.1 0ec58d65ed61c24abd56f7646d182faf.cloudfront.net (CloudFront)",
-        "X-Amz-Cf-Id": "i6tHhotzYXrQ0X-_2RHPs2RH4muDrF734PUU-zqGH-7DGxQX9NoesA==",
-        "X-Amzn-Trace-Id": "Root=1-5c4a4b63-296d5748e39793b02be09650",
-        "X-Forwarded-For": "177.235.72.106, 70.132.44.160",
+        "Host": "2rfdigvrbi.execute-api.us-east-1.amazonaws.com",
+        "Postman-Token": "c6e3a7a9-d581-4cda-a4ee-72e63286b2d7",
+        "User-Agent": "PostmanRuntime/7.6.0",
+        "Via": "1.1 2956a3912b6df78334645b0a30dd42e8.cloudfront.net (CloudFront)",
+        "X-Amz-Cf-Id": "-UxxSl99jR85fUg4ROV0cILccvezAxKjSRLFVt9Ke-nIDKFqNh61Mg==",
+        "X-Amzn-Trace-Id": "Root=1-5c4cfc1c-db614aaf0b105a1880cfdfdd",
+        "X-Forwarded-For": "177.235.72.106, 70.132.44.147",
         "X-Forwarded-Port": "443",
         "X-Forwarded-Proto": "https"
     },
@@ -28,8 +29,8 @@
         "Accept-Encoding": [
             "gzip, deflate"
         ],
-        "Accept-Language": [
-            "pt-br"
+        "cache-control": [
+            "no-cache"
         ],
         "CloudFront-Forwarded-Proto": [
             "https"
@@ -50,22 +51,25 @@
             "BR"
         ],
         "Host": [
-            "zfd6m3x3f6.execute-api.us-east-1.amazonaws.com"
+            "2rfdigvrbi.execute-api.us-east-1.amazonaws.com"
+        ],
+        "Postman-Token": [
+            "c6e3a7a9-d581-4cda-a4ee-72e63286b2d7"
         ],
         "User-Agent": [
-            "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)"
+            "PostmanRuntime/7.6.0"
         ],
         "Via": [
-            "1.1 0ec58d65ed61c24abd56f7646d182faf.cloudfront.net (CloudFront)"
+            "1.1 2956a3912b6df78334645b0a30dd42e8.cloudfront.net (CloudFront)"
         ],
         "X-Amz-Cf-Id": [
-            "i6tHhotzYXrQ0X-_2RHPs2RH4muDrF734PUU-zqGH-7DGxQX9NoesA=="
+            "-UxxSl99jR85fUg4ROV0cILccvezAxKjSRLFVt9Ke-nIDKFqNh61Mg=="
         ],
         "X-Amzn-Trace-Id": [
-            "Root=1-5c4a4b63-296d5748e39793b02be09650"
+            "Root=1-5c4cfc1c-db614aaf0b105a1880cfdfdd"
         ],
         "X-Forwarded-For": [
-            "177.235.72.106, 70.132.44.160"
+            "177.235.72.106, 70.132.44.147"
         ],
         "X-Forwarded-Port": [
             "443"
@@ -79,18 +83,18 @@
     "pathParameters": null,
     "stageVariables": null,
     "requestContext": {
-        "resourceId": "qrswaz",
+        "resourceId": "onaysh",
         "resourcePath": "/newsreports",
         "httpMethod": "GET",
-        "extendedRequestId": "UCC3mHM6IAMFXOA=",
-        "requestTime": "24/Jan/2019:23:33:55 +0000",
-        "path": "/poc/newsreports",
+        "extendedRequestId": "UIxUgEAQoAMF4dg=",
+        "requestTime": "27/Jan/2019:00:32:28 +0000",
+        "path": "/v111111111/newsreports",
         "accountId": "123456789012",
         "protocol": "HTTP/1.1",
-        "stage": "poc",
-        "domainPrefix": "zfd6m3x3f6",
-        "requestTimeEpoch": 1548372835845,
-        "requestId": "841be430-2030-11e9-9640-1bdd2884d8ff",
+        "stage": "v111111111",
+        "domainPrefix": "2rfdigvrbi",
+        "requestTimeEpoch": 1548549148853,
+        "requestId": "06d9dea0-21cb-11e9-a04f-73ba55b55d1b",
         "identity": {
             "cognitoIdentityPoolId": null,
             "accountId": null,
@@ -101,11 +105,11 @@
             "cognitoAuthenticationType": null,
             "cognitoAuthenticationProvider": null,
             "userArn": null,
-            "userAgent": "Rested/2009 CFNetwork/902.3.1 Darwin/17.7.0 (x86_64)",
+            "userAgent": "PostmanRuntime/7.6.0",
             "user": null
         },
-        "domainName": "zfd6m3x3f6.execute-api.us-east-1.amazonaws.com",
-        "apiId": "zfd6m3x3f6"
+        "domainName": "2rfdigvrbi.execute-api.us-east-1.amazonaws.com",
+        "apiId": "2rfdigvrbi"
     },
     "body": null,
     "isBase64Encoded": false
