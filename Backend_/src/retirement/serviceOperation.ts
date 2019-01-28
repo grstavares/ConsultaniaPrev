@@ -64,14 +64,20 @@ export class ServiceOperation extends BaseOperations {
                 const objectKey = UUID.newUUID();
                 const objectValues = this.eventParser.getPayload();
                 const keyedObject = { institutionId: institutionId, itemId: objectKey, ...objectValues};
+                const validObject = this.parseInputBody(keyedObject);
 
-                return this.putItem(injector, { institutionId: institutionId, itemId: objectKey }, keyedObject)
-                .then((response: APIGatewayResponse) => {
+                if (validObject !== null && validObject != undefined) {
 
-                    if (response.statusCode === 200) { return ResponseBuilder.created('teste', keyedObject);
-                    } else {return response; }
+                    const createdPath = `${this.eventParser.getResource()}/${objectKey}}`;
+                    return this.putItem(injector, { institutionId: institutionId, itemId: objectKey }, keyedObject)
+                    .then((response: APIGatewayResponse) => {
 
-                });
+                        if (response.statusCode === 200) { return ResponseBuilder.created(createdPath, keyedObject);
+                        } else {return response; }
+
+                    });
+
+                } else { return ResponseBuilder.badRequest('Invalid Request Body', this.traceId); }
 
             }
 
@@ -80,9 +86,17 @@ export class ServiceOperation extends BaseOperations {
                 const objectKey = this.eventParser.getPathParam(this.httpPathParamId);
                 const objectValues = this.eventParser.getPayload();
 
-                /* tslint:disable no-dynamic-delete */
-                delete objectValues[this.tableHashKey];
-                return this.updateItem(injector, { institutionId: institutionId, itemId: objectKey }, objectValues);
+                const itemKeys = { institutionId: institutionId, itemId: objectKey };
+                const validObject = this.parseInputBody({...itemKeys, ...objectValues});
+
+                if (validObject !== null && validObject != undefined) {
+
+                    /* tslint:disable no-dynamic-delete no-string-literal*/
+                    delete objectValues['institutionId'];
+                    delete objectValues[this.tableHashKey];
+                    return this.updateItem(injector, itemKeys, objectValues);
+
+                } else { return ResponseBuilder.badRequest('Invalid Request Body', this.traceId); }
 
             }
 
@@ -100,5 +114,8 @@ export class ServiceOperation extends BaseOperations {
             }
         }
     }
+
+    // tslint:disable-next-line: no-unsafe-any
+    private parseInputBody(input: any): Object { return input; }
 
 }
