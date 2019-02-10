@@ -20,8 +20,8 @@ describe('ServiceInstitutions Handler', () => {
         mockedEvents = new MockedEvents();
 
         const tableNames = ['Institutions'];
-        const tableKeys: KeySchema[] = [ [{ AttributeName: 'institutionId', KeyType: 'HASH'}, { AttributeName: 'itemId', KeyType: 'RANGE'}] ];
-        const tableAttributes: AttributeDefinitions[] = [ [{ AttributeName: 'institutionId', AttributeType: 'S' }, { AttributeName: 'itemId', AttributeType: 'S' }] ];
+        const tableKeys: KeySchema[] = [ [{ AttributeName: 'institutionId', KeyType: 'HASH'} ] ];
+        const tableAttributes: AttributeDefinitions[] = [ [{ AttributeName: 'institutionId', AttributeType: 'S' } ] ];
 
         this.timeout(10000);
         const dynamoconfig: LocalDynamoConfiguration = {
@@ -48,8 +48,8 @@ describe('ServiceInstitutions Handler', () => {
         const object1 = new ItemBuilder().buildWithUUID('InexistentId1');
         const object2 = new ItemBuilder().buildWithUUID('InexistentId2');
 
-        const responseA = await mockedInjector.injectItemOnTable({ institutionId: 'mockedIntitution', uuid: 'InexistentId1'}, object1);
-        const responseB = await mockedInjector.injectItemOnTable({ institutionId: 'mockedIntitution', uuid: 'InexistentId2'}, object2);
+        const responseA = await mockedInjector.injectItemOnTable({ institutionId: 'InexistentId1'}, object1);
+        const responseB = await mockedInjector.injectItemOnTable({ institutionId: 'InexistentId2'}, object2);
         return lambdaTester(handler).event(mocked).expectResult((verifier) => { expect(verifier.statusCode).to.eql(200) });
 
     });
@@ -62,7 +62,7 @@ describe('ServiceInstitutions Handler', () => {
         const mocked = mockedEvents.getEvent(AWSEvent.InstitutionGet);
         const object = new ItemBuilder().buildWithUUID(mockedUUID);
 
-        const response = await mockedInjector.injectItemOnTable({ institutionId: 'mockedIntitution', itemId: mockedUUID}, object)
+        const response = await mockedInjector.injectItemOnTable({ institutionId: mockedUUID}, object)
         .then((result) => { return lambdaTester(handler).event(mocked)});
 
         return response.expectResult((verifier) => { expect(verifier.statusCode).to.eql(200) });
@@ -78,7 +78,7 @@ describe('ServiceInstitutions Handler', () => {
         const mocked = mockedEvents.getEvent(AWSEvent.InstitutionGet);
         const object = new ItemBuilder().buildWithUUID(mockedUUID);
 
-        const response = await mockedInjector.injectItemOnTable({ institutionId: 'mockedIntitution', itemId: mockedUUID}, object)
+        const response = await mockedInjector.injectItemOnTable({ institutionId: mockedUUID}, object)
         .then((result) => { return lambdaTester(handler).event(mocked)});
 
         return response.expectResult((verifier) => { expect(verifier.statusCode).to.eql(200) });
@@ -106,7 +106,7 @@ describe('ServiceInstitutions Handler', () => {
         const existentTitle = object['name'];
         const updatedValue = JSON.parse(mocked.body)['name'];
 
-        const response = await mockedInjector.injectItemOnTable({ institutionId: 'mockedIntitution', itemId: mockedUUID}, object)
+        const response = await mockedInjector.injectItemOnTable({ institutionId: mockedUUID}, object)
         .then((result) => { return lambdaTester(handler).event(mocked)});
 
         return response.expectResult((verifier) => {
@@ -128,13 +128,13 @@ describe('ServiceInstitutions Handler', () => {
         const mocked = mockedEvents.getEvent(AWSEvent.InstitutionDelete);
         const object = new ItemBuilder().buildWithUUID(mockedUUID);
 
-        const response = await mockedInjector.injectItemOnTable({ institutionId: 'mockedIntitution', itemId: mockedUUID}, object)
-        .then((result) => mockedInjector.getItemByKey({ institutionId: 'mockedIntitution', itemId: mockedUUID}))
+        const response = await mockedInjector.injectItemOnTable({ institutionId: mockedUUID}, object)
+        .then((result) => mockedInjector.getItemByKey({ institutionId: mockedUUID}))
         .then((objectfound) => { if (objectfound === null || objectfound == undefined) { return Promise.reject(); } else { return Promise.resolve(true); } })
         .then((result) => lambdaTester(handler).event(mocked));
 
         return response.expectResult((verifier) => { expect(verifier.statusCode).to.eql(200) })
-        .then((result) => mockedInjector.getItemByKey({ institutionId: 'mockedIntitution', itemId: mockedUUID}))
+        .then((result) => mockedInjector.getItemByKey({ institutionId: mockedUUID}))
         .then((result) => expect(result['wasDeleted']).to.be.true);
 
     });
@@ -150,8 +150,7 @@ class ItemBuilder {
     buildWithUUID(uuid: string): Object {
 
         return {
-            institutionId: 'mockedIntitution',
-            itemId: uuid,
+            institutionId: uuid,
             name: 'Mocked Institution',
             wasDeleted: false,
         };

@@ -145,7 +145,7 @@
                 "ParentId": {
                     "Ref": "AppRestAPIRootResource"
                 },
-                "PathPart": "intitutions"
+                "PathPart": "institutions"
             }
         },
 

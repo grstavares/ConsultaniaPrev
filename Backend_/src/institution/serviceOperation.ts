@@ -44,7 +44,7 @@ export class ServiceOperation extends BaseOperations {
 
     public async perform(injector: DependencyInjector): Promise<APIGatewayResponse> {
 
-        const institutionId = 'mockedIntitution';
+        const institutionId = 'WRONG_WRONG';
         const operation = this.getOperation();
 
         switch (operation) {
@@ -56,14 +56,14 @@ export class ServiceOperation extends BaseOperations {
 
             case 'GetInstitution': {
                 const objectKey = this.eventParser.getPathParam(this.httpPathParamId);
-                return this.getItem(injector, { institutionId: institutionId, itemId: objectKey });
+                return this.getItem(injector, { institutionId: objectKey });
             }
 
             case 'CreateInstitution': {
 
                 const objectKey = UUID.newUUID();
                 const objectValues = this.eventParser.getPayload();
-                const keyedObject = { institutionId: institutionId, itemId: objectKey, ...objectValues};
+                const keyedObject = { institutionId: objectKey, ...objectValues};
                 const validObject = this.parseInputBody(keyedObject);
 
                 if (validObject !== null && validObject != undefined) {
@@ -86,7 +86,7 @@ export class ServiceOperation extends BaseOperations {
                 const objectKey = this.eventParser.getPathParam(this.httpPathParamId);
                 const objectValues = this.eventParser.getPayload();
 
-                const itemKeys = { institutionId: institutionId, itemId: objectKey };
+                const itemKeys = { institutionId: objectKey };
                 const validObject = this.parseInputBody({...itemKeys, ...objectValues});
 
                 if (validObject !== null && validObject != undefined) {
@@ -103,7 +103,7 @@ export class ServiceOperation extends BaseOperations {
             case 'RemoveInstitution': {
                 const objectKey = this.eventParser.getPathParam(this.httpPathParamId);
                 const deleteMarker = { wasDeleted: true };
-                return this.updateItem(injector, { institutionId: institutionId, itemId: objectKey }, deleteMarker);
+                return this.updateItem(injector, { institutionId: objectKey }, deleteMarker);
             }
 
             default: {

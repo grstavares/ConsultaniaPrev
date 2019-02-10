@@ -10,6 +10,7 @@ dist/
 DerivedData/
 
 ## Various settings
+.vs_code/
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -19,6 +20,8 @@ DerivedData/
 *.perspectivev3
 !default.perspectivev3
 xcuserdata/
+.idea/
+*/.idea/
 
 ## Other
 *.moved-aside
